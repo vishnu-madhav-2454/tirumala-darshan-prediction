@@ -1,0 +1,31 @@
+# Core ML/DL
+numpy
+pandas
+scikit-learn
+lightgbm
+xgboost
+joblib
+holidays
+
+# Deep Learning
+torch
+# chronos-forecasting  # optional — for Chronos foundation models
+
+# API server
+fastapi
+uvicorn[standard]
+
+# Dashboard
+streamlit
+plotly
+
+# Scraping
+requests
+beautifulsoup4
+lxml
+
+# Scheduler
+schedule
+
+# Utilities
+urllib3

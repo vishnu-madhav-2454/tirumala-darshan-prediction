@@ -1,0 +1,23 @@
+# Virtual environments
+.venv/
+.venv_dl/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Model artefacts (too large for git)
+artefacts/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
