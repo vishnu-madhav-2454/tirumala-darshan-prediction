@@ -8,8 +8,9 @@ __pycache__/
 *.pyo
 *.egg-info/
 
-# Model artefacts (too large for git)
-artefacts/
+# Node
+client/node_modules/
+client/dist/
 
 # OS
 Thumbs.db
@@ -21,3 +22,9 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# CatBoost
+catboost_info/
+
+# EDA images (not needed for deployment)
+eda_outputs/

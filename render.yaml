@@ -1,0 +1,20 @@
+# ═══════════════════════════════════════════════════════════════
+#  Render Blueprint — శ్రీవారి సేవ (Tirumala Darshan)
+# ═══════════════════════════════════════════════════════════════
+services:
+  - type: web
+    name: srivari-seva
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "python deploy.py --port $PORT --threads 4"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
+      - key: NODE_VERSION
+        value: "20"
+      - key: HF_HUB_OFFLINE
+        value: "0"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"

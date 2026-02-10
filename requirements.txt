@@ -4,28 +4,23 @@ pandas
 scikit-learn
 lightgbm
 xgboost
+catboost
 joblib
 holidays
 
 # Deep Learning
 torch
-# chronos-forecasting  # optional — for Chronos foundation models
+chronos-forecasting
 
-# API server
-fastapi
-uvicorn[standard]
-
-# Dashboard
-streamlit
-plotly
+# Flask API
+flask
+flask-cors
+waitress
 
 # Scraping
 requests
 beautifulsoup4
 lxml
-
-# Scheduler
-schedule
 
 # Utilities
 urllib3

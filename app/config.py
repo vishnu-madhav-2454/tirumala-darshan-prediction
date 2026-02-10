@@ -6,21 +6,14 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Data ──
-DATA_CSV = os.path.join(BASE_DIR, "tirumala_darshan_data_clean.csv")
+DATA_CSV = os.path.join(BASE_DIR, "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv")
 
 # ── Model artefacts directory ──
 ARTEFACTS_DIR = os.path.join(BASE_DIR, "artefacts")
 os.makedirs(ARTEFACTS_DIR, exist_ok=True)
 
-LGB_MODEL_PATH   = os.path.join(ARTEFACTS_DIR, "lgb_goss.pkl")
-BIGRU_MODEL_DIR   = os.path.join(ARTEFACTS_DIR, "bigru")
-SCALER_PATH       = os.path.join(ARTEFACTS_DIR, "scaler.pkl")
-TGT_SCALER_PATH   = os.path.join(ARTEFACTS_DIR, "tgt_scaler.pkl")
-EXOG_SCALER_PATH   = os.path.join(ARTEFACTS_DIR, "exog_scaler.pkl")
-FEATURES_PATH     = os.path.join(ARTEFACTS_DIR, "selected_features.json")
-BLEND_WEIGHTS_PATH = os.path.join(ARTEFACTS_DIR, "blend_weights.json")
-METRICS_LOG_PATH   = os.path.join(ARTEFACTS_DIR, "metrics_log.csv")
-RETRAIN_LOG_PATH   = os.path.join(ARTEFACTS_DIR, "retrain_log.csv")
+PROD_DIR = os.path.join(ARTEFACTS_DIR, "production")
+os.makedirs(PROD_DIR, exist_ok=True)
 
 # ── Scraper ──
 SCRAPE_URL = "https://news.tirumala.org/category/darshan/page/{page}/"
@@ -32,14 +25,15 @@ SCRAPE_HEADERS = {
 }
 SCRAPE_DELAY = 1.0  # seconds between requests
 
-# ── Model hyper-params (champion blend) ──
+# ── Model hyper-params ──
 SEED = 42
 TEST_N = 30           # hold-out window for re-evaluation
-SEQ_LEN = 30          # Bi-GRU lookback
-N_SEEDS = 5           # Bi-GRU seed count
-BIGRU_HIDDEN = 48
-BIGRU_LAYERS = 2
-BIGRU_DROPOUT = 0.35
+SEQ_LEN = 30          # DL lookback
+N_SEEDS = 5           # DL seed count
+
+# ── COVID period (removed from training data) ──
+COVID_START = "2020-03-19"
+COVID_END = "2022-01-31"
 
 # LGB-GOSS best params from grid search
 LGB_GOSS_PARAMS = dict(
@@ -57,9 +51,15 @@ LGB_GOSS_PARAMS = dict(
     verbosity=-1,
 )
 
-# Default blend weights  (Bi-GRU × 0.55,  LGB-GOSS × 0.45)
-DEFAULT_BLEND = {"BiGRU": 0.55, "LGB-GOSS": 0.45}
+# ── Champion Blend (Top5-Blend, MAE=2354, R²=0.7504) ──
+BLEND_WEIGHTS = {
+    "Chronos-T5": 0.587,
+    "Tuned-XGB": 0.211,
+    "N-HiTS": 0.170,
+    "N-BEATS": 0.017,
+    "LGB-GOSS": 0.015,
+}
 
 # ── Server ──
-API_HOST = "0.0.0.0"
-API_PORT = 8000
+API_HOST = "127.0.0.1"
+API_PORT = 5000

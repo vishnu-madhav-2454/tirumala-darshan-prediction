@@ -15,7 +15,7 @@ from datetime import timedelta
 warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 # Indian holidays for AP state
-_ih = holidays.India(years=range(2022, 2030), state="AP")
+_ih = holidays.India(years=range(2013, 2030), state="AP")
 
 
 def _nearest_hol(date, hols, direction="both"):
