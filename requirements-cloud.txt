@@ -1,0 +1,31 @@
+# ═══════════════════════════════════════════════════════════════
+#  Requirements for Cloud (Render / Railway) — CPU-only, no Chronos
+# ═══════════════════════════════════════════════════════════════
+# Chronos-T5 skipped (needs ~1GB RAM + transformers)
+# Using CPU-only PyTorch to save disk and memory
+
+# Core ML
+numpy
+pandas
+scikit-learn
+lightgbm
+xgboost
+joblib
+holidays
+
+# Deep Learning — CPU only (much smaller ~200MB vs ~2GB)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
+# Flask API
+flask
+flask-cors
+waitress
+
+# Scraping
+requests
+beautifulsoup4
+lxml
+
+# Utilities
+urllib3

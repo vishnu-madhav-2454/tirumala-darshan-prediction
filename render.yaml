@@ -14,7 +14,7 @@ services:
         value: "3.11.11"
       - key: NODE_VERSION
         value: "20"
-      - key: HF_HUB_OFFLINE
-        value: "0"
+      - key: RENDER
+        value: "1"
       - key: TOKENIZERS_PARALLELISM
         value: "false"

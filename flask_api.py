@@ -39,6 +39,9 @@ import joblib
 warnings.filterwarnings("ignore")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
+# Cloud mode detection — skip Chronos-T5 on Render/Railway (limited RAM)
+IS_CLOUD = os.environ.get("RENDER") == "1" or os.environ.get("RAILWAY_ENVIRONMENT") is not None
+
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
@@ -197,12 +200,13 @@ class ModelManager:
         self.tgt_scaler = joblib.load(os.path.join(PROD_DIR, "tgt_scaler.pkl"))
         self.exog_scaler = joblib.load(os.path.join(PROD_DIR, "exog_scaler.pkl"))
 
-        # N-BEATS models (5 seeds)
+        # N-BEATS models (5 seeds local, 2 seeds on cloud to save RAM)
         if HAS_TORCH:
+            max_seeds = 2 if IS_CLOUD else 5
             n_feat = len(self.dl_feat_cols) + 1  # +1 for target column
             nbeats_dir = os.path.join(ARTEFACTS_DIR, "nbeats")
             if os.path.isdir(nbeats_dir):
-                for i in range(5):
+                for i in range(max_seeds):
                     path = os.path.join(nbeats_dir, f"seed_{i}.pt")
                     if os.path.exists(path):
                         m = NBeatsNet(n_feat).to(DEVICE)
@@ -211,10 +215,10 @@ class ModelManager:
                         self.nbeats_models.append(m)
                 print(f"    ✓ N-BEATS loaded ({len(self.nbeats_models)} seeds)")
 
-            # N-HiTS models (5 seeds)
+            # N-HiTS models (5 seeds local, 2 seeds on cloud to save RAM)
             nhits_dir = os.path.join(ARTEFACTS_DIR, "nhits")
             if os.path.isdir(nhits_dir):
-                for i in range(5):
+                for i in range(max_seeds):
                     path = os.path.join(nhits_dir, f"seed_{i}.pt")
                     if os.path.exists(path):
                         m = NHiTSNet(n_feat).to(DEVICE)
@@ -223,19 +227,23 @@ class ModelManager:
                         self.nhits_models.append(m)
                 print(f"    ✓ N-HiTS loaded ({len(self.nhits_models)} seeds)")
 
-        # Chronos-T5
-        try:
-            from chronos import ChronosPipeline
-            print("    Loading Chronos-T5-base (this may take a moment) ...")
-            self.chronos_pipe = ChronosPipeline.from_pretrained(
-                "amazon/chronos-t5-base",
-                device_map=DEVICE,
-                dtype=torch.float32,
-            )
-            print("    ✓ Chronos-T5-base loaded")
-        except Exception as e:
-            print(f"    ⚠ Chronos-T5 unavailable: {e}")
+        # Chronos-T5 (skip on cloud to save RAM)
+        if IS_CLOUD:
+            print("    ⏭ Chronos-T5 skipped (cloud mode — saving RAM)")
             self.chronos_pipe = None
+        else:
+            try:
+                from chronos import ChronosPipeline
+                print("    Loading Chronos-T5-base (this may take a moment) ...")
+                self.chronos_pipe = ChronosPipeline.from_pretrained(
+                    "amazon/chronos-t5-base",
+                    device_map=DEVICE,
+                    dtype=torch.float32,
+                )
+                print("    ✓ Chronos-T5-base loaded")
+            except Exception as e:
+                print(f"    ⚠ Chronos-T5 unavailable: {e}")
+                self.chronos_pipe = None
 
         self.loaded = True
         print("  ✅ All models loaded successfully!\n")

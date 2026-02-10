@@ -5,10 +5,10 @@
 set -o errexit  # exit on error
 
 echo "══════════════════════════════════════"
-echo "  📦 Installing Python dependencies"
+echo "  📦 Installing Python dependencies (cloud)"
 echo "══════════════════════════════════════"
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirements-cloud.txt
 
 echo ""
 echo "══════════════════════════════════════"
