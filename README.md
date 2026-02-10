@@ -1,3 +1,12 @@
+---
+title: Srivari Seva
+emoji: 🛕
+colorFrom: yellow
+colorTo: red
+sdk: docker
+pinned: false
+---
+
 # 🛕 Tirumala Darshan Prediction
 
 A web application that predicts the **daily pilgrim count** at Tirumala Sri Venkateswara Swamy Temple.
