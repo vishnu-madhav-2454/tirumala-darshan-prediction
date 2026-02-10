@@ -1,0 +1,33 @@
+# ═══════════════════════════════════════════════════════════════
+#  Requirements for Hugging Face Spaces — CPU + Chronos-T5
+#  16GB RAM available = can run ALL models!
+# ═══════════════════════════════════════════════════════════════
+
+# Core ML
+numpy
+pandas
+scikit-learn
+lightgbm
+xgboost
+joblib
+holidays
+
+# Deep Learning — CPU only (smaller install)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+
+# Chronos-T5 (HF Spaces has 16GB — plenty of room!)
+chronos-forecasting
+
+# Flask API
+flask
+flask-cors
+waitress
+
+# Scraping
+requests
+beautifulsoup4
+lxml
+
+# Utilities
+urllib3

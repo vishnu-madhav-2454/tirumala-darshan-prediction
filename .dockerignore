@@ -1,0 +1,17 @@
+.venv/
+.venv_dl/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+client/node_modules/
+client/dist/
+eda_outputs/
+catboost_info/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.ipynb
+.ipynb_checkpoints/

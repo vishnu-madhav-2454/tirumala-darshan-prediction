@@ -40,7 +40,9 @@ warnings.filterwarnings("ignore")
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Cloud mode detection — skip Chronos-T5 on Render/Railway (limited RAM)
-IS_CLOUD = os.environ.get("RENDER") == "1" or os.environ.get("RAILWAY_ENVIRONMENT") is not None
+# HF Spaces has 16GB RAM so it runs ALL models (not considered limited cloud)
+IS_CLOUD = (os.environ.get("RENDER") == "1" or os.environ.get("RAILWAY_ENVIRONMENT") is not None) \
+           and os.environ.get("SPACE_ID") is None  # HF Spaces sets SPACE_ID
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
