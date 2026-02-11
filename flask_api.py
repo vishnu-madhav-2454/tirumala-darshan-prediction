@@ -771,6 +771,100 @@ def model_info():
     })
 
 
+# ── Chatbot ──
+import json as _json
+import random as _random
+import re as _re
+
+_KB_PATH = os.path.join(BASE_DIR, "ttd_knowledge_base.json")
+_knowledge_base = None
+
+def _load_kb():
+    global _knowledge_base
+    if _knowledge_base is None:
+        try:
+            with open(_KB_PATH, "r", encoding="utf-8") as f:
+                _knowledge_base = _json.load(f)
+            logging.info("✅ TTD Knowledge base loaded (%d categories)", len(_knowledge_base.get("categories", [])))
+        except Exception as e:
+            logging.error("❌ Failed to load knowledge base: %s", e)
+            _knowledge_base = {"categories": [], "greetings": {"keywords": [], "responses": ["🙏 Namaste!"]}, "fallback": {"responses": ["Sorry, I could not find information on that."]}}
+    return _knowledge_base
+
+def _score_category(query_tokens, category):
+    """Score a category based on keyword overlap with the query."""
+    kw_set = set(category.get("keywords", []))
+    return sum(1 for t in query_tokens if t in kw_set)
+
+def _score_qa(query_lower, qa):
+    """Score a QA pair by how many query words appear in the question."""
+    q_lower = qa["q"].lower()
+    words = query_lower.split()
+    return sum(1 for w in words if len(w) > 2 and w in q_lower)
+
+def _chatbot_respond(user_message):
+    """Simple keyword + scoring chatbot over the knowledge base."""
+    kb = _load_kb()
+    msg = user_message.strip()
+    if not msg:
+        return "🙏 Please ask me a question about Tirumala Tirupati Devasthanams."
+
+    msg_lower = msg.lower()
+    tokens = _re.findall(r'[a-zA-Z\u0C00-\u0C7F\u0900-\u097F]{2,}', msg_lower)
+
+    # Check greetings
+    greetings = kb.get("greetings", {})
+    if any(t in greetings.get("keywords", []) for t in tokens) and len(tokens) <= 4:
+        return _random.choice(greetings.get("responses", ["🙏 Namaste!"]))
+
+    # Score each category
+    scored_cats = []
+    for cat in kb.get("categories", []):
+        score = _score_category(tokens, cat)
+        if score > 0:
+            scored_cats.append((score, cat))
+
+    scored_cats.sort(key=lambda x: -x[0])
+
+    # From top categories, score individual QA pairs
+    best_answer = None
+    best_score = 0
+
+    candidates = scored_cats[:3] if scored_cats else [(0, c) for c in kb.get("categories", [])]
+
+    for _, cat in candidates:
+        for qa in cat.get("qa", []):
+            s = _score_qa(msg_lower, qa)
+            if s > best_score:
+                best_score = s
+                best_answer = qa["a"]
+
+    if best_answer and best_score >= 1:
+        return best_answer
+
+    # Fallback: if any category matched, return the first QA from the top category
+    if scored_cats:
+        top_cat = scored_cats[0][1]
+        if top_cat.get("qa"):
+            return top_cat["qa"][0]["a"]
+
+    # Final fallback
+    fallback = kb.get("fallback", {})
+    return _random.choice(fallback.get("responses", ["🙏 I'm sorry, I couldn't find information on that topic."]))
+
+
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    """Chatbot endpoint — answers questions about TTD."""
+    data = request.get_json(silent=True) or {}
+    user_message = data.get("message", "").strip()
+    if not user_message:
+        return jsonify({"reply": "🙏 Please type your question about Tirumala Tirupati Devasthanams."})
+
+    reply = _chatbot_respond(user_message)
+    return jsonify({"reply": reply})
+
+
 # ── Serve React SPA ──
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")

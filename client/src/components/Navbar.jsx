@@ -9,12 +9,13 @@ import {
   MdLanguage,
   MdMenu,
   MdClose,
+  MdSmartToy,
 } from "react-icons/md";
 import { useLang } from "../i18n/LangContext";
 
-const ICONS = [MdDashboard, MdCalendarMonth, MdTimeline, MdStorage];
-const PATHS = ["/", "/predict", "/forecast", "/history"];
-const KEYS  = ["navHome", "navPredict", "navForecast", "navHistory"];
+const ICONS = [MdDashboard, MdCalendarMonth, MdTimeline, MdStorage, MdSmartToy];
+const PATHS = ["/", "/predict", "/forecast", "/history", "/chatbot"];
+const KEYS  = ["navHome", "navPredict", "navForecast", "navHistory", "navChatbot"];
 
 export default function Navbar() {
   const { t, lang, setLang, SUPPORTED, translations } = useLang();

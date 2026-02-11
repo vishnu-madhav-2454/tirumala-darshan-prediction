@@ -33,4 +33,7 @@ export const getHistory = (page = 1, perPage = 50, year, month) => {
   return API.get(`/data/history?${params}`);
 };
 
+export const sendChatMessage = (message) =>
+  API.post("/chat", { message });
+
 export default API;

@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Predict from "./pages/Predict";
 import Forecast from "./pages/Forecast";
 import History from "./pages/History";
+import Chatbot from "./pages/Chatbot";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/predict" element={<Predict />} />
             <Route path="/forecast" element={<Forecast />} />
             <Route path="/history" element={<History />} />
+            <Route path="/chatbot" element={<Chatbot />} />
           </Routes>
           <Footer />
         </div>

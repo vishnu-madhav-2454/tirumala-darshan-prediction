@@ -17,6 +17,7 @@ const translations = {
     navPredict: "దర్శన అంచనా",
     navForecast: "వారం అంచనా",
     navHistory: "గత డేటా",
+    navChatbot: "చాట్‌బాట్",
 
     // Dashboard
     omText: "🙏 ఓం నమో వేంకటేశాయ",
@@ -110,6 +111,25 @@ const translations = {
     footerSlogan: "ఓం నమో వేంకటేశాయ",
     footerDesc: "శ్రీవారి సేవ — తిరుమల దర్శన సమాచారం & రద్దీ అంచనా",
     footerCopy: "శ్రీవారి సేవ | సర్వ హక్కులు భద్రం",
+
+    // Chatbot
+    chatTitle: "TTD చాట్‌బాట్",
+    chatSubtitle: "తిరుమల తిరుపతి దేవస్థానం గురించి ఏదైనా అడగండి",
+    chatWelcome: "🙏 ఓం నమో వేంకటేశాయ! TTD చాట్‌బాట్‌కి స్వాగతం. తిరుమల దేవాలయం, దర్శనం, సేవలు, వసతి, ప్రయాణం మరియు మరిన్ని విషయాల గురించి నన్ను అడగండి!",
+    chatPlaceholder: "TTD గురించి మీ ప్రశ్న టైప్ చేయండి...",
+    chatSend: "పంపించు",
+    chatError: "🙏 క్షమించండి, సర్వర్‌కి కనెక్ట్ కాలేకపోయాను. దయచేసి మళ్ళీ ప్రయత్నించండి.",
+    chatQuickQ: "త్వరిత ప్రశ్నలు",
+    chatTopics: "నేను సహాయం చేయగలను",
+    chatTopicDarshan: "దర్శన రకాలు & సమయాలు",
+    chatTopicSevas: "సేవలు & ఆచారాలు",
+    chatTopicAccommodation: "వసతి",
+    chatTopicTravel: "ఎలా చేరుకోవాలి",
+    chatTopicPrasadam: "ప్రసాదం & లడ్డూ",
+    chatTopicDressCode: "డ్రెస్ కోడ్ & నియమాలు",
+    chatTopicFestivals: "పండుగలు",
+    chatTopicDonations: "హుండీ & విరాళాలు",
+    chatTopicOnline: "ఆన్‌లైన్ సేవలు",
   },
 
   en: {
@@ -123,6 +143,7 @@ const translations = {
     navPredict: "Predict",
     navForecast: "Forecast",
     navHistory: "History",
+    navChatbot: "Chatbot",
 
     omText: "🙏 Om Namo Venkatesaya",
     heroTitle: "Tirumala Darshan Information",
@@ -210,6 +231,25 @@ const translations = {
     footerSlogan: "Om Namo Venkatesaya",
     footerDesc: "Srivari Seva — Tirumala Darshan Information & Crowd Prediction",
     footerCopy: "Srivari Seva | All Rights Reserved",
+
+    // Chatbot
+    chatTitle: "TTD Chatbot",
+    chatSubtitle: "Ask me anything about Tirumala Tirupati Devasthanams",
+    chatWelcome: "🙏 Om Namo Venkatesaya! Welcome to the TTD Chatbot. Ask me anything about Tirumala Temple, darshan, sevas, accommodation, travel, and more!",
+    chatPlaceholder: "Type your question about TTD...",
+    chatSend: "Send",
+    chatError: "🙏 Sorry, I couldn't connect to the server. Please try again.",
+    chatQuickQ: "Quick Questions",
+    chatTopics: "I can help with",
+    chatTopicDarshan: "Darshan types & timings",
+    chatTopicSevas: "Sevas & rituals",
+    chatTopicAccommodation: "Accommodation",
+    chatTopicTravel: "How to reach",
+    chatTopicPrasadam: "Prasadam & Laddu",
+    chatTopicDressCode: "Dress code & rules",
+    chatTopicFestivals: "Festivals",
+    chatTopicDonations: "Hundi & Donations",
+    chatTopicOnline: "Online services",
   },
 
   hi: {
@@ -223,6 +263,7 @@ const translations = {
     navPredict: "दर्शन अनुमान",
     navForecast: "सप्ताह अनुमान",
     navHistory: "पिछला डेटा",
+    navChatbot: "चैटबॉट",
 
     omText: "🙏 ॐ नमो वेंकटेशाय",
     heroTitle: "श्रीवारी दर्शन जानकारी",
@@ -310,6 +351,25 @@ const translations = {
     footerSlogan: "ॐ नमो वेंकटेशाय",
     footerDesc: "श्रीवारी सेवा — तिरुमला दर्शन जानकारी & भीड़ अनुमान",
     footerCopy: "श्रीवारी सेवा | सर्वाधिकार सुरक्षित",
+
+    // Chatbot
+    chatTitle: "TTD चैटबॉट",
+    chatSubtitle: "तिरुमला तिरुपति देवस्थानम के बारे में कुछ भी पूछें",
+    chatWelcome: "🙏 ॐ नमो वेंकटेशाय! TTD चैटबॉट में आपका स्वागत है। तिरुमला मंदिर, दर्शन, सेवाएं, आवास, यात्रा और बहुत कुछ के बारे में मुझसे पूछें!",
+    chatPlaceholder: "TTD के बारे में अपना प्रश्न लिखें...",
+    chatSend: "भेजें",
+    chatError: "🙏 क्षमा करें, सर्वर से कनेक्ट नहीं हो सका। कृपया पुनः प्रयास करें।",
+    chatQuickQ: "त्वरित प्रश्न",
+    chatTopics: "मैं सहायता कर सकता हूं",
+    chatTopicDarshan: "दर्शन प्रकार & समय",
+    chatTopicSevas: "सेवाएं & अनुष्ठान",
+    chatTopicAccommodation: "आवास",
+    chatTopicTravel: "कैसे पहुंचें",
+    chatTopicPrasadam: "प्रसादम & लड्डू",
+    chatTopicDressCode: "ड्रेस कोड & नियम",
+    chatTopicFestivals: "त्यौहार",
+    chatTopicDonations: "हुंडी & दान",
+    chatTopicOnline: "ऑनलाइन सेवाएं",
   },
 };
 

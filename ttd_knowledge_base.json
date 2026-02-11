@@ -1,0 +1,360 @@
+{
+  "categories": [
+    {
+      "id": "about",
+      "title": "About Tirumala & TTD",
+      "keywords": ["tirumala", "tirupati", "ttd", "temple", "venkateswara", "balaji", "about", "what", "history", "old", "ancient", "information", "devasthanams", "srinivasa", "govinda"],
+      "qa": [
+        {
+          "q": "What is Tirumala Tirupati Devasthanams?",
+          "a": "Tirumala Tirupati Devasthanams (TTD) is an independent government trust managed by the Government of Andhra Pradesh. It oversees the operations and finances of the Sri Venkateswara Swamy Temple at Tirumala — the richest and most visited religious center in the world. TTD was established in 1932 and employs about 16,000 people. Its total net worth is approximately ₹3 lakh crore (US$35 billion)."
+        },
+        {
+          "q": "Tell me about the Tirumala Venkateswara Temple.",
+          "a": "The Venkateswara Temple is a Hindu temple situated in the hills of Tirumala, Tirupati district, Andhra Pradesh, India. Dedicated to Lord Venkateswara (a form of Vishnu), it is believed to be constructed starting from 300 CE in Dravidian architecture. The temple sits at 853 meters (2,799 ft) above sea level on the seventh of the Seven Hills (Sapthagiri). It attracts around 24 million devotees annually with an average daily footfall of 60,000-87,000 pilgrims. It is one of the richest temples in the world."
+        },
+        {
+          "q": "What is the legend of Tirumala temple?",
+          "a": "According to the most accepted legend (Venkatachala Mahatyam), during Kali Yuga, sage Bhrigu kicked Lord Vishnu on his chest to test the Trinity. Goddess Lakshmi, considering this an insult to her residence (Vishnu's chest), left Vaikuntha and came to Earth. Vishnu then took human form as Srinivasa and came to Seshachalam Hills in search of Lakshmi. He married Padmavati (a form of Lakshmi) and settled on Tirumala. He borrowed money from Kubera for his wedding, and devotees donate to help him repay this cosmic debt."
+        },
+        {
+          "q": "What are the Seven Hills of Tirumala?",
+          "a": "Tirumala hills are part of the Seshachalam Hills range, representing the seven hoods of Adisesha. The seven hills are: 1) Vrushabhadri — Hill of Vrishabasura, 2) Anjanadri — Hill of Hanuman, 3) Neeladri — Hill of Neela Devi, 4) Garudadri — Hill of Garuda, 5) Seshadri — Hill of Sesha, 6) Narayanadri — Hill of Narayana (Srivari Padalu are located here), 7) Venkatadri — Hill of Venkateswara (where the temple stands)."
+        },
+        {
+          "q": "What are the other names of Lord Venkateswara?",
+          "a": "Lord Venkateswara is also known by several names: Balaji, Govinda, Srinivasa, Kaliyuga Prathyaksha Daivam (visible God of Kali Yuga), and the presiding deity's abode is called Kaliyuga Vaikuntha. The temple is also referred to as the 'Temple of Seven Hills'."
+        },
+        {
+          "q": "Who manages the Tirumala temple?",
+          "a": "The temple is managed by Tirumala Tirupati Devasthanams (TTD), a government trust under the control of the Andhra Pradesh Government. The current Chairman is Bollineni Rajagopal Naidu and the Executive Officer is Muddada Ravichandra IAS. TTD has departments for production (laddus), engineering, water supply, transport, finance, IT, education, hospitals, and more."
+        },
+        {
+          "q": "What is the architecture of the temple?",
+          "a": "The temple is built in Dravidian architecture. Key features include: Mahadvaram (main entrance) with a 50-foot, five-storied Gopuram; Vendivakili (Silver Entrance) with a three-storied Gopuram; and Bangaruvakili (Golden Entrance) leading to the Garbhagriha. The Ananda Nilayam Vimanam is the main gopuram over the sanctum sanctorum, covered with gilt copper plates and a golden vase. The deity stands in the Garbhagriha facing east."
+        },
+        {
+          "q": "What is Swami Pushkarini?",
+          "a": "Swami Pushkarini is a sacred water tank (holy pond) located near the Tirumala Venkateswara Temple. The temple lies on the southern banks of Sri Swami Pushkarini. Devotees traditionally bathe in this tank before having darshan of Lord Venkateswara."
+        }
+      ]
+    },
+    {
+      "id": "darshan",
+      "title": "Darshan Information",
+      "keywords": ["darshan", "sarva", "special", "entry", "seeghra", "vip", "divya", "break", "free", "queue", "waiting", "time", "token", "ticket", "booking", "online", "how", "slot", "vaikuntam"],
+      "qa": [
+        {
+          "q": "What are the types of darshan available?",
+          "a": "There are several types of darshan: 1) Sarva Darshan (Free Darshan) — general queue, free of charge, waiting time varies from hours to overnight. 2) Special Entry Darshan (Seeghra Darshan) — paid darshan (₹300) with shorter waiting time, bookable online. 3) Divya Darshan — free for pedestrian pilgrims who walk up the hills via Alipiri or Srivari Mettu, with biometric tokens issued. 4) Special Darshan — for physically disabled and aged persons."
+        },
+        {
+          "q": "How to book Special Entry Darshan online?",
+          "a": "Special Entry Darshan tickets (₹300) can be booked online at ttdevasthanams.ap.gov.in. Tickets are released on the 24th of every month for the following month. Book early as they sell out quickly. You can also purchase tickets at designated TTD counters. Each ticket allows darshan with shorter wait times compared to Sarva Darshan."
+        },
+        {
+          "q": "What is Sarva Darshan and is it free?",
+          "a": "Yes, Sarva Darshan (also called Slotted Sarva Darshan or SSD) is completely free. It is the general queue available to all devotees. However, waiting times can be very long — several hours, sometimes even overnight, depending on the crowd, festivals, and season. Tokens are issued on a first-come, first-served basis."
+        },
+        {
+          "q": "What is Divya Darshan?",
+          "a": "Divya Darshan is a special free darshan for pilgrims who walk up to Tirumala on foot. Free biometric tokens are issued on a limited, first-come-first-served basis. There are two foot-path entry points: 1) Alipiri Mettu — open round the clock (about 3,550 steps), 2) Srivari Mettu — open from 06:00 to 18:00. Walking pilgrims get a separate queue for quicker darshan."
+        },
+        {
+          "q": "What are the darshan timings?",
+          "a": "The temple is open for darshan throughout the day and night. Typical schedule: Morning darshan from 09:30 to 19:00, Night darshan from 20:00 to 00:30. The temple closes briefly for daily rituals like Suprabhatam (02:30-03:00), Thomala Seva (03:30-04:00), and Ekanta Seva (00:45). The exact timings may vary depending on the day's schedule and festivals."
+        },
+        {
+          "q": "When are darshan tickets released?",
+          "a": "TTD releases tickets on specific dates each month: Special Entry Darshan tickets (₹300) — released on the 24th. Electronic Dip Registration for Arjitha Sevas (Suprabhatham, Thomala, Archana) — 18th, 19th, 20th. Virtual & In-person Arjitha Sevas — 21st. SriVani, Senior Citizens, Physically Challenged quotas — 23rd. Accommodation bookings — 24th."
+        },
+        {
+          "q": "How long is the waiting time for darshan?",
+          "a": "Waiting times vary significantly: Sarva Darshan (free): 4-20+ hours depending on crowd. Special Entry Darshan (₹300): 1-4 hours typically. During festivals (Brahmotsavams, Vaikunta Ekadasi): waiting can exceed 24 hours. Weekends and holidays have longer waits. Weekdays, especially Tuesdays and Wednesdays, tend to be less crowded."
+        },
+        {
+          "q": "What is Vaikuntam Queue Complex?",
+          "a": "Vaikuntam Queue Complexes (VQC) are large waiting areas built to manage the huge crowds. VQC-I was built in 1983 and VQC-II in 2000. They have rooms where devotees can sit and wait for their turn. The complexes provide covered shelter, drinking water, and restrooms while pilgrims wait in organized queues."
+        }
+      ]
+    },
+    {
+      "id": "sevas",
+      "title": "Sevas & Rituals",
+      "keywords": ["seva", "sevas", "arjitha", "suprabhatam", "thomala", "archana", "ekantha", "kalyanotsavam", "brahmotsavam", "abhishekam", "ritual", "puja", "worship", "daily", "weekly", "annual"],
+      "qa": [
+        {
+          "q": "What are the daily sevas at Tirumala?",
+          "a": "Daily sevas at Lord Venkateswara Temple: 1) Suprabhatam (02:30-03:00) — pre-dawn wake-up hymns to the Lord. 2) Thomala Seva (03:30-04:00) — floral decoration. 3) Archana (04:15-05:00) — Sahasranama Archana. 4) Kalyanotsavam — celestial wedding ceremony. 5) Arjita Brahmotsavam. 6) Dolotsavam (Unjal Seva) — swing festival. 7) Vasantotsavam. 8) Sahasra Deepalankarana Seva (17:30-18:30) — thousand lamps decoration. 9) Ekantha Seva (00:45) — private night ritual."
+        },
+        {
+          "q": "What are the weekly sevas?",
+          "a": "Weekly sevas at Tirumala: Monday — Vishesha Puja (special worship). Tuesday — Ashtadala Pada Padmaradhana. Wednesday — Sahasra Kalasabhishekam (thousand pot abhishekam). Thursday — Tiruppavada Seva. Friday — Abhishekam, Vastralankara Seva, and Nija Pada Darshanam (devotees can see the Lord's original feet). There are no weekly sevas on Saturday and Sunday."
+        },
+        {
+          "q": "What are the periodical/annual sevas?",
+          "a": "Major annual sevas include: Teppotsavam (Float Festival) — 5 days in March. Vasanthotsavam — 3 days in March/April. Padmavathi Parinayam — 3 days in May. Abhideyaka Abhishekam — 3 days in June. Pushpa Pallaki — July. Pushpa Yagam — November. Koil Alwar Thirumanjanam. Jyesthabhishekam. Pavithrotsavam."
+        },
+        {
+          "q": "What is Suprabhatam?",
+          "a": "Venkateswara Suprabhatam is the first and pre-dawn seva (02:30-03:00 AM) where hymns are sung to wake up the Lord from His celestial sleep. 'Suprabhatam' means 'Good Morning' in Sanskrit. The hymns were composed by Prathivadhi Bhayankaram Annangaracharya in the 13th century and consist of 70 slokas in four parts: Suprabhatam (29), Stotram (11), Prapatti (14), and Mangalasasanam (16). Tickets cost ₹300."
+        },
+        {
+          "q": "What is Kalyanotsavam?",
+          "a": "Kalyanotsavam is the celestial wedding ceremony of Lord Venkateswara performed daily. It is one of the most popular Arjitha Sevas. The processional deity Malayappa Swamy is ceremonially married to his consorts Sridevi and Bhudevi. Devotees can participate by booking tickets online. This seva is a re-enactment of Lord Srinivasa's marriage to Padmavati."
+        },
+        {
+          "q": "How to book sevas online?",
+          "a": "Arjitha Sevas can be booked online at ttdevasthanams.ap.gov.in. Electronic Dip Registration for sevas like Suprabhatham, Thomala, Archana, and Ashtadala Pada Padmaradhana opens on 18th-20th of every month. Virtual & In-person Arjitha Sevas (Kalyanostavam, Arjitha Brahmotsavam, Unjal Seva, Sahasra Deepalankarana) are available from the 21st. Tickets are allotted through a dip (lottery) system."
+        },
+        {
+          "q": "What is the Vaikhanasa Agama tradition?",
+          "a": "The temple follows the Vaikhanasa Agama tradition of worship, believed to have been revealed by Sage Vikhanasa and propagated by his disciples Atri, Bhrigu, Marichi, and Kasyapa. This Agama recommends six pujas a day, but currently three are performed at Tirumala. The Vaikhanasa tradition gives detailed instructions on temple rituals and priestly purification ceremonies."
+        }
+      ]
+    },
+    {
+      "id": "accommodation",
+      "title": "Accommodation",
+      "keywords": ["accommodation", "stay", "room", "hotel", "cottage", "guest", "house", "choultry", "booking", "rest", "tariff", "where", "sleep", "night"],
+      "qa": [
+        {
+          "q": "What accommodation is available at Tirumala?",
+          "a": "TTD provides various types of accommodation at Tirumala: 1) Cottages — AC and Non-AC rooms for families. 2) Guest Houses — for VIP and general pilgrims. 3) Choultries — large dormitory-style halls, some free. 4) Rest Houses — multiple options with different tariffs. Accommodation can be booked online at ttdevasthanams.ap.gov.in. Online Tirumala Accommodation bookings open on the 24th of every month."
+        },
+        {
+          "q": "How to book accommodation online?",
+          "a": "Accommodation at both Tirumala and Tirupati can be booked online at ttdevasthanams.ap.gov.in. Bookings open on the 24th of every month for the following month. You need to register on the TTD website first. Current room availability can also be checked at the TTD counters. Walk-in accommodation is available at the Current Booking counter in Tirumala."
+        },
+        {
+          "q": "Is free accommodation available?",
+          "a": "Yes, TTD provides free dormitory-style accommodation in choultries at Tirumala. These are large halls where pilgrims can rest while waiting for darshan. However, they are basic with shared facilities. For private rooms, there are paid options ranging from ₹100 to ₹2,000+ depending on the type of room and amenities. During peak seasons, all accommodation fills up quickly."
+        }
+      ]
+    },
+    {
+      "id": "travel",
+      "title": "How to Reach & Travel",
+      "keywords": ["reach", "travel", "how", "get", "bus", "train", "flight", "airport", "railway", "walk", "foot", "alipiri", "srivari", "mettu", "steps", "climb", "road", "car", "transport", "distance"],
+      "qa": [
+        {
+          "q": "How to reach Tirumala from Tirupati?",
+          "a": "From Tirupati to Tirumala (about 22 km by road): 1) By Bus — APSRTC and TTD buses run frequently from Tirupati Bus Station. 2) By Car/Taxi — drive up the ghat road (takes about 45 min). 3) On Foot — walk up via Alipiri Mettu (about 3,550 steps, open 24/7) or Srivari Mettu (open 06:00-18:00). TTD runs free buses from Tirupati Railway Station/Bus Station to Alipiri and Srivari Mettu footpath starting points every 30 minutes."
+        },
+        {
+          "q": "How to reach Tirupati?",
+          "a": "Tirupati is well connected: By Air — Tirupati Airport (Renigunta) has flights from major cities like Hyderabad, Chennai, Delhi, Bangalore, Mumbai. By Train — Tirupati Railway Station is a major junction with trains from all over India. By Road — well connected by national highways from Chennai (135 km), Bangalore (260 km), Hyderabad (570 km). Long-distance buses from APSRTC, KSRTC, TSRTC, and SETC."
+        },
+        {
+          "q": "Tell me about the foot path to Tirumala.",
+          "a": "There are two foot paths: 1) Alipiri Mettu — starts from Alipiri foothills, about 3,550 steps (roughly 12 km), open 24 hours. This is the traditional and more popular route. 2) Srivari Mettu — a newer and shorter route, open from 06:00 to 18:00. Both paths are well-maintained with shelters, drinking water, and lighting. Pilgrims who walk up are eligible for Divya Darshan (free priority darshan with biometric tokens)."
+        },
+        {
+          "q": "What are the free bus services?",
+          "a": "TTD provides free bus services: 1) From Tirupati Railway Station and Bus Station to Alipiri and Srivari Mettu footpath starting points — every 30 minutes. 2) Within Tirumala town — 'Dharma Rathams' (12 buses) connecting cottages, choultries, temples, and other places at a frequency of every 3 minutes during prescribed time slots."
+        },
+        {
+          "q": "What is the distance and time from major cities?",
+          "a": "Distance from major cities to Tirupati: Chennai — 135 km (2.5 hrs by road). Bangalore — 260 km (5-6 hrs). Hyderabad — 570 km (8-9 hrs). Vijayawada — 380 km (6-7 hrs). Kurnool — 350 km (6 hrs). The nearest airport is Tirupati Airport (Renigunta), 15 km from Tirupati city."
+        }
+      ]
+    },
+    {
+      "id": "prasadam",
+      "title": "Prasadam & Laddu",
+      "keywords": ["prasadam", "laddu", "ladoo", "food", "anna", "annaprasadam", "eat", "free", "meals", "tirupati", "sweet", "offering"],
+      "qa": [
+        {
+          "q": "What is the Tirupati Laddu?",
+          "a": "The Tirupati Laddu is the world-famous sacred sweet prasadam offered at Tirumala Temple. It has received the Geographical Indication (GI) tag — only TTD is entitled to make or sell it. Made with besan (chickpea flour), sugar, ghee, cashews, cardamom, and raisins, each laddu weighs about 175 grams. Laddus can be purchased after darshan at the prasadam counters. There are two types: small laddu (free with darshan) and big laddu (for purchase)."
+        },
+        {
+          "q": "What other prasadams are available?",
+          "a": "Besides the famous laddu, TTD offers various prasadams: Annaprasadams — Chakera Pongal (sweet), Pulihora (tamarind rice), Miryala Pongal, Kadambham, Daddojanam (curd rice). Panyarams — Vada, Dosa, Appam, Jilebi, Muruku. The Maha Naivedyam is a special offering where a large pyramidal heap of Pulihora is offered to Lord Venkateswara in the Tirummani Mandapam."
+        },
+        {
+          "q": "What is Annaprasadam?",
+          "a": "Annaprasadam is the free meals program run by TTD at the Matrusri Tarigonda Vengamamba Annaprasadam Complex in Tirumala. Free vegetarian meals are served to all pilgrims throughout the day — in the waiting queue lines, compartments of Vaikuntam Queue Complex I and II, footpath routes, etc. This is one of the largest free meal programs in the world, serving lakhs of devotees daily."
+        }
+      ]
+    },
+    {
+      "id": "dresscode",
+      "title": "Dress Code & Rules",
+      "keywords": ["dress", "code", "wear", "clothes", "rules", "allowed", "prohibited", "ban", "don't", "dos", "donts", "saree", "dhoti", "mobile", "phone", "camera", "bag"],
+      "qa": [
+        {
+          "q": "What is the dress code for Tirumala temple?",
+          "a": "TTD introduced a traditional dress code in 2013: FOR MEN — Dhoti or pyjamas with upper cloth (shirt). FOR WOMEN — Saree or half-saree with blouse, or churidar with pyjama and upper cloth. This dress code is mandatory for Arjitha Sevas, VIP break darshan, ₹300 Special Entry Darshan, and recommended for all darshan types. Avoid wearing shorts, sleeveless tops, or modern western wear inside the temple."
+        },
+        {
+          "q": "What are the do's and don'ts at Tirumala?",
+          "a": "DO's: Book travel and accommodation in advance. Bathe in Swami Pushkarini before darshan. Wear clean clothes. Observe silence, chant 'Om Namo Sri Venkatesaya'. Deposit offerings only in the Hundi. DON'Ts: Don't carry much jewellery/cash. Don't wear footwear inside temple. Don't prostrate inside temple. Don't eat non-veg food or consume alcohol. Don't wear helmets/caps/turbans inside. Don't wear flowers (all flowers are for the Lord). Don't carry weapons. Don't approach touts."
+        },
+        {
+          "q": "Are mobile phones and cameras allowed?",
+          "a": "Mobile phones are allowed to be carried but photography and videography are STRICTLY PROHIBITED inside the temple sanctum sanctorum. Phones must be kept on silent mode. Cameras, selfie sticks, and professional photography equipment are not allowed inside the temple. There are designated locker facilities available near the temple entrance where you can safely deposit prohibited items."
+        },
+        {
+          "q": "What items are prohibited inside the temple?",
+          "a": "The following are NOT allowed inside the temple: Footwear (must be removed), Cameras and video equipment, Flowers (reserved for the Lord), Weapons and ammunition, Helmets/caps/turbans/hats, Large bags and luggage. Lockers are available at nominal charges near the temple entrance. Keep belongings minimal when going for darshan."
+        }
+      ]
+    },
+    {
+      "id": "festivals",
+      "title": "Festivals & Events",
+      "keywords": ["festival", "brahmotsavam", "vaikunta", "ekadasi", "ratha", "sapthami", "annual", "event", "celebration", "ugadi", "rama", "navami", "janmashtami"],
+      "qa": [
+        {
+          "q": "What are the major festivals at Tirumala?",
+          "a": "Over 433 festivals are observed in 365 days, earning the title 'Nitya Kalyanam Paccha Toranam'. Major festivals: 1) Sri Venkateswara Brahmotsavams — 9-day event in October (most important). 2) Vaikunta Ekadasi — day when Vaikunta Dwarams open, 150,000+ devotees. 3) Rathasapthami — February, 7 different vahanams. 4) Teppotsavam (Float Festival) — March. 5) Vasanthotsavam — spring festival. Other festivals: Ugadi, Rama Navami, Janmashtami, Pushpa Yagam, Padmavati Parinayotsavams."
+        },
+        {
+          "q": "What is Brahmotsavam?",
+          "a": "Sri Venkateswara Brahmotsavam is the most important 9-day festival celebrated annually in October. The processional deity Malayappa Swamy with consorts Sridevi and Bhudevi is taken in procession on different vahanams (vehicles): Dwajarohanam, Pedda Sesha Vahanam, Chinna Sesha Vahanam, Hamsa, Simha, Kalpavriksha, Garuda, Hanumantha, Swarna Rathotsavam (Golden Chariot), Gajavahanam, Rathotsavam (Chariot), Ashwa Vahanam, and Chakra Snanam. Garuda Vahanam day attracts the most devotees."
+        },
+        {
+          "q": "What is Vaikunta Ekadasi?",
+          "a": "Vaikunta Ekadasi is the most important Vaishnavite festival, celebrated in December/January. It is believed that on this day, the doors of Vaikuntha (heaven) are opened. Devotees have darshan through a special entrance called 'Vaikunta Dwaram' that encircles the inner sanctum. The temple is flooded with 150,000+ devotees on a single day. It is one of the most crowded days at Tirumala."
+        },
+        {
+          "q": "What is Rathasapthami?",
+          "a": "Rathasapthami is celebrated during February. On this day, the processional deity Malayappa Swamy is taken in procession on seven different vahanams (celestial vehicles) from early morning to late night. This festival celebrates the Sun God's chariot turning towards the northern hemisphere, symbolizing the onset of the harvest season."
+        }
+      ]
+    },
+    {
+      "id": "hundi",
+      "title": "Hundi & Donations",
+      "keywords": ["hundi", "donation", "donate", "money", "gold", "offering", "daan", "how", "trust", "srivani", "contribution"],
+      "qa": [
+        {
+          "q": "What is the Hundi at Tirumala?",
+          "a": "The Hundi is the sacred donation pot at the temple. According to legend, Lord Srinivasa borrowed 1.14 crore gold coins from Kubera (god of wealth) for his wedding with Padmavati. Devotees donate money in the Hundi to help repay this cosmic debt. The daily hundi collections can go as high as ₹22.5 million. TTD has deposited over 1,175 kg of gold with SBI from hundi donations."
+        },
+        {
+          "q": "How can I donate online to TTD?",
+          "a": "You can donate online through: 1) TTD official website — tirupatibalaji.ap.gov.in (e-Donation portal). 2) Online Hundi — available on ttdevasthanams.ap.gov.in. You can donate to various trusts: SRIVANI Trust, S.V. Annaprasadam Trust, BIRRD Trust (hospital), S.V. Pranadana Trust, S.V. Vidyadana Trust (education). Donations are eligible for Income Tax exemption under Section 80(G)."
+        },
+        {
+          "q": "What is Srivani Trust?",
+          "a": "SRIVANI Trust was established by TTD in 2019 to promote Sanatana Dharma. It funds: construction of temples in SC-ST-BC habitations, renovation of ancient temples, and Dhup-Deepa-Naivedyam Scheme for financially struggling temples. By January 2023, TTD has constructed 2,068 temples across Andhra Pradesh, Telangana, Tamil Nadu, Pondicherry, and Karnataka. SRIVANI Trust donors get special darshan privileges at Tirumala."
+        }
+      ]
+    },
+    {
+      "id": "hairtonsure",
+      "title": "Hair Tonsuring & Vows",
+      "keywords": ["hair", "tonsure", "tonsuring", "shave", "head", "mokku", "vow", "tonsure", "kalyanakatta"],
+      "qa": [
+        {
+          "q": "What is hair tonsuring at Tirumala?",
+          "a": "Hair tonsuring (called 'Mokku') is a sacred offering to Lord Venkateswara. Devotees have their head shaved as a symbol of surrender and devotion. It is one of the most common vows fulfilled at Tirumala. The daily amount of hair collected exceeds one ton! The hair is collected and sold internationally, generating substantial revenue for the temple (₹150-200+ crores annually). TTD has both male and female barbers available."
+        },
+        {
+          "q": "What is Kalyana Katta?",
+          "a": "Kalyana Katta is a facility at Tirumala where devotees can perform head tonsuring. It is a well-organized area with hundreds of barbers providing free hair tonsuring services. Both male and female barbers are available. After tonsuring, devotees can bathe and then proceed for darshan. The facility is equipped with proper sanitation and is one of the largest tonsuring centers in the world."
+        },
+        {
+          "q": "What is Thulabaram?",
+          "a": "Thulabaram is a ritual where a devotee sits on one pan of a weighing balance and the other pan is filled with offerings exceeding the devotee's weight. Common offerings include sugar, jaggery, tulsi leaves, banana, gold, and coins. This ritual is especially popular with newborn babies and children. It symbolizes offering one's weight (equivalent) to the Lord as a sign of devotion."
+        }
+      ]
+    },
+    {
+      "id": "nearbytemples",
+      "title": "Nearby Temples & Places",
+      "keywords": ["nearby", "temple", "place", "visit", "padmavathi", "tiruchanoor", "srikalahasti", "kanipakam", "govindaraja", "around", "other", "see"],
+      "qa": [
+        {
+          "q": "What temples are near Tirumala?",
+          "a": "Major temples near Tirumala: 1) Sri Padmavathi Temple, Tiruchanoor (5 km from Tirupati) — dedicated to Goddess Padmavathi, wife of Venkateswara. 2) Sri Govindarajaswami Temple — in Tirupati town. 3) Srikalahasteeswara Temple — dedicated to Lord Shiva (Vayu lingam), at Srikalahasti (36 km). 4) Kanipakam Vinayaka Temple — near Chittoor (72 km). 5) Kapila Theertham — Shiva temple in Tirupati. 6) Kalyana Venkateswara Temple, Srinivasa Mangapuram."
+        },
+        {
+          "q": "What is the Padmavathi Temple?",
+          "a": "Sri Padmavathi Ammavari Temple is located at Tiruchanoor, about 5 km from Tirupati. It is dedicated to Goddess Padmavathi (also known as Alamelumanga), the consort of Lord Venkateswara. According to tradition, pilgrims should visit Padmavathi temple after darshan at Tirumala. The temple also has arjitha sevas and its own set of festivals managed by TTD."
+        },
+        {
+          "q": "What sub-shrines are inside the main temple?",
+          "a": "Inside the main temple complex: 1) Varadaraja Temple — in Vimana-Pradakshinam. 2) Yoga Narasimha Temple — northeast corner. 3) Garuthmantha Temple — six-foot Garuda deity opposite Bangaruvakili. 4) Bhu Varaha Swamy Temple — on northern banks of Swami Pushkarini (older than the main temple, must visit first). 5) Bedi-Anjaneya Temple — Hanuman with handcuffed hands. 6) Kubera Sannidi. 7) Ramanuja Shrine."
+        }
+      ]
+    },
+    {
+      "id": "onlineservices",
+      "title": "Online Services & Websites",
+      "keywords": ["online", "website", "book", "app", "internet", "portal", "url", "link", "edonation", "ehundi", "registration"],
+      "qa": [
+        {
+          "q": "What are the TTD official websites?",
+          "a": "TTD official websites: 1) www.tirumala.org — Main TTD website with information on temples, sevas, accommodation, etc. 2) ttdevasthanams.ap.gov.in — Online booking portal for darshan, sevas, accommodation, and hundi. 3) tirupatibalaji.ap.gov.in — For e-Donations, Kalyana Mandapam booking, and Panchagavya products. 4) news.tirumala.org — TTD News. 5) www.svbcttd.com — Sri Venkateswara Bhakti Channel live streaming."
+        },
+        {
+          "q": "What online services does TTD provide?",
+          "a": "TTD offers many online services: 1) Seva booking — Book Arjitha Sevas online. 2) Darshan tickets — Special Entry Darshan booking. 3) Accommodation — Book rooms at Tirumala and Tirupati. 4) E-Hundi — Online donations to the Lord's Hundi. 5) E-Donation — Donate to various TTD trusts. 6) Publications — Digital books and magazines. 7) Kalyana Vedika — Matrimonial services. 8) Kalyana Mandapam — Marriage hall booking. 9) SVBC — Live temple streaming."
+        }
+      ]
+    },
+    {
+      "id": "medical",
+      "title": "Medical & Emergency Services",
+      "keywords": ["medical", "hospital", "emergency", "health", "doctor", "first", "aid", "svims", "ambulance"],
+      "qa": [
+        {
+          "q": "What medical facilities are available?",
+          "a": "TTD provides medical facilities: 1) First aid centers at multiple locations in Tirumala and in the queue complexes. 2) Sri Venkateswara Ramnarain Ruia Government General Hospital in Tirupati. 3) Sri Venkateswara Institute of Medical Sciences (SVIMS) — a major medical institution. 4) Government Maternity Hospital, Tirupati. 5) TTD runs a tie-up with different medical insurance providers. Ambulance services are available for emergencies."
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact Information",
+      "keywords": ["contact", "phone", "number", "call", "helpline", "address", "email", "complaint", "feedback"],
+      "qa": [
+        {
+          "q": "How to contact TTD?",
+          "a": "Contact TTD: 1) TTD Helpline/Call Center — available for pilgrim queries. 2) Website contact: www.tirumala.org/Contactus.aspx 3) Feedback: www.tirumala.org/Contactus.aspx#Feedback 4) Address: Tirumala Tirupati Devasthanams, K.T. Road, Tirupati - 517501, Andhra Pradesh, India. You can also visit TTD information centers located at major railway stations and bus stations across South India."
+        }
+      ]
+    },
+    {
+      "id": "general",
+      "title": "General FAQs",
+      "keywords": ["general", "faq", "question", "help", "tip", "best", "time", "when", "visit", "plan", "guide"],
+      "qa": [
+        {
+          "q": "What is the best time to visit Tirumala?",
+          "a": "Best times to visit Tirumala for shorter waiting: Weekdays (Tuesday-Thursday) are less crowded than weekends. Avoid public holidays, school vacations, and festival periods. Months like June-July and January-February tend to have moderate crowds. September-October (Brahmotsavams) and December (Vaikunta Ekadasi) are extremely crowded. Early morning or late night arrivals generally have shorter waits."
+        },
+        {
+          "q": "Is Tirumala temple open to non-Hindus?",
+          "a": "Non-Hindus visiting the temple must sign a mandatory declaration form before entering, stating that they have faith in the presiding deity Lord Venkateswara. This rule has been in place and is enforced at the temple entrances. The declaration is based on the principle that only those with faith should enter the sacred space."
+        },
+        {
+          "q": "What should I carry for Tirumala trip?",
+          "a": "Essential items for Tirumala trip: 1) Valid photo ID (Aadhaar, PAN, Passport). 2) Printed/digital copies of online booking confirmations. 3) Traditional clothes (dhoti/saree). 4) Minimal cash and valuables. 5) Water bottle (empty, can be filled). 6) Light snacks for queue waiting. 7) Mobile phone charger/power bank. 8) Comfortable footwear (will be removed at temple). DON'T carry: Large bags, cameras, weapons, non-veg food, alcohol, flowers."
+        },
+        {
+          "q": "Tell me some interesting facts about Tirumala.",
+          "a": "Interesting facts: 1) Richest temple in the world — net worth ₹3 lakh crore. 2) 24 million+ devotees visit annually. 3) Over 433 festivals in 365 days. 4) The temple is 1700+ years old. 5) Hundi collections can reach ₹22.5 million per day. 6) Over 1 ton of hair is collected daily from tonsuring. 7) The Tirupati Laddu has a GI tag. 8) The gold-plated Ananda Nilayam Vimanam was gilded by Emperor Krishnadevaraya in the 16th century. 9) It is one of the 108 Divya Desams. 10) Tallapaka Annamacharya composed 32,000 songs in praise of Venkateswara."
+        }
+      ]
+    }
+  ],
+  "greetings": {
+    "keywords": ["hi", "hello", "hey", "namaste", "namaskar", "welcome", "good", "morning", "afternoon", "evening"],
+    "responses": [
+      "🙏 Om Namo Venkatesaya! Welcome to the TTD Chatbot. I can help you with information about Tirumala Temple, darshan types, sevas, accommodation, travel, and more. How can I assist you?",
+      "🙏 Namaste! I am your TTD Assistant. Ask me anything about Tirumala Tirupati Devasthanams — darshan, sevas, booking, travel, prasadam, festivals, and more!",
+      "🙏 Welcome to Srivari Seva Chatbot! I have comprehensive information about Tirumala Temple. What would you like to know?"
+    ]
+  },
+  "fallback": {
+    "responses": [
+      "🙏 I'm sorry, I couldn't find specific information about that. I can help with: Darshan types & timings, Sevas & rituals, Accommodation & booking, Travel information, Prasadam & Laddu, Dress code & rules, Festivals, Donations, and more. Please try rephrasing your question.",
+      "🙏 I don't have information on that topic. Try asking about darshan, sevas, accommodation, travel, laddu, dress code, festivals, or any other TTD-related topic.",
+      "🙏 Could you please rephrase your question? I specialize in Tirumala Tirupati Devasthanams information including darshan, sevas, accommodation, travel, festivals, and temple guidelines."
+    ]
+  }
+}
