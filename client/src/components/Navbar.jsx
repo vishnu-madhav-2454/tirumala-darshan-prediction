@@ -4,18 +4,18 @@ import { GiTempleDoor } from "react-icons/gi";
 import {
   MdDashboard,
   MdCalendarMonth,
-  MdTimeline,
   MdStorage,
   MdLanguage,
   MdMenu,
   MdClose,
   MdSmartToy,
+  MdExplore,
 } from "react-icons/md";
 import { useLang } from "../i18n/LangContext";
 
-const ICONS = [MdDashboard, MdCalendarMonth, MdTimeline, MdStorage, MdSmartToy];
-const PATHS = ["/", "/predict", "/forecast", "/history", "/chatbot"];
-const KEYS  = ["navHome", "navPredict", "navForecast", "navHistory", "navChatbot"];
+const ICONS = [MdDashboard, MdCalendarMonth, MdStorage, MdSmartToy, MdExplore];
+const PATHS = ["/", "/predict", "/history", "/chatbot", "/trip-planner"];
+const KEYS  = ["navHome", "navPredict", "navHistory", "navChatbot", "navTrip"];
 
 export default function Navbar() {
   const { t, lang, setLang, SUPPORTED, translations } = useLang();

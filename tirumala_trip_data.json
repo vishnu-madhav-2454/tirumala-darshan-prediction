@@ -1,0 +1,688 @@
+{
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2025-07-01",
+    "source": "tirumala.org, Wikipedia, public travel data",
+    "coordinates": {
+      "tirupati": {"lat": 13.6288, "lng": 79.4192},
+      "tirumala": {"lat": 13.6833, "lng": 79.3472},
+      "tiruchanoor": {"lat": 13.5951, "lng": 79.4125}
+    }
+  },
+
+  "hotels": {
+    "tirumala_ttd": [
+      {
+        "name": "Srinivasam Complex",
+        "location": "tirumala",
+        "type": "TTD Guest House",
+        "lat": 13.6830, "lng": 79.3470,
+        "price_range": {"min": 200, "max": 600, "currency": "INR"},
+        "rooms": {"non_ac": 200, "ac": 400, "ac_deluxe": 600},
+        "amenities": ["Free WiFi", "24/7 Security", "Canteen Nearby"],
+        "booking": "Online at ttdevasthanams.ap.gov.in",
+        "rating": 3.8,
+        "category": "budget"
+      },
+      {
+        "name": "Sri Padmavathi Guest House",
+        "location": "tirumala",
+        "type": "TTD Guest House",
+        "lat": 13.6835, "lng": 79.3465,
+        "price_range": {"min": 500, "max": 6000, "currency": "INR"},
+        "rooms": {"economy": 500, "ac_standard": 1500, "ac_deluxe": 2500, "suite": 6000},
+        "amenities": ["A/C Rooms", "Hot Water", "Parking", "Locker Facility"],
+        "booking": "Online / Current Booking at Tirumala",
+        "rating": 4.0,
+        "category": "standard"
+      },
+      {
+        "name": "Gayathri Sadan A/C",
+        "location": "tirumala",
+        "type": "TTD Rest House",
+        "lat": 13.6832, "lng": 79.3468,
+        "price_range": {"min": 1500, "max": 2500, "currency": "INR"},
+        "rooms": {"ac_room": 1500, "ac_suite": 2500},
+        "amenities": ["A/C", "Hot Water", "Near Temple"],
+        "booking": "TTD Online / Current Booking",
+        "rating": 4.1,
+        "category": "standard"
+      },
+      {
+        "name": "Narayanagiri Guest House I/II/III",
+        "location": "tirumala",
+        "type": "TTD Guest House",
+        "lat": 13.6828, "lng": 79.3475,
+        "price_range": {"min": 1500, "max": 2000, "currency": "INR"},
+        "rooms": {"standard": 1500, "corner_suite": 2000},
+        "amenities": ["A/C", "Hot Water", "Temple View"],
+        "booking": "TTD Online / Current Booking",
+        "rating": 4.2,
+        "category": "standard"
+      },
+      {
+        "name": "Srinivasa Nilayam A/C",
+        "location": "tirumala",
+        "type": "TTD Guest House",
+        "lat": 13.6831, "lng": 79.3472,
+        "price_range": {"min": 2500, "max": 3500, "currency": "INR"},
+        "rooms": {"ac_deluxe": 2500, "suite": 3500},
+        "amenities": ["A/C", "Hot Water", "Premium Rooms", "Near Temple"],
+        "booking": "TTD Online / Advance Booking",
+        "rating": 4.3,
+        "category": "premium"
+      },
+      {
+        "name": "Srinikethan A/C",
+        "location": "tirumala",
+        "type": "TTD Premium Guest House",
+        "lat": 13.6834, "lng": 79.3469,
+        "price_range": {"min": 6000, "max": 6000, "currency": "INR"},
+        "rooms": {"premium_suite": 6000},
+        "amenities": ["Luxury A/C Suite", "Hot Water", "Premium Amenities", "VIP Service"],
+        "booking": "TTD Advance Booking Only",
+        "rating": 4.5,
+        "category": "luxury"
+      },
+      {
+        "name": "Hill View Cottages",
+        "location": "tirumala",
+        "type": "TTD Cottage",
+        "lat": 13.6826, "lng": 79.3478,
+        "price_range": {"min": 50, "max": 1500, "currency": "INR"},
+        "rooms": {"dormitory": 50, "single": 100, "double": 150, "deluxe": 1500},
+        "amenities": ["Hill View", "Basic Amenities"],
+        "booking": "Current Booking at Tirumala",
+        "rating": 3.5,
+        "category": "budget"
+      },
+      {
+        "name": "TTD Free Choultries",
+        "location": "tirumala",
+        "type": "Free Accommodation",
+        "lat": 13.6829, "lng": 79.3471,
+        "price_range": {"min": 0, "max": 0, "currency": "INR"},
+        "rooms": {"free_room": 0, "dormitory": 0},
+        "amenities": ["Free", "Basic", "Electricity", "Water"],
+        "booking": "Central Reception Office near bus stand, Tirumala",
+        "rating": 3.0,
+        "category": "free"
+      }
+    ],
+    "tirupati_ttd": [
+      {
+        "name": "Sreenivasam Complex, Tirupati",
+        "location": "tirupati",
+        "type": "TTD Guest House",
+        "lat": 13.6315, "lng": 79.4210,
+        "price_range": {"min": 200, "max": 600, "currency": "INR"},
+        "rooms": {"non_ac": 200, "ac": 400, "ac_deluxe": 600},
+        "amenities": ["Opposite RTC Bus Stand", "Near Railway Station"],
+        "booking": "Current Booking Only",
+        "contact": "0877-2264541",
+        "rating": 3.7,
+        "category": "budget"
+      },
+      {
+        "name": "Madhavam Guest House",
+        "location": "tirupati",
+        "type": "TTD Guest House",
+        "lat": 13.6318, "lng": 79.4212,
+        "price_range": {"min": 800, "max": 1000, "currency": "INR"},
+        "rooms": {"ac_ordinary_suite": 800, "ac_deluxe_suite": 1000},
+        "amenities": ["A/C", "Adjacent to Sreenivasam"],
+        "booking": "Current Booking Only",
+        "contact": "0877-2264541",
+        "rating": 3.9,
+        "category": "standard"
+      },
+      {
+        "name": "Vishnu Nivasam",
+        "location": "tirupati",
+        "type": "TTD Choultry",
+        "lat": 13.6320, "lng": 79.4205,
+        "price_range": {"min": 300, "max": 1300, "currency": "INR"},
+        "rooms": {"non_ac": 300, "non_ac_suite": 500, "ac": 800, "ac_suite": 1300},
+        "amenities": ["Large Complex", "Canteen", "Parking"],
+        "booking": "Current Booking",
+        "contact": "0877-2264462",
+        "rating": 4.0,
+        "category": "standard"
+      },
+      {
+        "name": "Sri Venkateswara Dharmasala",
+        "location": "tirupati",
+        "type": "TTD Dharmasala",
+        "lat": 13.6290, "lng": 79.4195,
+        "price_range": {"min": 50, "max": 100, "currency": "INR"},
+        "rooms": {"single": 50, "double": 100, "four_bed": 100},
+        "amenities": ["Opposite Railway Station", "Basic"],
+        "booking": "Walk-in",
+        "contact": "0877-2225144",
+        "rating": 3.2,
+        "category": "budget"
+      },
+      {
+        "name": "Sri Venkateswara Guest House, Tirupati",
+        "location": "tirupati",
+        "type": "TTD Guest House",
+        "lat": 13.6295, "lng": 79.4198,
+        "price_range": {"min": 150, "max": 150, "currency": "INR"},
+        "rooms": {"standard": 150},
+        "amenities": ["North of Railway Station", "51 Rooms"],
+        "booking": "Walk-in",
+        "contact": "0877-2264507",
+        "rating": 3.3,
+        "category": "budget"
+      }
+    ],
+    "private_hotels": [
+      {
+        "name": "Fortune Select Grand Ridge",
+        "location": "tirupati",
+        "type": "4-Star Hotel",
+        "lat": 13.6350, "lng": 79.4180,
+        "price_range": {"min": 4500, "max": 9000, "currency": "INR"},
+        "amenities": ["Swimming Pool", "Spa", "Restaurant", "Wi-Fi", "Gym", "Parking"],
+        "rating": 4.3,
+        "category": "luxury"
+      },
+      {
+        "name": "Hotel Bliss",
+        "location": "tirupati",
+        "type": "3-Star Hotel",
+        "lat": 13.6300, "lng": 79.4200,
+        "price_range": {"min": 2500, "max": 5500, "currency": "INR"},
+        "amenities": ["Restaurant", "Wi-Fi", "A/C", "Room Service"],
+        "rating": 4.0,
+        "category": "premium"
+      },
+      {
+        "name": "Hotel Marasa Sarovar Premiere",
+        "location": "tirupati",
+        "type": "4-Star Hotel",
+        "lat": 13.6340, "lng": 79.4195,
+        "price_range": {"min": 3500, "max": 8000, "currency": "INR"},
+        "amenities": ["Pool", "Multi-Cuisine Restaurant", "Wi-Fi", "Banquet Hall"],
+        "rating": 4.2,
+        "category": "luxury"
+      },
+      {
+        "name": "Pai Viceroy Tirupati",
+        "location": "tirupati",
+        "type": "3-Star Hotel",
+        "lat": 13.6310, "lng": 79.4215,
+        "price_range": {"min": 2000, "max": 4500, "currency": "INR"},
+        "amenities": ["Restaurant", "Wi-Fi", "A/C", "Conference Room"],
+        "rating": 3.9,
+        "category": "standard"
+      },
+      {
+        "name": "Minerva Grand",
+        "location": "tirupati",
+        "type": "3-Star Hotel",
+        "lat": 13.6305, "lng": 79.4218,
+        "price_range": {"min": 1800, "max": 4000, "currency": "INR"},
+        "amenities": ["Restaurant", "Wi-Fi", "Near Bus Stand", "Parking"],
+        "rating": 3.8,
+        "category": "standard"
+      },
+      {
+        "name": "Hotel Sindhuri Park",
+        "location": "tirupati",
+        "type": "Budget Hotel",
+        "lat": 13.6298, "lng": 79.4208,
+        "price_range": {"min": 800, "max": 2000, "currency": "INR"},
+        "amenities": ["Wi-Fi", "A/C", "Near Railway Station"],
+        "rating": 3.5,
+        "category": "budget"
+      },
+      {
+        "name": "Ramee Guestline Hotel",
+        "location": "tirupati",
+        "type": "3-Star Hotel",
+        "lat": 13.6335, "lng": 79.4190,
+        "price_range": {"min": 2200, "max": 5000, "currency": "INR"},
+        "amenities": ["Restaurant", "Wi-Fi", "Room Service", "Parking"],
+        "rating": 3.9,
+        "category": "standard"
+      }
+    ]
+  },
+
+  "attractions": [
+    {
+      "name": "Sri Venkateswara Swamy Temple",
+      "type": "temple",
+      "location": "tirumala",
+      "lat": 13.6833, "lng": 79.3472,
+      "description": "The world-famous temple of Lord Venkateswara, richest Hindu temple in the world. Guinness World Record holder for most visited temple.",
+      "visit_duration_hours": 3,
+      "timings": "5:30 AM - 9:30 PM (Darshan hours vary)",
+      "entry_fee": 0,
+      "special_entry": 300,
+      "tips": "Carry ID proof. Wear traditional clothes. No electronic devices inside sanctum.",
+      "priority": 1
+    },
+    {
+      "name": "Sri Padmavathi Ammavari Temple",
+      "type": "temple",
+      "location": "tiruchanoor",
+      "lat": 13.5951, "lng": 79.4125,
+      "description": "Temple of Goddess Padmavathi, consort of Lord Venkateswara. 5 km from Tirupati.",
+      "visit_duration_hours": 1.5,
+      "timings": "8:30 AM - 8:00 PM",
+      "entry_fee": 0,
+      "tips": "Visit after Tirumala darshan. Beautiful architecture.",
+      "priority": 2
+    },
+    {
+      "name": "Sri Govindarajaswami Temple",
+      "type": "temple",
+      "location": "tirupati",
+      "lat": 13.6295, "lng": 79.4220,
+      "description": "Ancient temple in heart of Tirupati, dedicated to Lord Govindaraja (form of Vishnu). Built around 1130 CE.",
+      "visit_duration_hours": 1,
+      "timings": "7:00 AM - 8:00 PM",
+      "entry_fee": 0,
+      "tips": "Located in the heart of Tirupati city. Rich Dravidian architecture.",
+      "priority": 3
+    },
+    {
+      "name": "Kapila Theertham",
+      "type": "temple",
+      "location": "tirupati",
+      "lat": 13.6400, "lng": 79.4050,
+      "description": "Ancient Shiva temple with a beautiful waterfall. Only Shiva temple in Tirupati area. Has natural waterfall during monsoon.",
+      "visit_duration_hours": 1.5,
+      "timings": "6:00 AM - 8:00 PM",
+      "entry_fee": 0,
+      "tips": "Best visited during monsoon (July-Nov) for waterfall. Sacred theertham.",
+      "priority": 4
+    },
+    {
+      "name": "Sri Venkateswara Zoological Park",
+      "type": "attraction",
+      "location": "tirupati",
+      "lat": 13.6500, "lng": 79.3900,
+      "description": "Asia's largest zoo spanning 5,532 acres. Built on Hindu mythology concept with animals from Ramayana, Mahabharata.",
+      "visit_duration_hours": 3,
+      "timings": "9:00 AM - 5:00 PM (Closed on Mondays)",
+      "entry_fee": 50,
+      "tips": "Carry water and snacks. Large area, comfortable walking shoes needed.",
+      "priority": 5
+    },
+    {
+      "name": "Silathoranam (Natural Arch)",
+      "type": "natural",
+      "location": "tirumala",
+      "lat": 13.6820, "lng": 79.3460,
+      "description": "A rare natural rock arch formation, 8m wide and 3m high. Eroded from quartzite over 1600 million years. 1 km from main temple.",
+      "visit_duration_hours": 0.5,
+      "timings": "6:00 AM - 6:00 PM",
+      "entry_fee": 0,
+      "tips": "Short walk from main temple. Geological wonder. Good photo spot.",
+      "priority": 6
+    },
+    {
+      "name": "Chandragiri Fort",
+      "type": "historical",
+      "location": "chandragiri",
+      "lat": 13.5843, "lng": 79.3148,
+      "description": "11th century historical fort, former capital of Vijayanagara rulers. Houses ASI Archaeological Museum. 15 km from Tirupati.",
+      "visit_duration_hours": 2,
+      "timings": "9:00 AM - 5:00 PM (Closed on Fridays)",
+      "entry_fee": 25,
+      "tips": "Beautiful sunset views. Light and sound show in evenings. Historical significance.",
+      "priority": 7
+    },
+    {
+      "name": "Sri Venkateswara National Park",
+      "type": "natural",
+      "location": "tirumala",
+      "lat": 13.6500, "lng": 79.3200,
+      "description": "National park and biosphere reserve in Seshachalam hills. 353 sq km area. Home to 1,500+ plant species and 178 bird species.",
+      "visit_duration_hours": 3,
+      "timings": "6:00 AM - 6:00 PM",
+      "entry_fee": 30,
+      "tips": "Bird watching paradise. Rare species like yellow-throated bulbul. Carry binoculars.",
+      "priority": 8
+    },
+    {
+      "name": "Talakona Waterfalls",
+      "type": "natural",
+      "location": "seshachalam",
+      "lat": 13.7000, "lng": 79.1900,
+      "description": "Highest waterfall in Andhra Pradesh at 270 feet. Located in Seshachalam hills, about 50 km from Tirupati.",
+      "visit_duration_hours": 4,
+      "timings": "8:00 AM - 4:00 PM",
+      "entry_fee": 50,
+      "tips": "Best during monsoon. Full day trip from Tirupati. Trekking involved.",
+      "priority": 9
+    },
+    {
+      "name": "Swami Pushkarini",
+      "type": "sacred_water",
+      "location": "tirumala",
+      "lat": 13.6835, "lng": 79.3475,
+      "description": "Sacred tank adjacent to the main temple. Devotees take a holy dip before darshan. Mentioned in ancient scriptures.",
+      "visit_duration_hours": 0.5,
+      "timings": "5:00 AM - 9:00 PM",
+      "entry_fee": 0,
+      "tips": "Take a dip before darshan for spiritual merit. Very peaceful atmosphere.",
+      "priority": 3
+    },
+    {
+      "name": "Papavinasanam Dam",
+      "type": "natural",
+      "location": "tirumala",
+      "lat": 13.6900, "lng": 79.3400,
+      "description": "Sacred dam and waterfall in Tirumala hills. The water is believed to wash away sins. Beautiful scenic spot.",
+      "visit_duration_hours": 1,
+      "timings": "7:00 AM - 6:00 PM",
+      "entry_fee": 0,
+      "tips": "Holy waters. Scenic walk from main temple area. Peaceful.",
+      "priority": 5
+    },
+    {
+      "name": "Akasa Ganga Waterfalls",
+      "type": "natural",
+      "location": "tirumala",
+      "lat": 13.6870, "lng": 79.3420,
+      "description": "Two sacred waterfalls on Tirumala hills. Water used in temple rituals. Beautiful natural scenery.",
+      "visit_duration_hours": 1,
+      "timings": "6:00 AM - 6:00 PM",
+      "entry_fee": 0,
+      "tips": "Walk from bus stand. Water is sacred. Best in monsoon.",
+      "priority": 6
+    },
+    {
+      "name": "Sri Venkateswara Museum",
+      "type": "museum",
+      "location": "tirumala",
+      "lat": 13.6830, "lng": 79.3468,
+      "description": "Museum showcasing Tirupati temple architecture, historical artefacts, ancient weaponry, puja items, and comprehensive photo gallery.",
+      "visit_duration_hours": 1,
+      "timings": "8:00 AM - 8:00 PM",
+      "entry_fee": 10,
+      "tips": "Learn about temple history. Great collection of sculptures and artefacts.",
+      "priority": 7
+    },
+    {
+      "name": "ISKCON Temple",
+      "type": "temple",
+      "location": "tirupati",
+      "lat": 13.6250, "lng": 79.4150,
+      "description": "Beautiful Lotus Temple of ISKCON in Tirupati. Dedicated to Lord Krishna. Known for festivals and Krishna Janmashtami celebrations.",
+      "visit_duration_hours": 1,
+      "timings": "4:30 AM - 8:30 PM",
+      "entry_fee": 0,
+      "tips": "Beautiful architecture. Free prasadam. Evening aarti is special.",
+      "priority": 8
+    },
+    {
+      "name": "Sri Kalyana Venkateswara Swamy Temple",
+      "type": "temple",
+      "location": "srinivasamangapuram",
+      "lat": 13.6100, "lng": 79.3900,
+      "description": "Temple commemorating the celestial wedding of Lord Venkateswara with Padmavathi. Located at Srinivasamangapuram.",
+      "visit_duration_hours": 1,
+      "timings": "6:00 AM - 8:00 PM",
+      "entry_fee": 0,
+      "tips": "Couples visit for blessings. Beautiful temple with wedding theme.",
+      "priority": 8
+    },
+    {
+      "name": "Kodandarama Temple",
+      "type": "temple",
+      "location": "tirupati",
+      "lat": 13.6280, "lng": 79.4225,
+      "description": "Ancient temple dedicated to Lord Rama. One of the oldest temples in Tirupati. Rich architectural heritage.",
+      "visit_duration_hours": 0.5,
+      "timings": "6:00 AM - 8:00 PM",
+      "entry_fee": 0,
+      "tips": "Located in city center. Quick visit possible.",
+      "priority": 9
+    },
+    {
+      "name": "Regional Science Centre",
+      "type": "attraction",
+      "location": "tirupati",
+      "lat": 13.6350, "lng": 79.4150,
+      "description": "Science centre with digital planetarium (first in AP), Space Exposition Hall and Innovation Space.",
+      "visit_duration_hours": 2,
+      "timings": "10:00 AM - 5:30 PM",
+      "entry_fee": 30,
+      "tips": "Great for families with children. Planetarium shows at fixed times.",
+      "priority": 10
+    }
+  ],
+
+  "restaurants": [
+    {
+      "name": "TTD Annadanam (Free Meals)",
+      "location": "tirumala",
+      "lat": 13.6833, "lng": 79.3470,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 0,
+      "description": "Free meals served to all pilgrims by TTD. Serves 3 meals daily to over 50,000 devotees.",
+      "timings": "Breakfast 7-10 AM, Lunch 11 AM-3 PM, Dinner 6-10 PM",
+      "category": "free"
+    },
+    {
+      "name": "TTD Tirumala Tirupati Prasadam",
+      "location": "tirumala",
+      "lat": 13.6831, "lng": 79.3472,
+      "cuisine": "Prasadam",
+      "price_per_person": 25,
+      "description": "Tirumala's famous laddu prasadam (₹25 small, ₹50 large), Vada, Dosa, Pongal also available.",
+      "timings": "After darshan",
+      "category": "budget"
+    },
+    {
+      "name": "Annamacharya Bhavan",
+      "location": "tirumala",
+      "lat": 13.6829, "lng": 79.3468,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 100,
+      "description": "Vegetarian restaurant near temple. Serves authentic Andhra meals.",
+      "timings": "7:00 AM - 10:00 PM",
+      "category": "budget"
+    },
+    {
+      "name": "Laxmi Narayana Bhavan",
+      "location": "tirupati",
+      "lat": 13.6300, "lng": 79.4210,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 120,
+      "description": "Popular vegetarian restaurant in Tirupati. Known for dosa, idli, and meals.",
+      "timings": "6:30 AM - 10:30 PM",
+      "category": "budget"
+    },
+    {
+      "name": "Ruchi Restaurant",
+      "location": "tirupati",
+      "lat": 13.6310, "lng": 79.4215,
+      "cuisine": "Multi-Cuisine Vegetarian",
+      "price_per_person": 200,
+      "description": "Well-known restaurant serving North & South Indian cuisine.",
+      "timings": "7:00 AM - 11:00 PM",
+      "category": "standard"
+    },
+    {
+      "name": "Maya Restaurant (Fortune Select Grand Ridge)",
+      "location": "tirupati",
+      "lat": 13.6350, "lng": 79.4180,
+      "cuisine": "Multi-Cuisine",
+      "price_per_person": 500,
+      "description": "Fine dining at Fortune hotel. Multi-cuisine with Andhra specialties.",
+      "timings": "7:00 AM - 11:00 PM",
+      "category": "premium"
+    },
+    {
+      "name": "Konark Restaurant",
+      "location": "tirupati",
+      "lat": 13.6305, "lng": 79.4205,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 150,
+      "description": "Popular among devotees. Authentic Andhra meals and tiffins.",
+      "timings": "6:00 AM - 10:00 PM",
+      "category": "budget"
+    }
+  ],
+
+  "transport": {
+    "how_to_reach_tirupati": {
+      "by_air": {
+        "airport": "Tirupati Airport (Renigunta)",
+        "code": "TIR",
+        "distance_from_city": "15 km",
+        "connections": ["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Coimbatore", "Pune", "Shirdi"],
+        "taxi_to_city": {"cost_inr": 500, "time_mins": 30}
+      },
+      "by_rail": {
+        "station": "Tirupati Main Railway Station",
+        "code": "TPTY",
+        "type": "A1 Category Station",
+        "division": "Guntakal, South Central Railway",
+        "platforms": 6,
+        "major_trains_from": {
+          "Chennai": {"trains_daily": 12, "duration_hours": 3, "fare_2s": 70, "fare_sl": 195, "fare_3a": 560, "fare_2a": 780},
+          "Hyderabad": {"trains_daily": 6, "duration_hours": 12, "fare_sl": 410, "fare_3a": 1100, "fare_2a": 1550},
+          "Bangalore": {"trains_daily": 4, "duration_hours": 6, "fare_sl": 280, "fare_3a": 790, "fare_2a": 1100},
+          "Mumbai": {"trains_daily": 2, "duration_hours": 22, "fare_sl": 580, "fare_3a": 1500, "fare_2a": 2200},
+          "Delhi": {"trains_daily": 2, "duration_hours": 36, "fare_sl": 750, "fare_3a": 1900, "fare_2a": 2800},
+          "Kolkata": {"trains_daily": 1, "duration_hours": 28, "fare_sl": 650, "fare_3a": 1700, "fare_2a": 2500},
+          "Vijayawada": {"trains_daily": 5, "duration_hours": 8, "fare_sl": 310, "fare_3a": 850, "fare_2a": 1200}
+        }
+      },
+      "by_road": {
+        "from_cities": {
+          "Chennai": {"distance_km": 150, "duration_hours": 3, "bus_fare": 350, "toll_car": 350, "fuel_cost_approx": 900},
+          "Bangalore": {"distance_km": 250, "duration_hours": 5.5, "bus_fare": 700, "toll_car": 500, "fuel_cost_approx": 1500},
+          "Hyderabad": {"distance_km": 600, "duration_hours": 10, "bus_fare": 1200, "toll_car": 800, "fuel_cost_approx": 3600},
+          "Vijayawada": {"distance_km": 416, "duration_hours": 7, "bus_fare": 800, "toll_car": 600, "fuel_cost_approx": 2500},
+          "Vellore": {"distance_km": 100, "duration_hours": 2, "bus_fare": 180, "toll_car": 200, "fuel_cost_approx": 600},
+          "Kanchipuram": {"distance_km": 115, "duration_hours": 2.5, "bus_fare": 220, "toll_car": 250, "fuel_cost_approx": 700},
+          "Kadapa": {"distance_km": 130, "duration_hours": 3, "bus_fare": 300, "toll_car": 300, "fuel_cost_approx": 800},
+          "Nellore": {"distance_km": 175, "duration_hours": 3.5, "bus_fare": 350, "toll_car": 350, "fuel_cost_approx": 1050}
+        },
+        "bus_services": ["APSRTC (Government)", "KSRTC (Karnataka)", "TNSTC (Tamil Nadu)", "SETC (Tamil Nadu)", "Private Volvo/Sleeper buses"]
+      }
+    },
+    "tirupati_to_tirumala": {
+      "distance_km": 26,
+      "by_bus": {
+        "operator": "APSRTC Sapthagiri Express",
+        "frequency": "Every 2 minutes",
+        "fare": 75,
+        "duration_mins": 45,
+        "note": "Free buses from railway station and central bus stand to Alipiri"
+      },
+      "by_taxi": {
+        "cost_inr": 1200,
+        "duration_mins": 35,
+        "note": "Shared taxis also available at lower cost"
+      },
+      "on_foot": {
+        "routes": [
+          {"name": "Alipiri Steps", "distance_km": 11, "steps": 3550, "duration_hours": 3.5, "start_point": "Alipiri", "note": "Most popular and ancient route. Roofed path. 4 Gopurams along the way."},
+          {"name": "Srivari Mettu", "distance_km": 6, "duration_hours": 2, "start_point": "Srinivasamangapuram", "note": "Shorter route. Also fully roofed."}
+        ],
+        "facilities": "Rest houses, security, canteen, toilets, drinking water, medical help, free luggage transfer"
+      },
+      "ghat_road_restrictions": "Buses and vehicles banned from 12 AM to 3 AM on ghat road",
+      "automobile_clinic": "TTD offers vehicle breakdown service on ghat roads. Call 0877-2263636"
+    }
+  },
+
+  "daily_costs_estimate": {
+    "budget": {
+      "label": "Budget (₹500-1,500/day per person)",
+      "accommodation": "TTD free choultry or ₹50-200 cottages",
+      "food": "TTD Annadanam (free) + ₹100-200 snacks",
+      "transport": "APSRTC bus (₹75)",
+      "darshan": "Sarva Darshan (Free, 4-8 hour wait)",
+      "per_day_inr": 500,
+      "notes": "Minimum spend. Free meals + free room. Only transport cost."
+    },
+    "standard": {
+      "label": "Standard (₹2,000-4,000/day per person)",
+      "accommodation": "TTD Guest House ₹500-1,500/night",
+      "food": "₹300-500 at restaurants",
+      "transport": "Bus ₹75 + Auto ₹200",
+      "darshan": "Special Entry Darshan (₹300)",
+      "per_day_inr": 2500,
+      "notes": "Comfortable trip with A/C room and decent meals."
+    },
+    "premium": {
+      "label": "Premium (₹5,000-10,000/day per person)",
+      "accommodation": "Private hotel ₹2,500-5,000/night",
+      "food": "₹800-1,500 at good restaurants",
+      "transport": "Taxi ₹1,200",
+      "darshan": "Special Entry Darshan + Sevas (₹300-500)",
+      "per_day_inr": 6000,
+      "notes": "Premium comfort with good hotel, taxi, and multiple sevas."
+    },
+    "luxury": {
+      "label": "Luxury (₹10,000+/day per person)",
+      "accommodation": "4-Star Hotel ₹5,000-9,000/night",
+      "food": "₹1,500-3,000 fine dining",
+      "transport": "Private car with driver ₹3,000-5,000",
+      "darshan": "VIP Break Darshan (by donation) + Multiple Sevas",
+      "per_day_inr": 12000,
+      "notes": "Top-tier luxury with premium hotel, personal car, and VIP services."
+    }
+  },
+
+  "sevas": [
+    {"name": "Suprabhatam", "cost": 300, "time": "2:30 AM - 3:00 AM", "description": "Wake-up seva to the Lord. Most auspicious."},
+    {"name": "Thomala Seva", "cost": 300, "time": "3:30 AM", "description": "Garland decoration seva."},
+    {"name": "Archana", "cost": 100, "time": "Multiple slots", "description": "Recitation of divine names."},
+    {"name": "Kalyanam", "cost": 500, "time": "1:00 PM - 2:00 PM", "description": "Divine wedding ceremony."},
+    {"name": "Unjal Seva", "cost": 300, "time": "After Kalyanam", "description": "Swing ceremony of Lord."},
+    {"name": "Sahasra Deepalankarana Seva", "cost": 500, "time": "After Unjal", "description": "Thousand lamp decoration. Spectacular visual."},
+    {"name": "Arjitha Brahmotsavam", "cost": 300, "time": "Specific dates", "description": "Condensed Brahmotsavam experience."},
+    {"name": "Visesha Puja", "cost": 200, "time": "Various", "description": "Special worship service."}
+  ],
+
+  "festivals": [
+    {"name": "Srivari Brahmotsavams", "month": "September-October", "duration_days": 9, "description": "Most important annual festival. Processional deity on different vahanas."},
+    {"name": "Vaikunta Ekadasi", "month": "December-January", "duration_days": 10, "description": "Vaikunta Dwaram opening. Heavenly gate. Massive crowds."},
+    {"name": "Rathasapthami", "month": "January-February", "duration_days": 1, "description": "Seven vahana processions in one day from dawn to night."},
+    {"name": "Ugadi", "month": "March-April", "duration_days": 1, "description": "Telugu New Year. Special decorations."},
+    {"name": "Sri Rama Navami", "month": "March-April", "duration_days": 3, "description": "Lord Rama's birthday celebrations."},
+    {"name": "Krishna Janmashtami", "month": "August-September", "duration_days": 2, "description": "Lord Krishna's birthday. Midnight celebrations."},
+    {"name": "Navaratri", "month": "September-October", "duration_days": 9, "description": "Nine nights of divine celebrations."},
+    {"name": "Deepavali", "month": "October-November", "duration_days": 3, "description": "Festival of lights. Temple illuminated."},
+    {"name": "Padmavathi Brahmotsavams", "month": "Variable", "duration_days": 9, "description": "Celebrations at Tiruchanoor temple. Panchami Theertham special."},
+    {"name": "Tirupati Ganga Jatara", "month": "May", "duration_days": 7, "description": "Week-long carnival. Gangamma deity worship."}
+  ],
+
+  "packing_essentials": [
+    "Government ID proof (Aadhaar/PAN/Passport) — mandatory",
+    "Traditional dress: Dhoti/Saree/Churidar (no jeans/shorts/skirts)",
+    "Comfortable walking shoes/chappals",
+    "Sweater/shawl (Tirumala is cooler at 3,200 ft altitude)",
+    "Water bottle",
+    "Light snacks for long darshan queue",
+    "Phone charger/power bank",
+    "Small bag (large bags not allowed in temple)",
+    "Medicines if any (first aid)",
+    "Umbrella/raincoat (monsoon season)",
+    "Printout of online booking confirmations"
+  ],
+
+  "tips": [
+    "Book darshan and accommodation online at ttdevasthanams.ap.gov.in well in advance",
+    "Weekdays have less crowd than weekends. Tuesdays and Wednesdays are best.",
+    "Avoid festivals (Brahmotsavam, Vaikunta Ekadasi) unless you want the festive experience and can handle massive crowds",
+    "Tirumala is at 3,200 ft elevation — weather is cooler than Tirupati (5-8°C difference)",
+    "Mobile phones allowed but must be deposited in lockers before entering temple",
+    "Hair tonsure (mundan) is offered free at Kalyana Katta. Long queues on weekends.",
+    "TTD Annadanam provides free meals 3 times a day — no need to spend on food",
+    "Carry minimum luggage to Tirumala. Free luggage service for walking pilgrims.",
+    "Best months to visit: October to February (pleasant weather, post-monsoon)",
+    "Avoid May-June (extreme heat in Tirupati, 40°C+) and heavy monsoon months (August-September)"
+  ]
+}

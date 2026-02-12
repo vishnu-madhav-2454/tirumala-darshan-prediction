@@ -8,28 +8,12 @@ import {
 } from "react-icons/md";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, BarChart, Bar, Cell,
+  ResponsiveContainer,
 } from "recharts";
 import { predictDays, getDataSummary } from "../api";
-import CrowdBadge from "../components/CrowdBadge";
+import HinduCalendar from "../components/HinduCalendar";
 import Loader from "../components/Loader";
 import { useLang } from "../i18n/LangContext";
-
-const CROWD_COLORS = {
-  "Very Low": "#22C55E",
-  Low: "#84CC16",
-  Moderate: "#F59E0B",
-  High: "#F97316",
-  "Very High": "#EF4444",
-};
-
-const TIP_KEYS = {
-  "Very Low": "tipVeryLow",
-  Low: "tipLow",
-  Moderate: "tipModerate",
-  High: "tipHigh",
-  "Very High": "tipVeryHigh",
-};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -109,13 +93,6 @@ export default function Dashboard() {
             <button className="btn btn-primary" onClick={() => navigate("/predict")}>
               <MdCalendarToday /> {t.btnPickDate}
             </button>
-            <button
-              className="btn btn-secondary"
-              style={{ color: "var(--cream)", borderColor: "var(--gold-light)" }}
-              onClick={() => navigate("/forecast")}
-            >
-              <MdAutoGraph /> {t.btnWeekForecast}
-            </button>
           </div>
         </div>
       </section>
@@ -133,7 +110,7 @@ export default function Dashboard() {
               </h2>
             </div>
             <div className="card-body">
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", flexWrap: "wrap", gap: "2rem" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: "2rem" }}>
                 {/* Big number */}
                 <div className="prediction-result" style={{ padding: "1rem" }}>
                   <div className="prediction-value">
@@ -142,16 +119,6 @@ export default function Dashboard() {
                   <div className="prediction-label">{t.estimatedPilgrims}</div>
                   <div className="prediction-confidence">
                     {todayPred.confidence_low?.toLocaleString()} — {todayPred.confidence_high?.toLocaleString()} {t.range}
-                  </div>
-                </div>
-
-                {/* Crowd level + tip */}
-                <div style={{ textAlign: "center", maxWidth: 300 }}>
-                  <CrowdBadge level={todayPred.crowd_level} />
-                  <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--off-white)", borderRadius: "var(--radius-sm)", border: "1px solid var(--cream-dark)" }}>
-                    <div style={{ fontSize: ".9rem", color: "var(--maroon)", lineHeight: 1.6 }}>
-                      {t[TIP_KEYS[todayPred.crowd_level]] || t.tipDefault}
-                    </div>
                   </div>
                 </div>
               </div>
@@ -187,6 +154,9 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* ── Hindu Calendar ─────────────────────────────── */}
+        <HinduCalendar />
+
         {/* 7-day chart */}
         {weekForecast.length > 0 && (
           <div className="card">
@@ -216,32 +186,6 @@ export default function Dashboard() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-
-              {/* Crowd bars */}
-              <div style={{ marginTop: "1.5rem" }}>
-                <h3 style={{ fontSize: ".95rem", color: "var(--maroon)", marginBottom: ".75rem" }}>{t.crowdLevelDaily}</h3>
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={weekForecast}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" />
-                    <XAxis dataKey="date" tick={{ fill: "#6B5B4E", fontSize: 11 }} tickFormatter={(v) => format(new Date(v + "T00:00:00"), "EEE")} />
-                    <YAxis tick={{ fill: "#6B5B4E", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={{ background: "#FFF", border: "1px solid #C5A028", borderRadius: 8, fontSize: 13 }} formatter={(v) => [v.toLocaleString(), t.pilgrims]} labelFormatter={(v) => format(new Date(v + "T00:00:00"), "EEEE, MMM d")} />
-                    <Bar dataKey="predicted_pilgrims" radius={[4, 4, 0, 0]}>
-                      {weekForecast.map((entry, i) => (
-                        <Cell key={i} fill={CROWD_COLORS[entry.crowd_level] || "#C5A028"} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-                <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: ".5rem", flexWrap: "wrap" }}>
-                  {Object.entries(CROWD_COLORS).map(([level, color]) => (
-                    <div key={level} style={{ display: "flex", alignItems: "center", gap: ".3rem", fontSize: ".75rem" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: color }} />
-                      {level}
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -256,12 +200,9 @@ export default function Dashboard() {
             <div className="forecast-grid">
               {weekForecast.map((f) => (
                 <div key={f.date} className="forecast-card">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <div className="fc-date">{format(new Date(f.date + "T00:00:00"), "MMM d, yyyy")}</div>
-                      <div className="fc-day">{f.day}</div>
-                    </div>
-                    <CrowdBadge level={f.crowd_level} />
+                  <div>
+                    <div className="fc-date">{format(new Date(f.date + "T00:00:00"), "MMM d, yyyy")}</div>
+                    <div className="fc-day">{f.day}</div>
                   </div>
                   <div className="fc-value">{f.predicted_pilgrims.toLocaleString()}</div>
                   <div className="fc-range">

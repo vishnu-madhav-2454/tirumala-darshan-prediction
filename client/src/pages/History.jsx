@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
-import { MdChevronLeft, MdChevronRight, MdFilterList } from "react-icons/md";
+import { MdFilterList, MdAutoGraph } from "react-icons/md";
 import { GiTempleDoor } from "react-icons/gi";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
 } from "recharts";
 import { getHistory } from "../api";
@@ -12,20 +12,23 @@ import { useLang } from "../i18n/LangContext";
 
 export default function History() {
   const { t } = useLang();
-  const [page, setPage] = useState(1);
-  const [perPage] = useState(50);
-  const [year, setYear] = useState("");
-  const [month, setMonth] = useState("");
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [view, setView] = useState("table");
+  const today = new Date().toISOString().slice(0, 10);
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000)
+    .toISOString()
+    .slice(0, 10);
 
-  async function load(p = page, y = year, m = month) {
+  const [startDate, setStartDate] = useState(thirtyDaysAgo);
+  const [endDate, setEndDate] = useState(today);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  async function handleFilter() {
+    if (!startDate || !endDate) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await getHistory(p, perPage, y || undefined, m || undefined);
+      const res = await getHistory(1, 5000, null, null, startDate, endDate);
       setData(res.data);
     } catch (e) {
       setError(e.response?.data?.error || e.message);
@@ -34,21 +37,25 @@ export default function History() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  const records = data?.data || [];
+  const total = data?.total_records || 0;
 
-  function handleFilter() {
-    setPage(1);
-    load(1, year, month);
-  }
-
-  function goPage(p) {
-    setPage(p);
-    load(p);
-  }
-
-  const years = [];
-  for (let y = 2013; y <= 2026; y++) years.push(y);
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Compute stats
+  const avgPilgrims =
+    records.length > 0
+      ? Math.round(
+          records.reduce((s, r) => s + (r.total_pilgrims || 0), 0) /
+            records.length
+        )
+      : 0;
+  const maxPilgrims =
+    records.length > 0
+      ? Math.max(...records.map((r) => r.total_pilgrims || 0))
+      : 0;
+  const minPilgrims =
+    records.length > 0
+      ? Math.min(...records.map((r) => r.total_pilgrims || 0))
+      : 0;
 
   return (
     <div className="main-content fade-in">
@@ -57,33 +64,48 @@ export default function History() {
         {t.historyTitle}
       </h2>
 
-      {/* Filters */}
+      {/* Date Range Picker */}
       <div className="card" style={{ marginBottom: "1.5rem" }}>
         <div className="card-header">
           <MdFilterList className="icon" />
-          <h2>{t.filterData}</h2>
+          <h2>{t.filterData || "Select Date Range"}</h2>
         </div>
         <div className="card-body">
-          <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end", flexWrap: "wrap" }}>
-            <div className="form-group" style={{ minWidth: 120, marginBottom: 0 }}>
-              <label className="form-label">{t.yearLabel}</label>
-              <select className="form-select" value={year} onChange={(e) => setYear(e.target.value)}>
-                <option value="">{t.allYears}</option>
-                {years.map((y) => <option key={y} value={y}>{y}</option>)}
-              </select>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              alignItems: "flex-end",
+              flexWrap: "wrap",
+            }}
+          >
+            <div className="form-group" style={{ minWidth: 160, marginBottom: 0 }}>
+              <label className="form-label">{t.startDate || "Start Date"}</label>
+              <input
+                type="date"
+                className="form-input"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                max={endDate}
+              />
             </div>
-            <div className="form-group" style={{ minWidth: 120, marginBottom: 0 }}>
-              <label className="form-label">{t.monthLabel}</label>
-              <select className="form-select" value={month} onChange={(e) => setMonth(e.target.value)}>
-                <option value="">{t.allMonths}</option>
-                {months.map((m, i) => <option key={i} value={i + 1}>{m}</option>)}
-              </select>
+            <div className="form-group" style={{ minWidth: 160, marginBottom: 0 }}>
+              <label className="form-label">{t.endDate || "End Date"}</label>
+              <input
+                type="date"
+                className="form-input"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                min={startDate}
+                max={today}
+              />
             </div>
-            <button className="btn btn-primary" onClick={handleFilter}>
-              <MdFilterList /> {t.btnFilter}
-            </button>
-            <button className="btn btn-secondary" onClick={() => { setYear(""); setMonth(""); setPage(1); load(1, "", ""); }}>
-              {t.btnClear}
+            <button
+              className="btn btn-primary"
+              onClick={handleFilter}
+              disabled={loading}
+            >
+              <MdFilterList /> {t.btnFilter || "Show Data"}
             </button>
           </div>
         </div>
@@ -92,87 +114,131 @@ export default function History() {
       {loading && <Loader text={t.histLoading} />}
       {error && <div className="error-message">⚠️ {error}</div>}
 
-      {data && !loading && (
+      {records.length > 0 && !loading && (
         <>
-          {/* Summary */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", flexWrap: "wrap", gap: ".5rem" }}>
-            <div className="info-tag">
-              📊 {data.total_records.toLocaleString()} {t.records} • {t.page} {data.page} {t.of} {data.total_pages}
+          {/* Info badge */}
+          <div className="info-tag" style={{ marginBottom: "1rem" }}>
+            📊 {total.toLocaleString()} {t.records || "records"} —{" "}
+            {format(new Date(startDate + "T00:00:00"), "MMM d, yyyy")} to{" "}
+            {format(new Date(endDate + "T00:00:00"), "MMM d, yyyy")}
+          </div>
+
+          {/* Stats */}
+          <div className="stat-grid" style={{ marginBottom: "1.5rem" }}>
+            <div className="stat-card">
+              <div className="stat-icon">📊</div>
+              <div className="stat-value">{avgPilgrims.toLocaleString()}</div>
+              <div className="stat-label">{t.avgDailyPilgrims || "Avg Daily"}</div>
             </div>
-            <div className="tab-bar" style={{ marginBottom: 0, borderBottom: "none" }}>
-              <button className={`tab-btn ${view === "table" ? "active" : ""}`} onClick={() => setView("table")}>{t.tableView}</button>
-              <button className={`tab-btn ${view === "chart" ? "active" : ""}`} onClick={() => setView("chart")}>{t.chartViewHist}</button>
+            <div className="stat-card">
+              <div className="stat-icon">📈</div>
+              <div className="stat-value">{maxPilgrims.toLocaleString()}</div>
+              <div className="stat-label">{t.peakDay || "Peak Day"}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">📉</div>
+              <div className="stat-value">{minPilgrims.toLocaleString()}</div>
+              <div className="stat-label">{t.quietDay || "Quietest Day"}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">📅</div>
+              <div className="stat-value">{total.toLocaleString()}</div>
+              <div className="stat-label">{t.totalDays || "Total Days"}</div>
             </div>
           </div>
 
-          {/* Chart view */}
-          {view === "chart" && data.data.length > 0 && (
-            <div className="chart-container" style={{ marginBottom: "1.5rem" }}>
-              <ResponsiveContainer width="100%" height={350}>
-                <LineChart data={data.data}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" />
-                  <XAxis dataKey="date" tick={{ fill: "#6B5B4E", fontSize: 11 }} tickFormatter={(v) => format(new Date(v + "T00:00:00"), "MMM d")} interval={Math.max(0, Math.floor(data.data.length / 8))} />
-                  <YAxis tick={{ fill: "#6B5B4E", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip
-                    contentStyle={{ background: "#FFF", border: "1px solid #C5A028", borderRadius: 8, fontSize: 13 }}
-                    formatter={(v) => [v.toLocaleString(), t.pilgrims]}
-                    labelFormatter={(v) => format(new Date(v + "T00:00:00"), "EEE, MMM d yyyy")}
-                  />
-                  <Line type="monotone" dataKey="total_pilgrims" stroke="#C5A028" strokeWidth={2} dot={false} activeDot={{ r: 5, fill: "#800020", stroke: "#C5A028" }} />
-                </LineChart>
-              </ResponsiveContainer>
+          {/* Chart */}
+          <div className="card">
+            <div className="card-header">
+              <MdAutoGraph className="icon" />
+              <h2>{t.historyChart || "Pilgrim Footfall Trend"}</h2>
             </div>
-          )}
-
-          {/* Table view */}
-          {view === "table" && (
-            <div className="card">
-              <div className="card-body" style={{ overflowX: "auto", padding: 0 }}>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>{t.thDate}</th>
-                      <th>{t.thDay}</th>
-                      <th style={{ textAlign: "right" }}>{t.thTotal}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.data.map((row, i) => {
-                      const d = new Date(row.date + "T00:00:00");
-                      return (
-                        <tr key={row.date}>
-                          <td style={{ color: "var(--text-light)", fontSize: ".82rem" }}>{(page - 1) * perPage + i + 1}</td>
-                          <td>{format(d, "MMM d, yyyy")}</td>
-                          <td style={{ color: "var(--text-muted)" }}>{format(d, "EEEE")}</td>
-                          <td style={{ textAlign: "right", fontWeight: 600, fontFamily: "Playfair Display, serif", fontSize: "1.05rem", color: "var(--maroon)" }}>
-                            {row.total_pilgrims?.toLocaleString()}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+            <div className="card-body">
+              <div className="chart-container">
+                <ResponsiveContainer width="100%" height={450}>
+                  <AreaChart data={records}>
+                    <defs>
+                      <linearGradient id="histGold" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#C5A028" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#C5A028" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" />
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fill: "#6B5B4E", fontSize: 11 }}
+                      tickFormatter={(v) =>
+                        format(new Date(v + "T00:00:00"), "MMM d")
+                      }
+                      interval={Math.max(
+                        0,
+                        Math.floor(records.length / 12)
+                      )}
+                    />
+                    <YAxis
+                      tick={{ fill: "#6B5B4E", fontSize: 12 }}
+                      tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "#FFF",
+                        border: "1px solid #C5A028",
+                        borderRadius: 8,
+                        fontSize: 13,
+                      }}
+                      formatter={(v) => [
+                        v?.toLocaleString(),
+                        t.pilgrims || "Pilgrims",
+                      ]}
+                      labelFormatter={(v) =>
+                        format(new Date(v + "T00:00:00"), "EEE, MMM d yyyy")
+                      }
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="total_pilgrims"
+                      stroke="#C5A028"
+                      strokeWidth={2.5}
+                      fill="url(#histGold)"
+                      dot={false}
+                      activeDot={{
+                        r: 5,
+                        fill: "#800020",
+                        stroke: "#C5A028",
+                      }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
             </div>
-          )}
-
-          {/* Pagination */}
-          {data.total_pages > 1 && (
-            <div className="pagination">
-              <button onClick={() => goPage(page - 1)} disabled={page <= 1}><MdChevronLeft /></button>
-              {Array.from({ length: Math.min(7, data.total_pages) }, (_, i) => {
-                let p;
-                if (data.total_pages <= 7) p = i + 1;
-                else if (page <= 4) p = i + 1;
-                else if (page >= data.total_pages - 3) p = data.total_pages - 6 + i;
-                else p = page - 3 + i;
-                return <button key={p} className={page === p ? "active" : ""} onClick={() => goPage(p)}>{p}</button>;
-              })}
-              <button onClick={() => goPage(page + 1)} disabled={page >= data.total_pages}><MdChevronRight /></button>
-            </div>
-          )}
+          </div>
         </>
+      )}
+
+      {data && records.length === 0 && !loading && (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "3rem",
+            color: "var(--text-muted)",
+          }}
+        >
+          📊 {t.noData || "No data available for the selected date range."}
+        </div>
+      )}
+
+      {/* Prompt user to select a range if no data loaded yet */}
+      {!data && !loading && (
+        <div
+          style={{
+            textAlign: "center",
+            padding: "3rem",
+            color: "var(--text-muted)",
+            fontSize: ".95rem",
+          }}
+        >
+          📅 {t.selectRange || "Select a date range above and click Show Data to view the pilgrim footfall chart."}
+        </div>
       )}
     </div>
   );

@@ -29,5 +29,13 @@ requests
 beautifulsoup4
 lxml
 
+# LLM (HuggingFace Inference API)
+huggingface_hub
+python-dotenv
+
+# RAG — Vector Database & Embeddings
+chromadb
+sentence-transformers
+
 # Utilities
 urllib3

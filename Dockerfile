@@ -25,10 +25,14 @@ COPY . .
 # ── Build React frontend ──
 RUN cd client && npm install && npm run build && rm -rf node_modules
 
+# ── Build Vector DB for RAG chatbot ──
+RUN python build_vectordb.py || echo 'Vector DB build skipped — will use fallback'
+
 # ── HF Spaces uses port 7860 ──
 ENV PORT=7860
 ENV HF_HUB_OFFLINE=0
 ENV TOKENIZERS_PARALLELISM=false
+ENV GEMINI_API_KEY=
 EXPOSE 7860
 
 # ── Start production server ──

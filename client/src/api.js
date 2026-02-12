@@ -26,14 +26,22 @@ export const predictRange = (start, end) =>
 
 export const getDataSummary = () => API.get("/data/summary");
 
-export const getHistory = (page = 1, perPage = 50, year, month) => {
+export const getHistory = (page = 1, perPage = 50, year, month, startDate, endDate) => {
   const params = new URLSearchParams({ page, per_page: perPage });
   if (year) params.append("year", year);
   if (month) params.append("month", month);
+  if (startDate) params.append("start_date", startDate);
+  if (endDate) params.append("end_date", endDate);
   return API.get(`/data/history?${params}`);
 };
 
 export const sendChatMessage = (message) =>
   API.post("/chat", { message });
+
+export const getTripPlan = (params) =>
+  API.post("/trip/plan", params);
+
+export const getTripData = () =>
+  API.get("/trip/data");
 
 export default API;
