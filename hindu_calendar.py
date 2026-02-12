@@ -289,6 +289,20 @@ def get_max_impact(events: list) -> str:
     return "low"
 
 
+def get_impact_factor(year: int, month: int, day: int) -> float:
+    """Return the crowd multiplier for a date based on festivals/events.
+    1.0 = normal day, >1.0 = busier, <1.0 = quieter."""
+    events = get_events_for_date(year, month, day)
+    if not events:
+        # Quieter weekdays (Tue/Wed/Thu with no events) get a slight dip
+        d = date(year, month, day)
+        if d.weekday() in (1, 2, 3):  # Tue, Wed, Thu
+            return 0.90
+        return 1.0
+    max_impact = get_max_impact(events)
+    return IMPACT[max_impact]["factor"]
+
+
 def get_crowd_reason(events: list) -> str:
     """Build a human-readable explanation of why a day might be crowded."""
     if not events:

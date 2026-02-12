@@ -28,6 +28,8 @@ Usage:
 import os
 import sys
 import json
+import threading
+from functools import lru_cache
 from dotenv import load_dotenv
 load_dotenv()
 import warnings
@@ -401,6 +403,17 @@ class ModelManager:
 
             blend_val = round(blend_val)
 
+            # ── Festival / event impact adjustment ──
+            # The ensemble regresses toward the mean (~63k). Apply calendar-
+            # based multipliers so festival days push toward 90-100k and quiet
+            # weekdays dip toward 40-50k, matching the real-world distribution.
+            factor = get_impact_factor(target_date.year, target_date.month, target_date.day)
+            if factor != 1.0:
+                historical_mean = 63500  # dataset mean
+                deviation = blend_val - historical_mean
+                blend_val = round(historical_mean + deviation * factor)
+                blend_val = max(blend_val, 15000)  # floor
+
             # Confidence band (widens with days ahead)
             base_pct = 0.03
             growth_pct = 0.004
@@ -546,6 +559,50 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 # Singleton model manager
 manager = ModelManager()
 
+# ═══════════════════════════════════════════════════════════════
+#  SERVER-SIDE CACHE — fast response on first page load
+# ═══════════════════════════════════════════════════════════════
+_cache = {}           # key → {"data": ..., "ts": datetime}
+_cache_lock = threading.Lock()
+
+_CACHE_TTL = {
+    "summary":  3600,    # 1 hour
+    "predict7": 1800,    # 30 min
+    "calendar": 1800,    # 30 min
+}
+
+def _cache_get(key: str):
+    with _cache_lock:
+        entry = _cache.get(key)
+        if entry is None:
+            return None
+        ttl = _CACHE_TTL.get(key.split(":")[0], 1800)
+        if (datetime.now() - entry["ts"]).total_seconds() > ttl:
+            del _cache[key]
+            return None
+        return entry["data"]
+
+def _cache_set(key: str, data):
+    with _cache_lock:
+        _cache[key] = {"data": data, "ts": datetime.now()}
+
+def _warm_cache():
+    """Pre-compute heavy data on startup (runs in background thread)."""
+    try:
+        manager.load()
+        # Pre-cache 7-day forecast
+        forecast = manager.predict_next_days(7)
+        _cache_set("predict7", forecast)
+        # Pre-cache summary
+        summary = manager.get_data_summary()
+        _cache_set("summary", summary)
+        # Pre-cache current month calendar
+        now = datetime.now()
+        _cache_set(f"calendar:{now.year}:{now.month}", _build_calendar(now.year, now.month))
+        logging.info("✅ Cache warmed: predict7 + summary + calendar")
+    except Exception as e:
+        logging.error("Cache warm failed: %s", e)
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -626,7 +683,15 @@ def predict_days():
         return jsonify({"error": "days must be between 1 and 90"}), 400
 
     try:
+        # Use cache for default 7-day request
+        if days == 7:
+            cached = _cache_get("predict7")
+            if cached:
+                return jsonify({"success": True, "days": 7, "model": "Top5-Blend", "forecast": cached})
+
         forecast = manager.predict_next_days(days)
+        if days == 7:
+            _cache_set("predict7", forecast)
         return jsonify({
             "success": True,
             "days": days,
@@ -698,7 +763,11 @@ def predict_range():
 @app.route("/api/data/summary", methods=["GET"])
 def data_summary():
     try:
+        cached = _cache_get("summary")
+        if cached:
+            return jsonify({"success": True, **cached})
         summary = manager.get_data_summary()
+        _cache_set("summary", summary)
         return jsonify({"success": True, **summary})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -793,6 +862,7 @@ from calendar import monthrange as _monthrange
 
 from hindu_calendar import (
     get_events_for_date, get_hindu_month_info, get_max_impact, get_crowd_reason,
+    get_impact_factor,
 )
 
 _KB_PATH = os.path.join(BASE_DIR, "ttd_knowledge_base.json")
@@ -801,12 +871,13 @@ _VECTORDB_DIR = os.path.join(BASE_DIR, "vectordb")
 _knowledge_base = None
 _trip_data = None
 
-# ── LLM provider globals ──
-_llm_provider = None       # "gemini" | "huggingface"
-_gemini_model = None       # google.generativeai model
-_hf_client = None          # huggingface_hub InferenceClient
-_hf_model = None           # HF model name
-_llm_available = False
+# ── LLM provider globals (HuggingFace only — two models) ──
+_hf_chat_client = None     # HF client for chatbot (RAG Q&A)
+_hf_chat_model = None      # Model name for chatbot
+_hf_trip_client = None     # HF client for trip planner
+_hf_trip_model = None      # Model name for trip planner
+_chat_available = False
+_trip_available = False
 _chroma_collection = None
 _rag_available = False
 
@@ -855,41 +926,40 @@ def _init_vectordb():
 
 
 def _init_llm():
-    """Initialize LLM — prefer Google Gemini (fast, reliable), fall back to HuggingFace."""
-    global _gemini_model, _hf_client, _hf_model, _llm_available, _llm_provider
+    """Initialize two separate HuggingFace LLM clients — one for chatbot, one for trip planner."""
+    global _hf_chat_client, _hf_chat_model, _hf_trip_client, _hf_trip_model
+    global _chat_available, _trip_available
+    from huggingface_hub import InferenceClient
 
-    # ── Try Google Gemini first ──
-    google_key = os.environ.get("GOOGLE_API_KEY", "").strip()
-    if google_key:
-        try:
-            import google.generativeai as genai
-            genai.configure(api_key=google_key)
-            _gemini_model = genai.GenerativeModel("gemini-2.0-flash")
-            # Quick test
-            _gemini_model.generate_content("hi", generation_config={"max_output_tokens": 5})
-            _llm_provider = "gemini"
-            _llm_available = True
-            logging.info("✅ Google Gemini 2.0 Flash initialized")
-            return
-        except Exception as e:
-            logging.warning("⚠️ Gemini init failed: %s — trying HuggingFace", e)
-
-    # ── Fall back to HuggingFace ──
+    # ── Chatbot model (knowledge Q&A — fast, accurate) ──
+    chat_token = os.environ.get("HF_TOKEN_CHAT", os.environ.get("HF_TOKEN", "")) or None
+    _hf_chat_model = os.environ.get("HF_MODEL_CHAT", "meta-llama/Llama-3.3-70B-Instruct")
     try:
-        from huggingface_hub import InferenceClient
-        hf_token = os.environ.get("HF_TOKEN", "") or None
-        _hf_client = InferenceClient(token=hf_token)
-        _hf_model = os.environ.get("HF_MODEL", "Qwen/Qwen2.5-72B-Instruct")
-        _hf_client.chat_completion(
-            model=_hf_model,
+        _hf_chat_client = InferenceClient(token=chat_token)
+        _hf_chat_client.chat_completion(
+            model=_hf_chat_model,
             messages=[{"role": "user", "content": "hi"}],
             max_tokens=5,
         )
-        _llm_provider = "huggingface"
-        _llm_available = True
-        logging.info("✅ HuggingFace LLM initialized (model: %s)", _hf_model)
+        _chat_available = True
+        logging.info("✅ Chatbot LLM ready: %s", _hf_chat_model)
     except Exception as e:
-        logging.error("❌ LLM init failed (both Gemini & HF): %s", e)
+        logging.error("❌ Chatbot LLM init failed: %s", e)
+
+    # ── Trip planner model (structured JSON generation) ──
+    trip_token = os.environ.get("HF_TOKEN_TRIP", os.environ.get("HF_TOKEN", "")) or None
+    _hf_trip_model = os.environ.get("HF_MODEL_TRIP", "Qwen/Qwen2.5-72B-Instruct")
+    try:
+        _hf_trip_client = InferenceClient(token=trip_token)
+        _hf_trip_client.chat_completion(
+            model=_hf_trip_model,
+            messages=[{"role": "user", "content": "hi"}],
+            max_tokens=5,
+        )
+        _trip_available = True
+        logging.info("✅ Trip planner LLM ready: %s", _hf_trip_model)
+    except Exception as e:
+        logging.error("❌ Trip planner LLM init failed: %s", e)
 
 # Initialize on import
 _init_llm()
@@ -941,60 +1011,41 @@ def _build_rag_prompt(user_message: str) -> str:
     ===
     """)
 
-def _llm_chat(system_prompt: str, user_message: str, max_tokens: int = 1500,
-              temperature: float = 0.5) -> str:
-    """Unified LLM call — tries Gemini, then HuggingFace with retries."""
-    # ── Gemini ──
-    if _llm_provider == "gemini" and _gemini_model:
+def _hf_call(client, model: str, system_prompt: str, user_message: str,
+             max_tokens: int = 1500, temperature: float = 0.5) -> str:
+    """HuggingFace Inference API call with 3 retries."""
+    if not client:
+        return ""
+    last_err = None
+    for attempt in range(3):
         try:
-            import google.generativeai as genai
-            model = genai.GenerativeModel(
-                "gemini-2.0-flash",
-                system_instruction=system_prompt,
+            resp = client.chat_completion(
+                model=model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message},
+                ],
+                max_tokens=max_tokens,
+                temperature=temperature,
             )
-            resp = model.generate_content(
-                user_message,
-                generation_config={
-                    "max_output_tokens": max_tokens,
-                    "temperature": temperature,
-                },
-            )
-            return resp.text.strip()
+            return resp.choices[0].message.content.strip()
         except Exception as e:
-            logging.warning("Gemini call failed: %s — trying HF fallback", e)
-
-    # ── HuggingFace (with retries) ──
-    if _hf_client:
-        last_err = None
-        for attempt in range(3):
-            try:
-                resp = _hf_client.chat_completion(
-                    model=_hf_model,
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_message},
-                    ],
-                    max_tokens=max_tokens,
-                    temperature=temperature,
-                )
-                return resp.choices[0].message.content.strip()
-            except Exception as e:
-                last_err = e
-                wait = 2 ** attempt
-                logging.warning("HF attempt %d failed: %s — retrying in %ds", attempt + 1, e, wait)
-                _time.sleep(wait)
-        logging.error("HF LLM failed after 3 retries: %s", last_err)
-
+            last_err = e
+            wait = 2 ** attempt
+            logging.warning("HF %s attempt %d failed: %s — retry in %ds", model, attempt + 1, e, wait)
+            _time.sleep(wait)
+    logging.error("HF %s failed after 3 retries: %s", model, last_err)
     return ""
 
 
 def _chatbot_respond(user_message):
     """RAG-powered chatbot: vector retrieval → LLM."""
-    if not _llm_available:
+    if not _chat_available:
         return "🙏 The chatbot is currently unavailable. Please try again later.", "error"
     try:
         system_prompt = _build_rag_prompt(user_message)
-        reply = _llm_chat(system_prompt, user_message, max_tokens=1500, temperature=0.5)
+        reply = _hf_call(_hf_chat_client, _hf_chat_model,
+                         system_prompt, user_message, max_tokens=1500, temperature=0.5)
         if not reply:
             return "🙏 I'm having trouble processing your request right now. Please try again shortly.", "error"
         source = "rag" if _rag_available else "llm"
@@ -1049,7 +1100,7 @@ def _generate_trip_plan(params):
     # Get restaurants
     restaurants = td.get("restaurants", [])
 
-    if _llm_available:
+    if _trip_available:
         try:
             # Build structured prompt for trip generation
             hotels_text = "\n".join([
@@ -1146,7 +1197,8 @@ def _generate_trip_plan(params):
             Include lat/lng coordinates for ALL map_points (Tirumala: ~13.68, 79.35; Tirupati: ~13.63, 79.42).
             """)
 
-            raw = _llm_chat(
+            raw = _hf_call(
+                _hf_trip_client, _hf_trip_model,
                 "You are a travel planning assistant. Return ONLY valid JSON, no markdown, no code blocks.",
                 prompt,
                 max_tokens=4096,
@@ -1279,74 +1331,86 @@ def calendar_month():
         return jsonify({"error": "Invalid year/month"}), 400
 
     try:
-        _, days_in_month = _monthrange(year, month)
-        today = now.date()
-
-        # Historical data for past dates in this month
-        raw = manager._get_raw_data()
-        hist_mask = (raw["date"].dt.year == year) & (raw["date"].dt.month == month)
-        hist_data = raw[hist_mask].assign(date=lambda x: x["date"].dt.strftime("%Y-%m-%d"))
-        hist_map = {r["date"]: r for _, r in hist_data.iterrows()}
-
-        # Predictions for future dates
-        last_data_date = raw["date"].max().date()
-        month_end = date(year, month, days_in_month)
-        days_to_end = (month_end - last_data_date).days
-        pred_map = {}
-        if days_to_end > 0 and days_to_end <= 90:
-            forecast = manager.predict_next_days(min(days_to_end, 90))
-            pred_map = {f["date"]: f for f in forecast}
-
-        # Build day-by-day calendar
-        days = []
-        for d in range(1, days_in_month + 1):
-            date_str = f"{year}-{month:02d}-{d:02d}"
-            date_obj = date(year, month, d)
-            day_name = date_obj.strftime("%A")
-
-            entry = {
-                "date": date_str,
-                "day": d,
-                "day_name": day_name,
-                "is_weekend": date_obj.weekday() >= 5,
-                "is_today": date_obj == today,
-            }
-
-            # Pilgrim count (actual or predicted)
-            if date_str in hist_map:
-                entry["pilgrims"] = int(hist_map[date_str]["total_pilgrims"])
-                entry["source"] = "actual"
-            elif date_str in pred_map:
-                entry["pilgrims"] = pred_map[date_str]["predicted_pilgrims"]
-                entry["confidence_low"] = pred_map[date_str].get("confidence_low")
-                entry["confidence_high"] = pred_map[date_str].get("confidence_high")
-                entry["source"] = "predicted"
-
-            # Hindu calendar events
-            events = get_events_for_date(year, month, d)
-            entry["events"] = events
-            entry["max_impact"] = get_max_impact(events) if events else None
-            entry["crowd_reason"] = get_crowd_reason(events) if events else ""
-
-            days.append(entry)
-
-        # Hindu month info
-        hindu_info = get_hindu_month_info(month)
-
-        return jsonify({
-            "success": True,
-            "year": year,
-            "month": month,
-            "month_name": datetime(year, month, 1).strftime("%B"),
-            "hindu_month_te": hindu_info["telugu"],
-            "hindu_month_en": hindu_info["english"],
-            "days_in_month": days_in_month,
-            "first_day_weekday": date(year, month, 1).weekday(),  # 0=Mon
-            "days": days,
-        })
+        cache_key = f"calendar:{year}:{month}"
+        cached = _cache_get(cache_key)
+        if cached:
+            return jsonify(cached)
+        result = _build_calendar(year, month)
+        _cache_set(cache_key, result)
+        return jsonify(result)
     except Exception as e:
         logging.exception("Calendar error")
         return jsonify({"error": str(e)}), 500
+
+
+def _build_calendar(year: int, month: int) -> dict:
+    """Build calendar data for a given month (used by endpoint and cache warmer)."""
+    now = datetime.now()
+    _, days_in_month = _monthrange(year, month)
+    today = now.date()
+
+    # Historical data for past dates in this month
+    raw = manager._get_raw_data()
+    hist_mask = (raw["date"].dt.year == year) & (raw["date"].dt.month == month)
+    hist_data = raw[hist_mask].assign(date=lambda x: x["date"].dt.strftime("%Y-%m-%d"))
+    hist_map = {r["date"]: r for _, r in hist_data.iterrows()}
+
+    # Predictions for future dates
+    last_data_date = raw["date"].max().date()
+    month_end = date(year, month, days_in_month)
+    days_to_end = (month_end - last_data_date).days
+    pred_map = {}
+    if days_to_end > 0 and days_to_end <= 90:
+        forecast = manager.predict_next_days(min(days_to_end, 90))
+        pred_map = {f["date"]: f for f in forecast}
+
+    # Build day-by-day calendar
+    days = []
+    for d in range(1, days_in_month + 1):
+        date_str = f"{year}-{month:02d}-{d:02d}"
+        date_obj = date(year, month, d)
+        day_name = date_obj.strftime("%A")
+
+        entry = {
+            "date": date_str,
+            "day": d,
+            "day_name": day_name,
+            "is_weekend": date_obj.weekday() >= 5,
+            "is_today": date_obj == today,
+        }
+
+        # Pilgrim count (actual or predicted)
+        if date_str in hist_map:
+            entry["pilgrims"] = int(hist_map[date_str]["total_pilgrims"])
+            entry["source"] = "actual"
+        elif date_str in pred_map:
+            entry["pilgrims"] = pred_map[date_str]["predicted_pilgrims"]
+            entry["confidence_low"] = pred_map[date_str].get("confidence_low")
+            entry["confidence_high"] = pred_map[date_str].get("confidence_high")
+            entry["source"] = "predicted"
+
+        # Hindu calendar events
+        events = get_events_for_date(year, month, d)
+        entry["events"] = events
+        entry["max_impact"] = get_max_impact(events) if events else None
+        entry["crowd_reason"] = get_crowd_reason(events) if events else ""
+
+        days.append(entry)
+
+    # Hindu month info
+    hindu_info = get_hindu_month_info(month)
+
+    return {
+        "success": True,
+        "year": year,
+        "month": month,
+        "month_name": datetime(year, month, 1).strftime("%B"),
+        "hindu_month_te": hindu_info["telugu"],
+        "hindu_month_en": hindu_info["english"],
+        "days_in_month": days_in_month,
+        "first_day_weekday": date(year, month, 1).weekday(),  # 0=Mon
+        "days": days,
+    }
 
 
 # ── Serve React SPA ──
@@ -1368,8 +1432,8 @@ if __name__ == "__main__":
     print("=" * 60)
     print(f"  Device: {DEVICE}")
 
-    # Pre-load models on startup
-    manager.load()
+    # Pre-load models and warm cache in background
+    threading.Thread(target=_warm_cache, daemon=True).start()
 
     # Check if production build exists
     has_build = os.path.exists(os.path.join(STATIC_DIR, "index.html"))
