@@ -15,13 +15,15 @@ export default function App() {
         <div className="app-container">
           <Navbar />
           <div className="gold-strip" />
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/predict" element={<Predict />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/chatbot" element={<Chatbot />} />
-            <Route path="/trip-planner" element={<TripPlanner />} />
-          </Routes>
+          <div className="main-content">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/predict" element={<Predict />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/chatbot" element={<Chatbot />} />
+              <Route path="/trip-planner" element={<TripPlanner />} />
+            </Routes>
+          </div>
           <Footer />
         </div>
       </BrowserRouter>

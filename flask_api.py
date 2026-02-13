@@ -1,870 +1,265 @@
 """
-═══════════════════════════════════════════════════════════════════════
-  Tirumala Darshan Prediction — Flask REST API
-═══════════════════════════════════════════════════════════════════════
-
-Champion Model: Top5-Blend (MAE=2,354 | R²=0.7504)
-  Chronos-T5  (58.7%) — Amazon pretrained foundation model
-  Tuned-XGB   (21.1%) — Gradient boosting with 68 engineered features
-  N-HiTS      (17.0%) — Neural hierarchical interpolation (5-seed)
-  N-BEATS     ( 1.7%) — Neural basis expansion (5-seed)
-  LGB-GOSS    ( 1.5%) — LightGBM gradient one-side sampling
-
+Tirumala Crowd Advisory — Flask Backend API
+=============================================
 Endpoints:
-  GET  /api/health              → API health + model status
-  GET  /api/predict?days=7      → Forecast next N days (1–90)
-  POST /api/predict/date        → Predict for a specific date
-  GET  /api/predict/range       → Predict for a date range
-  GET  /api/data/summary        → Dataset summary statistics
-  GET  /api/data/history        → Historical data (paginated)
-  GET  /api/model/info          → Model architecture & metrics
+  GET  /api/model-info           → model metadata
+  POST /api/predict              → predictions for date range
+  GET  /api/calendar/<year>/<month> → calendar data as JSON
+  POST /api/chat                 → chatbot response
+  POST /api/trip-plan            → trip planner
+  GET  /api/history              → last 30 days
+  GET  /                         → serves React frontend
 
-Usage:
+Run:
   python flask_api.py
-  → http://localhost:5000
-═══════════════════════════════════════════════════════════════════════
 """
 
-import os
-import sys
-import json
-import threading
-from functools import lru_cache
-from dotenv import load_dotenv
-load_dotenv()
-import warnings
-import logging
-from datetime import datetime, timedelta, date
-
-import numpy as np
-import pandas as pd
-import joblib
-
-warnings.filterwarnings("ignore")
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-# Cloud mode detection — skip Chronos-T5 on Render/Railway (limited RAM)
-# HF Spaces has 16GB RAM so it runs ALL models (not considered limited cloud)
-IS_CLOUD = (os.environ.get("RENDER") == "1" or os.environ.get("RAILWAY_ENVIRONMENT") is not None) \
-           and os.environ.get("SPACE_ID") is None  # HF Spaces sets SPACE_ID
-
-from flask import Flask, request, jsonify, send_from_directory
-from flask_cors import CORS
-
-# ── Project imports ──
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from app.features import make_features, get_dl_features
-
-# ── Torch imports ──
-try:
-    import torch
-    import torch.nn as nn
-    HAS_TORCH = True
-    DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-except ImportError:
-    HAS_TORCH = False
-    DEVICE = "cpu"
-
-# ═══════════════════════════════════════════════════════════════════
-#  CONFIG
-# ═══════════════════════════════════════════════════════════════════
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PROD_DIR = os.path.join(BASE_DIR, "artefacts", "production")
-ARTEFACTS_DIR = os.path.join(BASE_DIR, "artefacts")
-DATA_CSV = os.path.join(BASE_DIR, "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv")
-
-COVID_START = pd.Timestamp("2020-03-19")
-COVID_END   = pd.Timestamp("2022-01-31")
-
-# ═══════════════════════════════════════════════════════════════════
-#  DL MODEL ARCHITECTURES (must match training)
-# ═══════════════════════════════════════════════════════════════════
-DL_SEQ = 30  # sequence length
-
-if HAS_TORCH:
-    class NBeatsBlock(nn.Module):
-        def __init__(self, inp_dim, hidden, theta_dim):
-            super().__init__()
-            self.fc = nn.Sequential(
-                nn.Linear(inp_dim, hidden), nn.ReLU(),
-                nn.Linear(hidden, hidden), nn.ReLU(),
-                nn.Linear(hidden, hidden), nn.ReLU(),
-                nn.Linear(hidden, hidden), nn.ReLU(),
-            )
-            self.theta_b = nn.Linear(hidden, theta_dim)
-            self.theta_f = nn.Linear(hidden, 1)
-            self.backcast_proj = nn.Linear(theta_dim, inp_dim)
-
-        def forward(self, x):
-            h = self.fc(x)
-            backcast = self.backcast_proj(self.theta_b(h))
-            forecast = self.theta_f(h)
-            return backcast, forecast
-
-    class NBeatsNet(nn.Module):
-        def __init__(self, inp, n_blocks=4, hidden=256, theta_dim=32):
-            super().__init__()
-            inp_dim = DL_SEQ * inp
-            self.inp_dim = inp_dim
-            self.blocks = nn.ModuleList([
-                NBeatsBlock(inp_dim, hidden, theta_dim) for _ in range(n_blocks)
-            ])
-
-        def forward(self, x):
-            B = x.shape[0]
-            x = x.reshape(B, -1)
-            forecast = torch.zeros(B, 1, device=x.device)
-            for block in self.blocks:
-                backcast, f = block(x)
-                x = x - backcast
-                forecast = forecast + f
-            return forecast.squeeze(-1)
-
-    class NHiTSBlock(nn.Module):
-        def __init__(self, inp_dim, hidden, pool_size):
-            super().__init__()
-            pooled_dim = inp_dim // pool_size + (1 if inp_dim % pool_size else 0)
-            self.pool = nn.AdaptiveMaxPool1d(pooled_dim)
-            self.fc = nn.Sequential(
-                nn.Linear(pooled_dim, hidden), nn.ReLU(),
-                nn.Linear(hidden, hidden), nn.ReLU(),
-                nn.Linear(hidden, hidden), nn.ReLU(),
-            )
-            self.theta_b = nn.Linear(hidden, inp_dim)
-            self.theta_f = nn.Linear(hidden, 1)
-
-        def forward(self, x):
-            pooled = self.pool(x.unsqueeze(1)).squeeze(1)
-            h = self.fc(pooled)
-            return self.theta_b(h), self.theta_f(h)
-
-    class NHiTSNet(nn.Module):
-        def __init__(self, inp, n_blocks=3, hidden=256):
-            super().__init__()
-            inp_dim = DL_SEQ * inp
-            self.inp_dim = inp_dim
-            pool_sizes = [1, 2, 4]
-            self.blocks = nn.ModuleList([
-                NHiTSBlock(inp_dim, hidden, pool_sizes[i % len(pool_sizes)])
-                for i in range(n_blocks)
-            ])
-
-        def forward(self, x):
-            B = x.shape[0]
-            x = x.reshape(B, -1)
-            forecast = torch.zeros(B, 1, device=x.device)
-            for block in self.blocks:
-                backcast, f = block(x)
-                x = x - backcast
-                forecast = forecast + f
-            return forecast.squeeze(-1)
-
-
-# ═══════════════════════════════════════════════════════════════════
-#  MODEL LOADER (singleton)
-# ═══════════════════════════════════════════════════════════════════
-class ModelManager:
-    """Loads and manages all champion model components."""
-
-    def __init__(self):
-        self.loaded = False
-        self.config = None
-        self.xgb_model = None
-        self.lgb_model = None
-        self.tab_scaler = None
-        self.tgt_scaler = None
-        self.exog_scaler = None
-        self.nbeats_models = []
-        self.nhits_models = []
-        self.chronos_pipe = None
-        self.blend_weights = None
-        self.selected_features = None
-        self.dl_feat_cols = None
-
-    def load(self):
-        """Load all model artefacts into memory."""
-        if self.loaded:
-            return
-
-        print("  Loading production artefacts ...")
-
-        # Config
-        with open(os.path.join(PROD_DIR, "config.json")) as f:
-            self.config = json.load(f)
-
-        self.selected_features = self.config["selected_features"]
-        self.dl_feat_cols = self.config["dl_feat_cols"]
-        self.blend_weights = self.config["blend_weights"]
-
-        # Tabular models
-        self.xgb_model = joblib.load(os.path.join(PROD_DIR, "xgb_tuned.pkl"))
-        self.lgb_model = joblib.load(os.path.join(PROD_DIR, "lgb_goss.pkl"))
-        self.tab_scaler = joblib.load(os.path.join(PROD_DIR, "tab_scaler.pkl"))
-        print("    ✓ XGBoost + LightGBM loaded")
-
-        # DL scalers
-        self.tgt_scaler = joblib.load(os.path.join(PROD_DIR, "tgt_scaler.pkl"))
-        self.exog_scaler = joblib.load(os.path.join(PROD_DIR, "exog_scaler.pkl"))
-
-        # N-BEATS models (5 seeds local, 2 seeds on cloud to save RAM)
-        if HAS_TORCH:
-            max_seeds = 2 if IS_CLOUD else 5
-            n_feat = len(self.dl_feat_cols) + 1  # +1 for target column
-            nbeats_dir = os.path.join(ARTEFACTS_DIR, "nbeats")
-            if os.path.isdir(nbeats_dir):
-                for i in range(max_seeds):
-                    path = os.path.join(nbeats_dir, f"seed_{i}.pt")
-                    if os.path.exists(path):
-                        m = NBeatsNet(n_feat).to(DEVICE)
-                        m.load_state_dict(torch.load(path, map_location=DEVICE, weights_only=True))
-                        m.eval()
-                        self.nbeats_models.append(m)
-                print(f"    ✓ N-BEATS loaded ({len(self.nbeats_models)} seeds)")
-
-            # N-HiTS models (5 seeds local, 2 seeds on cloud to save RAM)
-            nhits_dir = os.path.join(ARTEFACTS_DIR, "nhits")
-            if os.path.isdir(nhits_dir):
-                for i in range(max_seeds):
-                    path = os.path.join(nhits_dir, f"seed_{i}.pt")
-                    if os.path.exists(path):
-                        m = NHiTSNet(n_feat).to(DEVICE)
-                        m.load_state_dict(torch.load(path, map_location=DEVICE, weights_only=True))
-                        m.eval()
-                        self.nhits_models.append(m)
-                print(f"    ✓ N-HiTS loaded ({len(self.nhits_models)} seeds)")
-
-        # Chronos-T5 (skip on cloud to save RAM)
-        if IS_CLOUD:
-            print("    ⏭ Chronos-T5 skipped (cloud mode — saving RAM)")
-            self.chronos_pipe = None
-        else:
-            try:
-                from chronos import ChronosPipeline
-                print("    Loading Chronos-T5-base (this may take a moment) ...")
-                self.chronos_pipe = ChronosPipeline.from_pretrained(
-                    "amazon/chronos-t5-base",
-                    device_map=DEVICE,
-                    dtype=torch.float32,
-                )
-                print("    ✓ Chronos-T5-base loaded")
-            except Exception as e:
-                print(f"    ⚠ Chronos-T5 unavailable: {e}")
-                self.chronos_pipe = None
-
-        self.loaded = True
-        print("  ✅ All models loaded successfully!\n")
-
-    def _get_raw_data(self):
-        """Load and return COVID-free raw data."""
-        raw = pd.read_csv(DATA_CSV, parse_dates=["date"])
-        raw = raw[["date", "total_pilgrims"]].sort_values("date").reset_index(drop=True)
-        pre = raw[raw.date < COVID_START].copy().reset_index(drop=True)
-        post = raw[raw.date > COVID_END].copy().reset_index(drop=True)
-        return pd.concat([pre, post], ignore_index=True)
-
-    def _predict_tabular(self, df_feat):
-        """Get XGB and LGB predictions for the last row."""
-        last_row = df_feat.iloc[[-1]]
-        X_row = last_row[self.selected_features].values
-        if np.isnan(X_row).any():
-            X_row = np.nan_to_num(X_row, nan=0.0)
-        xgb_pred = float(self.xgb_model.predict(X_row)[0])
-        lgb_pred = float(self.lgb_model.predict(X_row)[0])
-        return xgb_pred, lgb_pred
-
-    def _predict_dl(self, dl_df, models, model_name):
-        """Get DL model ensemble prediction from sequences."""
-        if not models or not HAS_TORCH:
-            return None
-
-        tgt_vals = dl_df["total_pilgrims"].values.reshape(-1, 1)
-        exog_vals = dl_df[self.dl_feat_cols].values
-
-        tgt_scaled = self.tgt_scaler.transform(tgt_vals)
-        exog_scaled = self.exog_scaler.transform(exog_vals)
-        combined = np.hstack([tgt_scaled, exog_scaled])
-
-        if len(combined) < DL_SEQ:
-            return None
-
-        seq = combined[-DL_SEQ:]
-        seq_t = torch.FloatTensor(seq).unsqueeze(0).to(DEVICE)
-
-        seed_preds = []
-        with torch.no_grad():
-            for m in models:
-                p = m(seq_t).float().cpu().numpy().flatten()
-                inv = self.tgt_scaler.inverse_transform(p.reshape(-1, 1)).flatten()
-                seed_preds.append(float(inv[0]))
-
-        return float(np.mean(seed_preds))
-
-    def _predict_chronos(self, series, n_days=1):
-        """Get Chronos-T5 prediction."""
-        if self.chronos_pipe is None:
-            return None
-
-        try:
-            # Set seed for reproducible predictions
-            torch.manual_seed(42)
-            if torch.cuda.is_available():
-                torch.cuda.manual_seed_all(42)
-            np.random.seed(42)
-            
-            context = torch.tensor(series, dtype=torch.float32).unsqueeze(0)
-            forecast = self.chronos_pipe.predict(
-                context, prediction_length=n_days, num_samples=20,
-                limit_prediction_length=False,
-            )
-            preds = forecast.median(dim=1).values.squeeze().cpu().numpy()
-            if n_days == 1:
-                return float(preds) if np.isscalar(preds) else float(preds[0])
-            return preds.tolist()
-        except Exception as e:
-            logging.warning(f"Chronos prediction failed: {e}")
-            return None
-
-    def predict_next_days(self, days=7):
-        """Predict pilgrim count for the next N days using Top5-Blend."""
-        self.load()
-
-        raw_data = self._get_raw_data()
-        last_date = raw_data["date"].max()
-        current_raw = raw_data.copy()
-
-        # Chronos: predict all days at once (more efficient)
-        chronos_preds = None
-        if self.chronos_pipe is not None:
-            series = current_raw["total_pilgrims"].values.astype(float)
-            chronos_preds = self._predict_chronos(series, n_days=days)
-            if chronos_preds is not None and not isinstance(chronos_preds, list):
-                chronos_preds = [chronos_preds]
-
-        results = []
-        for d in range(days):
-            target_date = last_date + timedelta(days=d + 1)
-
-            # ── Tabular prediction (XGB + LGB) ──
-            placeholder = pd.DataFrame([{"date": target_date, "total_pilgrims": np.nan}])
-            tmp = pd.concat([current_raw, placeholder], ignore_index=True)
-            tmp["date"] = pd.to_datetime(tmp["date"])
-
-            df_feat = make_features(tmp)
-            xgb_pred, lgb_pred = self._predict_tabular(df_feat)
-
-            # ── DL predictions (N-BEATS + N-HiTS) ──
-            # Fill NaN target with XGB prediction for DL sequence
-            tmp_dl = tmp.copy()
-            tmp_dl.loc[tmp_dl.index[-1], "total_pilgrims"] = xgb_pred
-            dl_df = get_dl_features(tmp_dl)
-
-            nbeats_pred = self._predict_dl(dl_df, self.nbeats_models, "N-BEATS")
-            nhits_pred = self._predict_dl(dl_df, self.nhits_models, "N-HiTS")
-
-            # ── Chronos prediction ──
-            chronos_pred = None
-            if chronos_preds is not None and d < len(chronos_preds):
-                chronos_pred = chronos_preds[d]
-
-            # ── Top5-Blend ──
-            w = self.blend_weights
-            components = {}
-            blend_val = 0.0
-            total_weight = 0.0
-
-            if chronos_pred is not None:
-                components["Chronos-T5"] = round(chronos_pred)
-                blend_val += w["Chronos-T5"] * chronos_pred
-                total_weight += w["Chronos-T5"]
-
-            components["Tuned-XGB"] = round(xgb_pred)
-            blend_val += w["Tuned-XGB"] * xgb_pred
-            total_weight += w["Tuned-XGB"]
-
-            if nhits_pred is not None:
-                components["N-HiTS"] = round(nhits_pred)
-                blend_val += w["N-HiTS"] * nhits_pred
-                total_weight += w["N-HiTS"]
-
-            if nbeats_pred is not None:
-                components["N-BEATS"] = round(nbeats_pred)
-                blend_val += w["N-BEATS"] * nbeats_pred
-                total_weight += w["N-BEATS"]
-
-            components["LGB-GOSS"] = round(lgb_pred)
-            blend_val += w["LGB-GOSS"] * lgb_pred
-            total_weight += w["LGB-GOSS"]
-
-            # Re-normalize weights if some models are missing
-            if total_weight > 0:
-                blend_val = blend_val / total_weight
-            else:
-                blend_val = xgb_pred
-
-            blend_val = round(blend_val)
-
-            # ── Festival / event impact adjustment ──
-            # The ensemble regresses toward the mean (~63k). Apply calendar-
-            # based multipliers so festival days push toward 90-100k and quiet
-            # weekdays dip toward 40-50k, matching the real-world distribution.
-            factor = get_impact_factor(target_date.year, target_date.month, target_date.day)
-            if factor != 1.0:
-                historical_mean = 63500  # dataset mean
-                deviation = blend_val - historical_mean
-                blend_val = round(historical_mean + deviation * factor)
-                blend_val = max(blend_val, 15000)  # floor
-
-            # Confidence band (widens with days ahead)
-            base_pct = 0.03
-            growth_pct = 0.004
-            band_pct = min(base_pct + growth_pct * d, 0.20)
-
-            # Crowd level
-            if blend_val >= 80000:
-                crowd_level = "Very High"
-            elif blend_val >= 65000:
-                crowd_level = "High"
-            elif blend_val >= 50000:
-                crowd_level = "Moderate"
-            elif blend_val >= 35000:
-                crowd_level = "Low"
-            else:
-                crowd_level = "Very Low"
-
-            results.append({
-                "date": target_date.strftime("%Y-%m-%d"),
-                "day": target_date.strftime("%A"),
-                "predicted_pilgrims": blend_val,
-                "confidence_low": round(blend_val * (1 - band_pct)),
-                "confidence_high": round(blend_val * (1 + band_pct)),
-                "crowd_level": crowd_level,
-                "days_ahead": d + 1,
-                "model_breakdown": components,
-            })
-
-            # Append prediction as pseudo-observation for next day
-            pseudo = pd.DataFrame([{"date": target_date, "total_pilgrims": blend_val}])
-            current_raw = pd.concat([current_raw, pseudo], ignore_index=True)
-
-        return results
-
-    def predict_date(self, target_date_str):
-        """Predict for a specific date (past or future)."""
-        self.load()
-
-        target_date = pd.Timestamp(target_date_str)
-        raw_data = self._get_raw_data()
-        last_date = raw_data["date"].max()
-
-        days_ahead = (target_date - last_date).days
-
-        if days_ahead <= 0:
-            # Past date — check if actual data exists
-            actual_row = raw_data[raw_data["date"].dt.date == target_date.date()]
-            if len(actual_row) > 0:
-                actual_val = int(actual_row.iloc[0]["total_pilgrims"])
-
-                # Also predict what the model would have forecasted
-                subset = raw_data[raw_data["date"] <= target_date].copy().reset_index(drop=True)
-                if len(subset) >= 31:
-                    df_feat = make_features(subset)
-                    xgb_pred, lgb_pred = self._predict_tabular(df_feat)
-                    predicted = round(xgb_pred)  # simplified for past dates
-                else:
-                    predicted = None
-
-                return {
-                    "date": target_date.strftime("%Y-%m-%d"),
-                    "day": target_date.strftime("%A"),
-                    "actual_pilgrims": actual_val,
-                    "predicted_pilgrims": predicted,
-                    "is_past": True,
-                    "error": abs(actual_val - predicted) if predicted else None,
-                }
-            else:
-                # Date not in dataset — treat as gap, predict forward
-                days_ahead = max(1, days_ahead)
-
-        # Future date
-        forecast = self.predict_next_days(max(1, days_ahead))
-        result = forecast[-1]
-        result["is_past"] = False
-        result["actual_pilgrims"] = None
-        return result
-
-    def get_data_summary(self):
-        """Return dataset summary statistics."""
-        raw = self._get_raw_data()
-        tp = raw["total_pilgrims"].dropna()
-        return {
-            "total_records": len(raw),
-            "date_range": {
-                "start": str(raw["date"].min().date()),
-                "end": str(raw["date"].max().date()),
-            },
-            "covid_period_removed": {
-                "start": "2020-03-19",
-                "end": "2022-01-31",
-            },
-            "pilgrim_stats": {
-                "mean": round(float(tp.mean())),
-                "median": round(float(tp.median())),
-                "min": round(float(tp.min())),
-                "max": round(float(tp.max())),
-                "std": round(float(tp.std())),
-            },
-            "recent_data": raw.tail(10).assign(
-                date=lambda x: x["date"].dt.strftime("%Y-%m-%d")
-            ).to_dict(orient="records"),
-        }
-
-    def get_history(self, page=1, per_page=50, year=None, month=None,
-                     start_date=None, end_date=None):
-        """Return paginated historical data with optional date range."""
-        raw = self._get_raw_data()
-
-        if start_date:
-            raw = raw[raw["date"] >= pd.Timestamp(start_date)]
-        if end_date:
-            raw = raw[raw["date"] <= pd.Timestamp(end_date)]
-        if year:
-            raw = raw[raw["date"].dt.year == int(year)]
-        if month:
-            raw = raw[raw["date"].dt.month == int(month)]
-
-        total = len(raw)
-        start = (page - 1) * per_page
-        end = start + per_page
-        page_data = raw.iloc[start:end]
-
-        return {
-            "total_records": total,
-            "page": page,
-            "per_page": per_page,
-            "total_pages": (total + per_page - 1) // per_page,
-            "data": page_data.assign(
-                date=lambda x: x["date"].dt.strftime("%Y-%m-%d")
-            ).to_dict(orient="records"),
-        }
-
-
-# ═══════════════════════════════════════════════════════════════════
-#  FLASK APP
-# ═══════════════════════════════════════════════════════════════════
-STATIC_DIR = os.path.join(BASE_DIR, "client", "dist")
-
-app = Flask(__name__, static_folder=None)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
-
-# Singleton model manager
-manager = ModelManager()
-
-# ═══════════════════════════════════════════════════════════════
-#  SERVER-SIDE CACHE — fast response on first page load
-# ═══════════════════════════════════════════════════════════════
-_cache = {}           # key → {"data": ..., "ts": datetime}
-_cache_lock = threading.Lock()
-
-_CACHE_TTL = {
-    "summary":  3600,    # 1 hour
-    "predict7": 1800,    # 30 min
-    "calendar": 1800,    # 30 min
-}
-
-def _cache_get(key: str):
-    with _cache_lock:
-        entry = _cache.get(key)
-        if entry is None:
-            return None
-        ttl = _CACHE_TTL.get(key.split(":")[0], 1800)
-        if (datetime.now() - entry["ts"]).total_seconds() > ttl:
-            del _cache[key]
-            return None
-        return entry["data"]
-
-def _cache_set(key: str, data):
-    with _cache_lock:
-        _cache[key] = {"data": data, "ts": datetime.now()}
-
-def _warm_cache():
-    """Pre-compute heavy data on startup (runs in background thread)."""
-    try:
-        manager.load()
-        # Pre-cache 7-day forecast
-        forecast = manager.predict_next_days(7)
-        _cache_set("predict7", forecast)
-        # Pre-cache summary
-        summary = manager.get_data_summary()
-        _cache_set("summary", summary)
-        # Pre-cache current month calendar
-        now = datetime.now()
-        _cache_set(f"calendar:{now.year}:{now.month}", _build_calendar(now.year, now.month))
-        logging.info("✅ Cache warmed: predict7 + summary + calendar")
-    except Exception as e:
-        logging.error("Cache warm failed: %s", e)
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
-
-
-# ── Health Check ──
-@app.route("/api/health", methods=["GET"])
-def health():
-    has_data = os.path.exists(DATA_CSV)
-    has_artefacts = os.path.exists(os.path.join(PROD_DIR, "config.json"))
-    return jsonify({
-        "status": "ok",
-        "models_loaded": manager.loaded,
-        "data_available": has_data,
-        "artefacts_available": has_artefacts,
-        "device": DEVICE,
-        "timestamp": datetime.now().isoformat(),
-    })
-
-
-# ── Today's Prediction ──
-@app.route("/api/predict/today", methods=["GET"])
-def predict_today():
-    """Return prediction for today and next 6 days, anchored to current date."""
-    try:
-        forecast = manager.predict_next_days(7)
-        today_str = datetime.now().strftime("%Y-%m-%d")
-
-        # Find today in forecast or use day-1
-        today_pred = forecast[0] if forecast else None
-        for f in forecast:
-            if f["date"] == today_str:
-                today_pred = f
-                break
-
-        return jsonify({
-            "success": True,
-            "today": today_str,
-            "today_prediction": today_pred,
-            "week_forecast": forecast,
-        })
-    except Exception as e:
-        logging.exception("Today prediction error")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Data Update + Online Learning ──
-@app.route("/api/data/update", methods=["POST"])
-def data_update():
-    """Scrape latest data and reload models (online learning)."""
-    try:
-        from app.scraper import scrape_incremental
-
-        new_count = scrape_incremental(max_pages=5)
-        # Reload data in manager (force refresh)
-        manager.loaded = False
-        manager.nbeats_models = []
-        manager.nhits_models = []
-        manager.load()
-
-        return jsonify({
-            "success": True,
-            "new_records": new_count,
-            "message": f"Data updated with {new_count} new records. Models reloaded.",
-        })
-    except Exception as e:
-        logging.exception("Data update error")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Predict Next N Days ──
-@app.route("/api/predict", methods=["GET"])
-def predict_days():
-    days = request.args.get("days", 7, type=int)
-    if days < 1 or days > 90:
-        return jsonify({"error": "days must be between 1 and 90"}), 400
-
-    try:
-        # Use cache for default 7-day request
-        if days == 7:
-            cached = _cache_get("predict7")
-            if cached:
-                return jsonify({"success": True, "days": 7, "model": "Top5-Blend", "forecast": cached})
-
-        forecast = manager.predict_next_days(days)
-        if days == 7:
-            _cache_set("predict7", forecast)
-        return jsonify({
-            "success": True,
-            "days": days,
-            "model": "Top5-Blend",
-            "forecast": forecast,
-        })
-    except Exception as e:
-        logging.exception("Prediction error")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Predict Specific Date ──
-@app.route("/api/predict/date", methods=["POST"])
-def predict_date():
-    data = request.get_json()
-    if not data or "date" not in data:
-        return jsonify({"error": "Request body must include 'date' (YYYY-MM-DD)"}), 400
-
-    try:
-        result = manager.predict_date(data["date"])
-        return jsonify({
-            "success": True,
-            "model": "Top5-Blend",
-            "prediction": result,
-        })
-    except Exception as e:
-        logging.exception("Date prediction error")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Predict Date Range ──
-@app.route("/api/predict/range", methods=["GET"])
-def predict_range():
-    start = request.args.get("start")
-    end = request.args.get("end")
-    if not start or not end:
-        return jsonify({"error": "Both 'start' and 'end' query params required (YYYY-MM-DD)"}), 400
-
-    try:
-        start_dt = pd.Timestamp(start)
-        end_dt = pd.Timestamp(end)
-        raw = manager._get_raw_data()
-        last_date = raw["date"].max()
-
-        days_to_end = (end_dt - last_date).days
-        if days_to_end <= 0:
-            return jsonify({"error": "End date must be in the future"}), 400
-
-        days_from_start = max(1, (end_dt - last_date).days)
-        forecast = manager.predict_next_days(days_from_start)
-
-        # Filter to requested range
-        filtered = [f for f in forecast
-                    if start <= f["date"] <= end]
-
-        return jsonify({
-            "success": True,
-            "model": "Top5-Blend",
-            "start": start,
-            "end": end,
-            "forecast": filtered,
-        })
-    except Exception as e:
-        logging.exception("Range prediction error")
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Data Summary ──
-@app.route("/api/data/summary", methods=["GET"])
-def data_summary():
-    try:
-        cached = _cache_get("summary")
-        if cached:
-            return jsonify({"success": True, **cached})
-        summary = manager.get_data_summary()
-        _cache_set("summary", summary)
-        return jsonify({"success": True, **summary})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Historical Data (paginated, with date range) ──
-@app.route("/api/data/history", methods=["GET"])
-def data_history():
-    page = request.args.get("page", 1, type=int)
-    per_page = request.args.get("per_page", 50, type=int)
-    year = request.args.get("year", type=int)
-    month = request.args.get("month", type=int)
-    start_date = request.args.get("start_date")
-    end_date = request.args.get("end_date")
-
-    try:
-        result = manager.get_history(
-            page, min(per_page, 5000), year, month,
-            start_date=start_date, end_date=end_date
-        )
-        return jsonify({"success": True, **result})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# ── Model Info ──
-@app.route("/api/model/info", methods=["GET"])
-def model_info():
-    config_path = os.path.join(PROD_DIR, "config.json")
-    if os.path.exists(config_path):
-        with open(config_path) as f:
-            config = json.load(f)
-    else:
-        config = {}
-
-    return jsonify({
-        "success": True,
-        "champion": "Top5-Blend",
-        "metrics": config.get("champion_metrics", {}),
-        "blend_weights": config.get("blend_weights", {}),
-        "models": [
-            {
-                "name": "Chronos-T5",
-                "type": "Foundation Model (Pretrained)",
-                "weight": 0.587,
-                "paper": "Ansari et al. 2024 — arXiv:2403.07815",
-                "description": "Amazon's pretrained T5-based time series foundation model",
-            },
-            {
-                "name": "Tuned-XGB",
-                "type": "Gradient Boosting",
-                "weight": 0.211,
-                "description": "XGBoost with 68 engineered features (calendar, lags, rolling stats, Fourier)",
-            },
-            {
-                "name": "N-HiTS",
-                "type": "Deep Learning",
-                "weight": 0.170,
-                "paper": "Challu et al. AAAI 2023",
-                "description": "Neural Hierarchical Interpolation — multi-scale time series forecasting",
-            },
-            {
-                "name": "N-BEATS",
-                "type": "Deep Learning",
-                "weight": 0.017,
-                "paper": "Oreshkin et al. ICLR 2020",
-                "description": "Neural Basis Expansion Analysis — interpretable residual-subtraction blocks",
-            },
-            {
-                "name": "LGB-GOSS",
-                "type": "Gradient Boosting",
-                "weight": 0.015,
-                "description": "LightGBM with Gradient One-Side Sampling",
-            },
-        ],
-        "data": {
-            "records": "3,479 COVID-free (2013–2026)",
-            "features": "68 engineered features (MI + XGB importance union)",
-            "covid_removed": "Mar 19, 2020 → Jan 31, 2022",
-        },
-        "device": DEVICE,
-    })
-
-
-# ── LLM Chatbot + AI Trip Planner ──
+import json, os, pathlib, calendar, functools, re, logging, textwrap
 import json as _json
 import random as _random
 import re as _re
-import textwrap
 import time as _time
-from calendar import monthrange as _monthrange
+import numpy as np
+import pandas as pd
+import joblib
+import shap
+from datetime import datetime, date, timedelta
+from dotenv import load_dotenv
+load_dotenv()
 
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+
+from festival_calendar import get_festival_features_series, get_events_for_date
 from hindu_calendar import (
-    get_events_for_date, get_hindu_month_info, get_max_impact, get_crowd_reason,
-    get_impact_factor,
+    HINDU_MONTH_MAP, FESTIVALS, PURNIMA, AMAVASYA, EKADASHI,
+    IMPACT, get_events_for_date as hc_get_events,
+    get_hindu_month_info, get_max_impact, get_impact_factor, get_crowd_reason,
 )
 
+logging.basicConfig(level=logging.INFO)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  LOAD ARTEFACTS
+# ═══════════════════════════════════════════════════════════════════════════════
+ART_DIR = pathlib.Path("artefacts/advisory_v5")
+
+lgb_model = joblib.load(ART_DIR / "lgb_model.pkl")
+xgb_model = joblib.load(ART_DIR / "xgb_model.pkl")
+X_bg = np.load(ART_DIR / "shap_background.npy")
+explainer = shap.TreeExplainer(lgb_model, X_bg)
+
+with open(ART_DIR / "model_meta.json") as f:
+    META = json.load(f)
+with open(ART_DIR / "hyperparams.json") as f:
+    HYPER = json.load(f)
+
+FEATURE_COLS  = META["feature_cols"]
+BANDS         = META["bands"]
+BAND_NAMES    = META["band_names"]
+FEATURE_LABELS = META["feature_labels"]
+N_BANDS       = META["n_bands"]
+DATA_FILE     = META["data_file"]
+BEST_ALPHA    = HYPER.get("best_alpha", 0.5)
+
+df_full = pd.read_csv(DATA_FILE, parse_dates=["date"])
+df_full = df_full[df_full.date >= META["post_covid"]].sort_values("date").reset_index(drop=True)
+
+# Knowledge bases
+KB_PATH   = pathlib.Path("ttd_knowledge_base.json")
+TRIP_PATH = pathlib.Path("tirumala_trip_data.json")
+KB        = json.load(open(KB_PATH, encoding="utf-8"))   if KB_PATH.exists()   else {"categories": []}
+TRIP_DATA = json.load(open(TRIP_PATH, encoding="utf-8"))  if TRIP_PATH.exists() else {}
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  COLOURS & LABELS
+# ═══════════════════════════════════════════════════════════════════════════════
+BAND_COLORS = {
+    "QUIET": "#2196F3", "LIGHT": "#4CAF50", "MODERATE": "#8BC34A",
+    "BUSY": "#FFC107",  "HEAVY": "#FF5722", "EXTREME": "#B71C1C",
+}
+BAND_BG = {
+    "QUIET": "#E3F2FD", "LIGHT": "#E8F5E9", "MODERATE": "#F1F8E9",
+    "BUSY": "#FFF8E1",  "HEAVY": "#FBE9E7", "EXTREME": "#FFEBEE",
+}
+DOW_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+def pilgrims_to_band(val):
+    for i, b in enumerate(BANDS):
+        if b["lo"] <= val < b["hi"]:
+            return i
+    return N_BANDS - 1
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  PREDICTION ENGINE
+# ═══════════════════════════════════════════════════════════════════════════════
+def _extract_sv_list(shap_values, idx, n_bands):
+    if isinstance(shap_values, list):
+        return [shap_values[c][idx] for c in range(n_bands)]
+    return [shap_values[idx, :, c] for c in range(n_bands)]
+
+
+def shap_explain_one(sv_list, pred_band, feature_vals, feature_names, fdate=None):
+    sv = sv_list[pred_band]
+    contribs = sorted(zip(feature_names, sv, feature_vals),
+                      key=lambda x: abs(x[1]), reverse=True)
+    reasons = []
+    for fname, sval, rval in contribs[:3]:
+        if abs(sval) < 0.01:
+            continue
+        label = FEATURE_LABELS.get(fname, fname)
+        direction = "pushes UP" if sval > 0 else "pushes DOWN"
+        if fdate and fname in ["is_festival", "fest_impact", "is_brahmotsavam",
+                                "is_sankranti"] and rval > 0:
+            events = get_events_for_date(fdate.year, fdate.month, fdate.day)
+            if events:
+                label = events[0]["name"]
+        if fname == "dow":
+            reasons.append(f"{DOW_NAMES[int(rval)]} {direction}")
+        elif fname.startswith("is_") and rval > 0:
+            reasons.append(f"{label} {direction}")
+        elif fname.startswith("is_") and rval == 0:
+            reasons.append(f"No {label.lower()} {direction}")
+        elif "log" in fname:
+            reasons.append(f"{label}={np.expm1(rval):,.0f} {direction}")
+        elif fname.startswith("L") or fname.startswith("rm") or fname == "dow_expanding_mean":
+            reasons.append(f"{label}={rval:,.0f} {direction}")
+        elif fname == "momentum_7":
+            reasons.append(f"{'Rising' if rval > 0 else 'Falling'} trend ({rval:+,.0f}) {direction}")
+        elif fname == "dow_dev":
+            reasons.append(f"{'Above' if rval > 0 else 'Below'} weekday norm {direction}")
+        elif fname == "fest_impact":
+            reasons.append(f"Festival impact={int(rval)} {direction}")
+        else:
+            reasons.append(f"{label} {direction}")
+    return " | ".join(reasons) if reasons else "Typical pattern"
+
+
+def build_single_features(fdate, history_vals, dow_means):
+    """Build feature vector for one date (mirrors crowd_advisory_v5)."""
+    row = {}
+    row["dow"]        = fdate.weekday()
+    row["month"]      = fdate.month
+    row["is_weekend"] = 1 if fdate.weekday() >= 5 else 0
+    doy = fdate.timetuple().tm_yday
+    row["sin_doy"] = np.sin(2 * np.pi * doy / 365.25)
+    row["cos_doy"] = np.cos(2 * np.pi * doy / 365.25)
+
+    n = len(history_vals)
+    for lag in [1, 2, 7, 14, 21, 28]:
+        idx = n - lag
+        row[f"L{lag}"] = history_vals[idx] if idx >= 0 else history_vals[0]
+    for w in [7, 14, 30]:
+        vals = history_vals[max(0, n - w):]
+        row[f"rm{w}"] = np.mean(vals)
+    row["rstd7"]  = np.std(history_vals[-7:])  if n >= 7  else 0
+    row["rstd14"] = np.std(history_vals[-14:]) if n >= 14 else 0
+    row["dow_expanding_mean"] = dow_means.get(fdate.weekday(), 70000)
+
+    row["log_L1"]   = np.log1p(row["L1"])
+    row["log_L7"]   = np.log1p(row["L7"])
+    row["log_rm7"]  = np.log1p(row["rm7"])
+    row["log_rm30"] = np.log1p(row["rm30"])
+
+    row["momentum_7"] = row["L1"] - row["L7"]
+    row["dow_dev"]    = row["L1"] - row["dow_expanding_mean"]
+
+    row["month_dow"]   = row["month"] * 10 + row["dow"]
+    vals7 = history_vals[-7:]
+    w7 = np.exp(np.linspace(-1, 0, len(vals7)))
+    row["ewm7"]  = np.average(vals7, weights=w7) if vals7 else row["rm7"]
+    vals14 = history_vals[-14:]
+    w14 = np.exp(np.linspace(-1, 0, len(vals14)))
+    row["ewm14"] = np.average(vals14, weights=w14) if vals14 else row.get("rm14", row["rm7"])
+    row["trend_7_14"] = row["rm7"] - row["rm14"]
+    row["trend_7_30"] = row["rm7"] - row["rm30"]
+    row["week_of_year"] = fdate.isocalendar()[1]
+    idx365 = n - 365
+    row["L365"]     = history_vals[idx365] if idx365 >= 0 else history_vals[0]
+    row["log_L365"] = np.log1p(row["L365"])
+
+    recent = history_vals[-8:-1] if n >= 8 else history_vals[-7:]
+    recent_bands = [pilgrims_to_band(v) for v in recent]
+    row["heavy_extreme_count7"] = sum(1 for b in recent_bands if b >= 4)
+    row["light_quiet_count7"]   = sum(1 for b in recent_bands if b <= 1)
+
+    fest = get_festival_features_series(pd.Series([pd.Timestamp(fdate)]))
+    keep_fest = [
+        "is_festival", "fest_impact", "is_brahmotsavam", "is_sankranti",
+        "is_summer_holiday", "is_dasara_holiday", "is_national_holiday",
+        "days_to_fest", "days_from_fest", "fest_window_7",
+        "is_vaikuntha_ekadashi", "is_dussehra_period", "is_diwali",
+        "is_navaratri", "is_janmashtami", "is_ugadi", "is_rathasapthami",
+        "is_ramanavami", "is_shivaratri", "is_winter_holiday",
+        "fest_window_3",
+    ]
+    for c in keep_fest:
+        row[c] = fest[c].values[0] if c in fest.columns else 0
+
+    return np.array([[row.get(f, 0) for f in FEATURE_COLS]])
+
+
+def predict_one(fdate, history_vals, dow_means):
+    X = build_single_features(fdate, history_vals, dow_means)
+    lgb_prob = lgb_model.predict_proba(X)
+    xgb_prob = xgb_model.predict_proba(X)
+    vote_prob = BEST_ALPHA * lgb_prob + (1 - BEST_ALPHA) * xgb_prob
+    pred_band = int(vote_prob.argmax(axis=1)[0])
+    conf = float(vote_prob[0][pred_band])
+    shap_vals = explainer.shap_values(X)
+    sv_list = _extract_sv_list(shap_vals, 0, N_BANDS)
+    reason = shap_explain_one(sv_list, pred_band, X[0], FEATURE_COLS, fdate=fdate)
+    return pred_band, conf, reason
+
+
+# ── prediction cache ────────────────────────────────────────────────
+_prediction_cache = {}
+
+
+def predict_date_range(start_date, end_date):
+    history = list(df_full.total_pilgrims.values)
+    dow_means = df_full.groupby(df_full.date.dt.dayofweek)["total_pilgrims"].mean().to_dict()
+    last_date = df_full.date.max().to_pydatetime()
+
+    if start_date > last_date:
+        gap_days = (start_date - last_date).days
+        for i in range(1, gap_days):
+            d = last_date + timedelta(days=i)
+            ck = d.strftime("%Y-%m-%d")
+            if ck in _prediction_cache:
+                history.append(_prediction_cache[ck]["mid"])
+            else:
+                b, c, r = predict_one(d, history, dow_means)
+                mid = (BANDS[b]["lo"] + min(BANDS[b]["hi"], 95000)) / 2
+                _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid}
+                history.append(mid)
+
+    results = []
+    total_days = (end_date - start_date).days + 1
+    for i in range(total_days):
+        fdate = start_date + timedelta(days=i)
+        ck = fdate.strftime("%Y-%m-%d")
+        if ck in _prediction_cache:
+            cached = _prediction_cache[ck]
+            results.append({"date": fdate, "band": cached["band"],
+                            "conf": cached["conf"], "reason": cached["reason"],
+                            "pilgrims": cached["mid"]})
+            history.append(cached["mid"])
+        else:
+            b, c, r = predict_one(fdate, history, dow_means)
+            mid = (BANDS[b]["lo"] + min(BANDS[b]["hi"], 95000)) / 2
+            _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid}
+            results.append({"date": fdate, "band": b, "conf": c, "reason": r, "pilgrims": mid})
+            history.append(mid)
+    return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  LLM CHATBOT + AI TRIP PLANNER (RAG with ChromaDB + HuggingFace)
+# ═══════════════════════════════════════════════════════════════════════════════
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 _KB_PATH = os.path.join(BASE_DIR, "ttd_knowledge_base.json")
 _TRIP_PATH = os.path.join(BASE_DIR, "tirumala_trip_data.json")
 _VECTORDB_DIR = os.path.join(BASE_DIR, "vectordb")
@@ -881,17 +276,19 @@ _trip_available = False
 _chroma_collection = None
 _rag_available = False
 
+
 def _load_kb():
     global _knowledge_base
     if _knowledge_base is None:
         try:
             with open(_KB_PATH, "r", encoding="utf-8") as f:
                 _knowledge_base = _json.load(f)
-            logging.info("✅ TTD Knowledge base loaded (%d categories)", len(_knowledge_base.get("categories", [])))
+            logging.info("Knowledge base loaded")
         except Exception as e:
-            logging.error("❌ KB load failed: %s", e)
-            _knowledge_base = {"categories": [], "greetings": {"keywords": [], "responses": ["🙏 Namaste!"]}, "fallback": {"responses": ["Sorry, I could not find information on that."]}}
+            logging.error("KB load failed: %s", e)
+            _knowledge_base = {"categories": []}
     return _knowledge_base
+
 
 def _load_trip_data():
     global _trip_data
@@ -899,39 +296,51 @@ def _load_trip_data():
         try:
             with open(_TRIP_PATH, "r", encoding="utf-8") as f:
                 _trip_data = _json.load(f)
-            logging.info("✅ Trip data loaded")
+            logging.info("Trip data loaded")
         except Exception as e:
-            logging.error("❌ Trip data load failed: %s", e)
+            logging.error("Trip data load failed: %s", e)
             _trip_data = {}
     return _trip_data
+
 
 def _init_vectordb():
     """Initialize ChromaDB vector store for RAG."""
     global _chroma_collection, _rag_available
-    if not os.path.exists(_VECTORDB_DIR):
-        logging.warning("⚠️ Vector DB not found at %s — run build_vectordb.py first", _VECTORDB_DIR)
-        return
     try:
         import chromadb
         from chromadb.utils import embedding_functions
+
+        if not os.path.exists(_VECTORDB_DIR):
+            logging.warning("Vector DB not found at %s. Run: python build_vectordb.py", _VECTORDB_DIR)
+            return
+
         ef = embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name="all-MiniLM-L6-v2"
         )
         client = chromadb.PersistentClient(path=_VECTORDB_DIR)
-        _chroma_collection = client.get_collection(name="ttd_knowledge", embedding_function=ef)
+        _chroma_collection = client.get_collection(
+            name="ttd_knowledge",
+            embedding_function=ef,
+        )
         _rag_available = True
-        logging.info("✅ ChromaDB vector store loaded (%d documents)", _chroma_collection.count())
+        logging.info("ChromaDB loaded: %d documents", _chroma_collection.count())
     except Exception as e:
-        logging.error("❌ ChromaDB init failed: %s", e)
+        logging.error("ChromaDB init failed: %s", e)
+        _rag_available = False
 
 
 def _init_llm():
-    """Initialize two separate HuggingFace LLM clients — one for chatbot, one for trip planner."""
+    """Initialize two separate HuggingFace LLM clients -- one for chatbot, one for trip planner."""
     global _hf_chat_client, _hf_chat_model, _hf_trip_client, _hf_trip_model
     global _chat_available, _trip_available
-    from huggingface_hub import InferenceClient
 
-    # ── Chatbot model (knowledge Q&A — fast, accurate) ──
+    try:
+        from huggingface_hub import InferenceClient
+    except ImportError:
+        logging.error("huggingface_hub not installed")
+        return
+
+    # ── Chatbot model (knowledge Q&A -- fast, accurate) ──
     chat_token = os.environ.get("HF_TOKEN_CHAT", os.environ.get("HF_TOKEN", "")) or None
     _hf_chat_model = os.environ.get("HF_MODEL_CHAT", "meta-llama/Llama-3.3-70B-Instruct")
     try:
@@ -942,9 +351,9 @@ def _init_llm():
             max_tokens=5,
         )
         _chat_available = True
-        logging.info("✅ Chatbot LLM ready: %s", _hf_chat_model)
+        logging.info("Chatbot LLM ready: %s", _hf_chat_model)
     except Exception as e:
-        logging.error("❌ Chatbot LLM init failed: %s", e)
+        logging.error("Chatbot LLM init failed: %s", e)
 
     # ── Trip planner model (structured JSON generation) ──
     trip_token = os.environ.get("HF_TOKEN_TRIP", os.environ.get("HF_TOKEN", "")) or None
@@ -957,9 +366,10 @@ def _init_llm():
             max_tokens=5,
         )
         _trip_available = True
-        logging.info("✅ Trip planner LLM ready: %s", _hf_trip_model)
+        logging.info("Trip planner LLM ready: %s", _hf_trip_model)
     except Exception as e:
-        logging.error("❌ Trip planner LLM init failed: %s", e)
+        logging.error("Trip planner LLM init failed: %s", e)
+
 
 # Initialize on import
 _init_llm()
@@ -968,21 +378,20 @@ _init_vectordb()
 
 def _retrieve_context(query: str, n_results: int = 8) -> str:
     """Retrieve relevant context from vector DB using semantic search."""
-    if not _rag_available or not _chroma_collection:
+    if not _rag_available or _chroma_collection is None:
         return ""
     try:
-        results = _chroma_collection.query(
-            query_texts=[query],
-            n_results=n_results
-        )
-        chunks = []
-        for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
-            source_tag = meta.get("source", "general")
+        results = _chroma_collection.query(query_texts=[query], n_results=n_results)
+        docs = results.get("documents", [[]])[0]
+        metas = results.get("metadatas", [[]])[0]
+        context_parts = []
+        for doc, meta in zip(docs, metas):
+            src = meta.get("source", "unknown")
             title = meta.get("title", "")
-            chunks.append(f"[Source: {source_tag} | {title}]\n{doc}")
-        return "\n\n---\n\n".join(chunks)
+            context_parts.append(f"[Source: {src} | {title}]\n{doc}")
+        return "\n\n---\n\n".join(context_parts)
     except Exception as e:
-        logging.error("RAG retrieval error: %s", e)
+        logging.error("Vector search error: %s", e)
         return ""
 
 
@@ -990,18 +399,18 @@ def _build_rag_prompt(user_message: str) -> str:
     """Build a RAG-augmented system prompt: retrieve relevant chunks then combine with instructions."""
     context = _retrieve_context(user_message)
     return textwrap.dedent(f"""\
-    You are the official TTD (Tirumala Tirupati Devasthanams) AI Assistant — "శ్రీవారి సేవ Bot".
+    You are the official TTD (Tirumala Tirupati Devasthanams) AI Assistant -- "Srivari Seva Bot".
     You help devotees with accurate, detailed information about the Tirumala Venkateswara Temple,
     darshan types & tickets, sevas & costs, accommodation & hotels, travel & transport,
     festivals, temple history & legend, dress code, do's & don'ts, and trip planning.
 
     GUIDELINES:
-    - Be warm, respectful, and devotional in tone. Start with 🙏 when appropriate.
+    - Be warm, respectful, and devotional in tone. Start with a namaskaram when appropriate.
     - Give ACCURATE, SPECIFIC information based ONLY on the context provided below.
-    - Include actual prices (₹), timings, phone numbers, and website URLs when available.
+    - Include actual prices, timings, phone numbers, and website URLs when available.
     - If the context doesn't contain the answer, say so politely and suggest visiting tirumala.org.
     - Keep answers concise (2-4 paragraphs max) but rich with detail.
-    - Use emojis sparingly for warmth (🛕, 🙏, ✅, 📌, 💰).
+    - Use emojis sparingly for warmth.
     - Answer in the same language as the user's question (Telugu, Hindi, or English).
     - Format with bullet points or numbered lists when listing multiple items.
     - NEVER make up information not present in the context.
@@ -1011,13 +420,27 @@ def _build_rag_prompt(user_message: str) -> str:
     ===
     """)
 
+
+# ── Circuit breaker: skip LLM if it keeps failing ──
+_llm_fail_counts = {}   # model -> consecutive fail count
+_llm_fail_until = {}    # model -> timestamp until which to skip
+_LLM_CIRCUIT_THRESHOLD = 2   # failures before tripping
+_LLM_CIRCUIT_COOLDOWN = 300  # seconds to skip after tripping (5 min)
+
+
 def _hf_call(client, model: str, system_prompt: str, user_message: str,
              max_tokens: int = 1500, temperature: float = 0.5) -> str:
-    """HuggingFace Inference API call with 3 retries."""
+    """HuggingFace Inference API call with circuit breaker + 2 retries."""
     if not client:
         return ""
+    # Circuit breaker: skip if recently failing
+    now = _time.time()
+    if model in _llm_fail_until and now < _llm_fail_until[model]:
+        remaining = int(_llm_fail_until[model] - now)
+        logging.info("Circuit breaker OPEN for %s — skipping LLM (retry in %ds)", model, remaining)
+        return ""
     last_err = None
-    for attempt in range(3):
+    for attempt in range(2):  # Only 2 attempts (not 3) for faster fallback
         try:
             resp = client.chat_completion(
                 model=model,
@@ -1028,428 +451,1226 @@ def _hf_call(client, model: str, system_prompt: str, user_message: str,
                 max_tokens=max_tokens,
                 temperature=temperature,
             )
+            # Success — reset circuit breaker
+            _llm_fail_counts[model] = 0
+            if model in _llm_fail_until:
+                del _llm_fail_until[model]
             return resp.choices[0].message.content.strip()
         except Exception as e:
             last_err = e
             wait = 2 ** attempt
-            logging.warning("HF %s attempt %d failed: %s — retry in %ds", model, attempt + 1, e, wait)
+            logging.warning("HF %s attempt %d failed: %s -- retry in %ds", model, attempt + 1, e, wait)
             _time.sleep(wait)
-    logging.error("HF %s failed after 3 retries: %s", model, last_err)
+    # All retries failed — update circuit breaker
+    _llm_fail_counts[model] = _llm_fail_counts.get(model, 0) + 1
+    if _llm_fail_counts[model] >= _LLM_CIRCUIT_THRESHOLD:
+        _llm_fail_until[model] = now + _LLM_CIRCUIT_COOLDOWN
+        logging.warning("Circuit breaker TRIPPED for %s — skipping for %ds", model, _LLM_CIRCUIT_COOLDOWN)
+    logging.error("HF %s failed after 2 retries: %s", model, last_err)
     return ""
 
 
 def _chatbot_respond(user_message):
-    """RAG-powered chatbot: vector retrieval → LLM."""
+    """RAG-powered chatbot: vector retrieval + LLM."""
     if not _chat_available:
-        return "🙏 The chatbot is currently unavailable. Please try again later.", "error"
+        return _fallback_chatbot(user_message)
     try:
         system_prompt = _build_rag_prompt(user_message)
         reply = _hf_call(_hf_chat_client, _hf_chat_model,
                          system_prompt, user_message, max_tokens=1500, temperature=0.5)
         if not reply:
-            return "🙏 I'm having trouble processing your request right now. Please try again shortly.", "error"
+            return _fallback_chatbot(user_message)
         source = "rag" if _rag_available else "llm"
         return reply, source
     except Exception as e:
         logging.error("Chatbot error: %s", e)
-        return "🙏 I'm having trouble processing your request right now. Please try again shortly.", "error"
+        return _fallback_chatbot(user_message)
 
 
-@app.route("/api/chat", methods=["POST"])
-def chat():
-    """RAG Chatbot endpoint — answers questions about TTD using vector search + Gemini AI."""
-    data = request.get_json(silent=True) or {}
-    user_message = data.get("message", "").strip()
-    if not user_message:
-        return jsonify({"reply": "🙏 Please type your question about Tirumala Tirupati Devasthanams.", "source": "system"})
-    reply, source = _chatbot_respond(user_message)
-    return jsonify({"reply": reply, "source": source})
+def _fallback_chatbot(user_message):
+    """Fallback keyword-based chatbot when LLM is unavailable."""
+    kb = _load_kb()
+    query_lower = user_message.lower().strip()
+    best_score = 0
+    best_answer = None
+    for cat in kb.get("categories", []):
+        cat_score = sum(1 for kw in cat.get("keywords", []) if kw in query_lower)
+        for qa in cat.get("qa", []):
+            q = qa["q"].lower()
+            q_words = set(q.split())
+            query_words = set(query_lower.split())
+            overlap = len(q_words & query_words)
+            score = overlap + cat_score * 0.5
+            if query_lower in q or q in query_lower:
+                score += 5
+            if score > best_score:
+                best_score = score
+                best_answer = qa["a"]
+    if best_score >= 2 and best_answer:
+        return best_answer, "knowledge_base"
+    return ("I can help with temple info, darshan types, sevas, accommodation, "
+            "travel, laddus, crowd forecast, and trip planning. "
+            "Try asking 'What types of darshan are available?' or "
+            "'How busy is it on 2026-03-15?'"), "fallback"
 
 
 # ── AI Trip Planner ──
 
 def _generate_trip_plan(params):
-    """Generate a detailed trip plan for visitors already in Tirupati/Tirumala."""
+    """Generate a detailed trip plan using enriched data + LLM."""
     td = _load_trip_data()
     days = params.get("days", 2)
     budget = params.get("budget", "standard")
-    origin = params.get("origin", "Tirupati")  # default: already there
+    origin = params.get("origin", "Tirupati")
     group_size = params.get("group_size", 2)
     interests = params.get("interests", ["temples", "darshan"])
 
-    # Get relevant cost data
-    costs = td.get("daily_costs_estimate", {}).get(budget, td.get("daily_costs_estimate", {}).get("standard", {}))
+    # ── Gather rich context from trip data ──
+    costs = td.get("daily_costs_estimate", {}).get(
+        budget, td.get("daily_costs_estimate", {}).get("standard", {}))
+    per_day = costs.get("per_day_inr", 2500)
 
-    # Get transport info
-    transport = td.get("transport", {}).get("how_to_reach_tirupati", {}).get("by_road", {}).get("from_cities", {})
-    origin_transport = transport.get(origin, transport.get("Chennai", {}))
-
-    # Filter hotels by budget
+    # Hotels: pick matching budget + one tier up/down for variety
+    budget_order = ["free", "budget", "standard", "premium", "luxury"]
+    budget_idx = budget_order.index(budget) if budget in budget_order else 2
+    accept_cats = set()
+    for offset in range(-1, 2):
+        idx = max(0, min(len(budget_order) - 1, budget_idx + offset))
+        accept_cats.add(budget_order[idx])
     all_hotels = []
     for hotel_group in td.get("hotels", {}).values():
         for h in hotel_group:
-            if h.get("category") == budget or budget == "luxury":
+            if h.get("category") in accept_cats or budget == "luxury":
                 all_hotels.append(h)
     if not all_hotels:
         for hotel_group in td.get("hotels", {}).values():
             all_hotels.extend(hotel_group)
+    all_hotels.sort(key=lambda h: h.get("rating", 0), reverse=True)
 
-    # Get attractions sorted by priority
-    attractions = sorted(td.get("attractions", []), key=lambda x: x.get("priority", 99))
+    # ── Travel logistics ──
+    logistics = td.get("travel_logistics", {})
+    zone_defs = logistics.get("zone_definitions", {})
+    attr_distances = logistics.get("attraction_distances", {})
+    inter_zone = logistics.get("inter_zone_travel", {})
+    itinerary_patterns = logistics.get("realistic_itinerary_patterns", {})
+    critical_rules = logistics.get("critical_rules", [])
 
-    # Get restaurants
+    # Attractions: filter by interest tags, add zone info
+    all_attractions = sorted(td.get("attractions", []),
+                             key=lambda x: x.get("priority", 99))
+    interest_set = set(interests)
+    scored = []
+    for a in all_attractions:
+        tags = set(a.get("interest_tags", []))
+        relevance = len(tags & interest_set)
+        # Add zone info from logistics
+        dist_info = attr_distances.get(a["name"], {})
+        a["_zone"] = dist_info.get("zone", "?")
+        a["_dist_from_tirupati"] = dist_info.get("distance_from_tirupati_km", "?")
+        a["_travel_time_mins"] = dist_info.get("travel_time_from_tirupati_mins", "?")
+        a["_walk_from_temple_mins"] = dist_info.get("walk_from_temple_mins", "")
+        scored.append((relevance, a))
+    scored.sort(key=lambda x: (-x[0], x[1].get("priority", 99)))
+    ranked_attractions = [a for _, a in scored]
+
     restaurants = td.get("restaurants", [])
+    sevas = td.get("sevas", [])
+    darshan_types = td.get("darshan_types", [])
+    rules = td.get("rules_and_customs", [])
+    schedule_guide = td.get("scheduling_guide", {})
+    tips = td.get("tips", [])
+    packing = td.get("packing_essentials", [])
+    walking = td.get("transport", {}).get("tirupati_to_tirumala", {}).get("on_foot", {})
+    festivals = td.get("festivals", [])
+
+    # Transport info
+    road_info = td.get("transport", {}).get("how_to_reach_tirupati", {}).get("by_road", {}).get("from_cities", {})
+    origin_transport = road_info.get(origin, {})
+    tpt_to_tirumala = td.get("transport", {}).get("tirupati_to_tirumala", {})
 
     if _trip_available:
         try:
-            # Build structured prompt for trip generation
+            # ── Build COMPACT prompt that fits HF inference limits ──
+            # Top 5 hotels only
             hotels_text = "\n".join([
-                f"- {h['name']}: ₹{h['price_range']['min']}-₹{h['price_range']['max']}/night, {h.get('type', '')}, Rating: {h.get('rating', 'N/A')}"
-                for h in all_hotels[:10]
+                f"- {h['name']}: Rs.{h['price_range']['min']}-{h['price_range']['max']}/night, {h.get('category','standard')}"
+                for h in all_hotels[:5]
             ])
+
+            # Top 10 attractions, compact
             attractions_text = "\n".join([
-                f"- {a['name']} ({a.get('type','')}): {a.get('description','')[:80]}... | Duration: {a.get('visit_duration_hours', 1)}h | Fee: ₹{a.get('entry_fee', 0)} | Timings: {a.get('timings','')}"
-                for a in attractions[:12]
+                f"- {a['name']} [Zone {a.get('_zone','?')}]: "
+                f"{a.get('visit_duration_hours',1)}h, Rs.{a.get('entry_fee',0)}, "
+                f"{'walk ' + str(a.get('_walk_from_temple_mins','')) + 'min, ' if a.get('_walk_from_temple_mins') else ''}"
+                f"tags: {','.join(a.get('interest_tags',[])[:3])}"
+                for a in ranked_attractions[:10]
             ])
+
+            # Top 6 restaurants, compact
             restaurants_text = "\n".join([
-                f"- {r['name']}: {r.get('cuisine', '')} | ~₹{r.get('price_per_person', 0)}/person | {r.get('timings','')}"
-                for r in restaurants[:7]
+                f"- {r['name']} ({r.get('location','')}): Rs.{r.get('price_per_person',0)}/person"
+                for r in restaurants[:6]
             ])
+
+            # Top 5 sevas
             sevas_text = "\n".join([
-                f"- {s['name']}: ₹{s['cost']} at {s['time']} — {s['description']}"
-                for s in td.get("sevas", [])[:6]
+                f"- {s['name']}: Rs.{s['cost']}, {s.get('duration_minutes','?')}min"
+                for s in sevas[:5]
             ])
+
+            # Darshan types
+            darshan_text = "\n".join([
+                f"- {d['name']}: Rs.{d.get('cost',0)}, wait {d.get('wait_hours','?')}h"
+                for d in darshan_types
+            ])
+
+            # Zone rules - compact
+            logistics_rules = "; ".join(critical_rules[:5])
 
             prompt = textwrap.dedent(f"""\
-            Create a detailed {days}-day Tirumala-Tirupati itinerary for a group of {group_size} people who are ALREADY IN TIRUPATI.
-            They have arrived and need a practical day-by-day plan of what to do, where to go, and how to budget their time and money.
+Create a {days}-day Tirumala trip itinerary.
+Days:{days}, Group:{group_size}, Budget:{budget} (~Rs.{per_day}/day), Interests:{','.join(interests)}
+Group is already in Tirupati.
 
-            TRIP DETAILS:
-            - The group is ALREADY in Tirupati (no travel from another city needed)
-            - Budget Level: {budget} (~₹{costs.get('per_day_inr', 2500)}/person/day)
-            - Interests: {', '.join(interests)}
-            - Group Size: {group_size}
+ZONES: A=Tirumala hilltop (walkable), B=Tirupati town, C=Tiruchanoor (5km from B), D=excursions (15km).
+A→B: 26km, 45min bus Rs.75. B→C: 5km, 15min auto. NEVER mix Zone A and B on same half-day.
 
-            AVAILABLE HOTELS:
-            {hotels_text}
+DARSHAN: {darshan_text}
+HOTELS: {hotels_text}
+ATTRACTIONS: {attractions_text}
+SEVAS (if spiritual interests): {sevas_text}
+RESTAURANTS: {restaurants_text}
+RULES: {logistics_rules}
 
-            ATTRACTIONS:
-            {attractions_text}
+Pattern: Day 1=Zone A (bus up, darshan, hilltop sights). Day 2=Zone B+C (town, Padmavathi temple, departure). 3-day: add Zone D excursion.
 
-            RESTAURANTS:
-            {restaurants_text}
-
-            SEVAS AVAILABLE:
-            {sevas_text}
-
-            TRANSPORT:
-            - {origin} to Tirupati: Bus ~₹{origin_transport.get('bus_fare', 'N/A')}, Car fuel ~₹{origin_transport.get('fuel_cost_approx', 'N/A')}
-            - Tirupati to Tirumala: Bus ₹75 (every 2 min), Taxi ₹1200, Walking (3550 steps/11 km)
-
-            RESPOND IN THIS EXACT JSON FORMAT:
-            {{
-              "title": "Trip title string",
-              "summary": "2-3 sentence overview",
-              "recommended_hotel": {{
-                "name": "Hotel Name",
-                "cost_per_night": 1500,
-                "reason": "Why this hotel"
-              }},
-              "itinerary": [
-                {{
-                  "day": 1,
-                  "title": "Day 1 title",
-                  "activities": [
-                    {{
-                      "time": "6:00 AM",
-                      "activity": "Activity description",
-                      "location": "Location name",
-                      "duration": "2 hours",
-                      "cost": 0,
-                      "tip": "Helpful tip"
-                    }}
-                  ]
-                }}
-              ],
-              "cost_breakdown": {{
-                "transport_to_tirupati": 500,
-                "local_transport": 300,
-                "accommodation_total": 3000,
-                "food_total": 1000,
-                "darshan_sevas": 600,
-                "attractions": 200,
-                "miscellaneous": 500,
-                "total_per_person": 6100,
-                "total_group": 12200
-              }},
-              "map_points": [
-                {{"name": "Place Name", "lat": 13.63, "lng": 79.42, "type": "hotel/temple/attraction", "day": 1}}
-              ],
-              "packing_tips": ["tip1", "tip2"],
-              "best_time_tip": "Best time to visit advice"
-            }}
-
-            IMPORTANT: Return ONLY valid JSON, no markdown, no code blocks, no extra text.
-            Make the itinerary practical and time-aware. Include actual costs.
-            Include at least the main temple darshan and top attractions based on interests.
-            The group is ALREADY in Tirupati — do NOT include travel from another city.
-            Start Day 1 from their hotel in Tirupati itself.
-            Include lat/lng coordinates for ALL map_points (Tirumala: ~13.68, 79.35; Tirupati: ~13.63, 79.42).
-            """)
+Return ONLY valid JSON (no markdown/code blocks):
+{{"title":"...", "summary":"...", "recommended_hotel":{{"name":"...", "cost_per_night":0, "reason":"..."}},
+"itinerary":[{{"day":1, "title":"...", "activities":[{{"time":"6:00 AM", "activity":"...", "location":"...", "duration":"2h", "cost":0, "tip":"..."}}]}}],
+"cost_breakdown":{{"accommodation":0, "food":0, "transport":0, "darshan_sevas":0, "attractions":0, "miscellaneous":300, "per_person":0, "group_total":0}},
+"map_points":[{{"name":"...", "lat":13.68, "lng":79.35, "type":"temple", "day":1}}],
+"packing_tips":["tip1"], "best_time_tip":"...", "emergency_info":"TTD: 0877-2233333"}}
+""")
 
             raw = _hf_call(
                 _hf_trip_client, _hf_trip_model,
-                "You are a travel planning assistant. Return ONLY valid JSON, no markdown, no code blocks.",
+                "You are a Tirumala travel planning expert. Return ONLY valid JSON. No markdown, no code blocks, no explanatory text.",
                 prompt,
-                max_tokens=4096,
-                temperature=0.6,
+                max_tokens=2500,
+                temperature=0.5,
             )
             if not raw:
                 raise ValueError("LLM returned empty response")
             # Clean potential markdown wrapping
+            raw = raw.strip()
             if raw.startswith("```"):
                 raw = _re.sub(r'^```\w*\n?', '', raw)
-                raw = _re.sub(r'\n?```$', '', raw)
+                raw = _re.sub(r'\n?```\s*$', '', raw)
+            # Sometimes LLM adds text before/after JSON
+            json_start = raw.find('{')
+            json_end = raw.rfind('}')
+            if json_start >= 0 and json_end > json_start:
+                raw = raw[json_start:json_end + 1]
             plan = _json.loads(raw)
             plan["source"] = "llm"
+            # Ensure cost breakdown has required keys
+            cb = plan.get("cost_breakdown", {})
+            if "per_person" not in cb:
+                total = sum(v for v in cb.values() if isinstance(v, (int, float)))
+                cb["per_person"] = total
+                cb["group_total"] = total * group_size
             return plan
 
         except Exception as e:
             logging.error("Trip plan LLM error: %s", e)
 
-    # Fallback — build a basic plan without LLM
+    # Fallback
     return _build_fallback_trip(td, params)
 
 
 def _build_fallback_trip(td, params):
-    """Build a basic trip plan without LLM."""
+    """Build a rich fallback trip plan using enriched data + zone-based logistics (no LLM).
+    Generates VARIED itineraries based on interests, budget, and trip duration."""
+    import random
     days = params.get("days", 2)
     budget = params.get("budget", "standard")
     group_size = params.get("group_size", 2)
-    origin = params.get("origin", "Chennai")
+    interests = params.get("interests", ["temples", "darshan"])
+    interest_set = set(interests)
 
-    costs = td.get("daily_costs_estimate", {}).get(budget, {})
+    # Seed randomness from the combination of inputs so same request = same plan,
+    # but different interests/budget/days = different plan
+    seed_str = f"{days}-{budget}-{group_size}-{'|'.join(sorted(interests))}"
+    rng = random.Random(seed_str)
+
+    costs = td.get("daily_costs_estimate", {}).get(
+        budget, td.get("daily_costs_estimate", {}).get("standard", {}))
     per_day = costs.get("per_day_inr", 2500)
-    attractions = sorted(td.get("attractions", []), key=lambda x: x.get("priority", 99))
 
+    # ── Travel logistics ──
+    logistics = td.get("travel_logistics", {})
+    attr_distances = logistics.get("attraction_distances", {})
+
+    # ── Pick best hotel ──
+    budget_order = ["free", "budget", "standard", "premium", "luxury"]
+    budget_idx = budget_order.index(budget) if budget in budget_order else 2
+    accept_cats = {budget_order[max(0, min(len(budget_order) - 1, budget_idx + o))] for o in range(-1, 2)}
+    all_hotels = []
+    for hotel_group in td.get("hotels", {}).values():
+        for h in hotel_group:
+            if h.get("category") in accept_cats:
+                all_hotels.append(h)
+    if not all_hotels:
+        for hotel_group in td.get("hotels", {}).values():
+            all_hotels.extend(hotel_group)
+    all_hotels.sort(key=lambda h: h.get("rating", 0), reverse=True)
+    top_hotel = all_hotels[0] if all_hotels else {"name": "TTD Guest House", "price_range": {"min": 500, "max": 1500}}
+    hotel_cost = (top_hotel["price_range"]["min"] + top_hotel["price_range"]["max"]) // 2
+
+    # ── Rank attractions by interest match + assign zones ──
+    all_attr = sorted(td.get("attractions", []), key=lambda x: x.get("priority", 99))
+    scored = []
+    for a in all_attr:
+        tags = set(a.get("interest_tags", []))
+        match_count = len(tags & interest_set)
+        # Add a small random tiebreaker so items with same score shuffle
+        scored.append((match_count, rng.random() * 0.5, a))
+    scored.sort(key=lambda x: (-x[0], x[1], x[2].get("priority", 99)))
+    ranked = [a for _, _, a in scored]
+
+    # Assign zone info to each attraction
+    for a in ranked:
+        dist_info = attr_distances.get(a["name"], {})
+        a["_zone"] = dist_info.get("zone", "B")
+        a["_walk_mins"] = dist_info.get("walk_from_temple_mins", "")
+        a["_dist_km"] = dist_info.get("distance_from_tirupati_km", "")
+
+    # Group attractions by zone — already interest-sorted with shuffle
+    zone_a = [a for a in ranked if a["_zone"] == "A" and a["name"] != "Sri Venkateswara Swamy Temple"]
+    zone_b = [a for a in ranked if a["_zone"] == "B"]
+    zone_c = [a for a in ranked if a["_zone"] == "C"]
+    zone_d = [a for a in ranked if a["_zone"] == "D"]
+    zone_e = [a for a in ranked if a["_zone"] == "E"]
+
+    # ── Pick darshan type based on budget ──
+    darshan_types = td.get("darshan_types", [])
+    darshan_map = {d.get("name", "").lower(): d for d in darshan_types}
+    if budget in ("premium", "luxury"):
+        darshan = darshan_map.get("special entry darshan (sed)") or darshan_map.get("vip break darshan")
+    elif budget == "budget":
+        darshan = darshan_map.get("sarva darshan (free)")
+    else:
+        darshan = darshan_map.get("special entry darshan (sed)")
+    if not darshan and darshan_types:
+        darshan = darshan_types[0]
+    darshan = darshan or {"name": "Sarva Darshan", "cost": 0, "wait_hours": "6-12"}
+    darshan_cost = darshan.get("cost", 0)
+    darshan_name = darshan.get("name", "Darshan")
+
+    # ── Categorize restaurants by location and budget ──
+    restaurants = td.get("restaurants", [])
+    tirumala_restaurants = [r for r in restaurants if r.get("location") == "tirumala"]
+    tirupati_restaurants = [r for r in restaurants if r.get("location") == "tirupati"]
+    # Sort by budget fit
+    if budget == "budget":
+        tirumala_restaurants.sort(key=lambda r: r.get("price_per_person", 999))
+        tirupati_restaurants.sort(key=lambda r: r.get("price_per_person", 999))
+    elif budget in ("premium", "luxury"):
+        tirumala_restaurants.sort(key=lambda r: -r.get("price_per_person", 0))
+        tirupati_restaurants.sort(key=lambda r: -r.get("price_per_person", 0))
+    else:
+        rng.shuffle(tirumala_restaurants)
+        rng.shuffle(tirupati_restaurants)
+
+    def _pick_restaurant(loc, exclude_names=None):
+        """Pick a restaurant for location, avoiding repeats."""
+        exclude_names = exclude_names or set()
+        pool = tirumala_restaurants if loc == "tirumala" else tirupati_restaurants
+        for r in pool:
+            if r["name"] not in exclude_names:
+                return r
+        return pool[0] if pool else {"name": "Local Restaurant", "price_per_person": 100, "specialty_dishes": ["Andhra thali"]}
+
+    meal_cost_tirumala = tirumala_restaurants[0].get("price_per_person", 0) if tirumala_restaurants else 0
+    meal_cost_tirupati = tirupati_restaurants[0].get("price_per_person", 150) if tirupati_restaurants else 150
+    avg_meal_cost = max(50, (meal_cost_tirumala + meal_cost_tirupati) // 2)
+
+    # ── Pick seva based on interests + budget (with variety) ──
+    sevas = td.get("sevas", [])
+    seva_pick = None
+    if "spiritual" in interest_set or "temples" in interest_set or "darshan" in interest_set:
+        affordable = [s for s in sevas if s.get("cost", 9999) <= per_day * 0.4]
+        if affordable:
+            rng.shuffle(affordable)
+            seva_pick = affordable[0]
+        elif sevas:
+            seva_pick = sevas[0]
+    elif sevas and budget in ("premium", "luxury"):
+        # Premium gets a seva even without spiritual interest
+        affordable = [s for s in sevas if s.get("cost", 9999) <= per_day * 0.3]
+        if affordable:
+            seva_pick = rng.choice(affordable)
+
+    # ── Determine trip theme based on dominant interests ──
+    theme_map = {
+        frozenset({"temples", "spiritual", "darshan", "pilgrimage"}): "Spiritual Pilgrimage",
+        frozenset({"nature", "waterfalls", "trekking", "adventure", "wildlife", "birdwatching"}): "Nature & Adventure",
+        frozenset({"history", "heritage", "culture", "architecture", "museum"}): "Heritage & History",
+        frozenset({"photography", "scenic"}): "Photography Tour",
+        frozenset({"family", "relaxation", "garden"}): "Family Retreat",
+        frozenset({"food", "shopping"}): "Culinary & Cultural",
+    }
+    trip_theme = "Pilgrimage"
+    best_theme_score = 0
+    for theme_tags, theme_name in theme_map.items():
+        score = len(interest_set & theme_tags)
+        if score > best_theme_score:
+            best_theme_score = score
+            trip_theme = theme_name
+
+    # ── Build itinerary (zone-aware, interest-driven) ──
     itinerary = []
-    attr_idx = 0
-    for d in range(1, days + 1):
+    used_attractions = set()
+    used_restaurants = set()
+
+    def _next_from_zone(zone_list, count=3):
+        """Get next N unused attractions from a zone."""
+        result = []
+        for a in zone_list:
+            if a["name"] not in used_attractions and len(result) < count:
+                result.append(a)
+        return result
+
+    for day_num in range(1, days + 1):
         activities = []
-        if d == 1:
-            activities.append({"time": "6:00 AM", "activity": f"Depart from {origin}", "location": origin, "duration": "3-5 hours", "cost": 350, "tip": "Start early to avoid traffic"})
-            activities.append({"time": "11:00 AM", "activity": "Arrive Tirupati, check into hotel", "location": "Tirupati", "duration": "1 hour", "cost": 0, "tip": "Keep ID proof ready"})
-            activities.append({"time": "12:00 PM", "activity": "Lunch", "location": "Tirupati", "duration": "1 hour", "cost": 150, "tip": "Try local Andhra meals"})
-            activities.append({"time": "1:30 PM", "activity": "Travel to Tirumala", "location": "Tirupati → Tirumala", "duration": "45 mins", "cost": 75, "tip": "APSRTC bus every 2 mins from bus stand"})
-            activities.append({"time": "3:00 PM", "activity": "Sri Venkateswara Swamy Darshan", "location": "Tirumala", "duration": "3-5 hours", "cost": 300, "tip": "Special Entry ₹300 for shorter queue"})
-            activities.append({"time": "8:00 PM", "activity": "Dinner & return to hotel", "location": "Tirumala/Tirupati", "duration": "2 hours", "cost": 200, "tip": "Free Annadanam available at Tirumala"})
-        else:
-            activities.append({"time": "7:00 AM", "activity": "Breakfast", "location": "Hotel/Restaurant", "duration": "1 hour", "cost": 100, "tip": "Try local tiffins — idli, dosa, pongal"})
-            # Add 2-3 attractions per day
-            for _ in range(min(3, len(attractions) - attr_idx)):
-                if attr_idx < len(attractions):
-                    a = attractions[attr_idx]
-                    h = 9 + attr_idx * 2
+        if day_num == 1:
+            # ═══ DAY 1: Tirumala hilltop (Zone A only) ═══
+            activities.append({
+                "time": "5:00 AM", "activity": "Early morning bus to Tirumala via ghat road (45 min journey)",
+                "location": "Tirupati Bus Stand → Tirumala", "duration": "45 mins", "cost": 75,
+                "tip": "APSRTC Sapthagiri Express buses run every 2 minutes. Take the first bus to beat crowds."
+            })
+            activities.append({
+                "time": "6:00 AM", "activity": f"{darshan_name} at Sri Venkateswara Temple",
+                "location": "Tirumala Temple (Zone A — Hilltop)", "duration": f"{darshan.get('wait_hours','3-5')} hours",
+                "cost": darshan_cost,
+                "tip": f"Dress code: {darshan.get('dress_code','Traditional attire')}. {darshan.get('tips','')}"
+            })
+            # After darshan — Pushkarini (3 min walk from temple)
+            pushkarini_in_list = any(a["name"] == "Swami Pushkarini" for a in zone_a)
+            if pushkarini_in_list:
+                activities.append({
+                    "time": "10:30 AM", "activity": "Holy dip at Swami Pushkarini sacred tank (3 min walk from temple exit)",
+                    "location": "Swami Pushkarini, Tirumala (Zone A)", "duration": "30 mins", "cost": 0,
+                    "tip": "The most sacred tank — take a dip before or after darshan for spiritual merit."
+                })
+                used_attractions.add("Swami Pushkarini")
+            # Lunch — pick a Tirumala restaurant
+            lunch_r = _pick_restaurant("tirumala", used_restaurants)
+            used_restaurants.add(lunch_r["name"])
+            activities.append({
+                "time": "11:30 AM", "activity": f"Lunch at {lunch_r['name']}",
+                "location": "Tirumala (Zone A)", "duration": "1 hour",
+                "cost": lunch_r.get("price_per_person", 0),
+                "tip": f"Specialties: {', '.join(lunch_r.get('specialty_dishes',['Andhra meals'])[:2])}. TTD Annadanam also serves free meals to all pilgrims."
+            })
+            # Seva if selected
+            if seva_pick:
+                activities.append({
+                    "time": "1:00 PM", "activity": f"Attend {seva_pick['name']} seva at the temple",
+                    "location": "Tirumala Temple (Zone A)", "duration": f"{seva_pick.get('duration_minutes',30)} mins",
+                    "cost": seva_pick.get("cost", 0),
+                    "tip": f"Booking: {seva_pick.get('booking','counter')}. {seva_pick.get('description','')}"
+                })
+
+            # Afternoon Zone A sightseeing — pick based on interests
+            afternoon_picks = _next_from_zone(zone_a, 3)
+            slot_times = ["2:30 PM", "3:45 PM", "5:00 PM"]
+            for i, a in enumerate(afternoon_picks):
+                walk_info = f" ({a['_walk_mins']} min walk from temple)" if a.get('_walk_mins') else ""
+                activities.append({
+                    "time": slot_times[i], "activity": f"Visit {a['name']}{walk_info}",
+                    "location": f"{a.get('location', 'Tirumala')} (Zone A — Hilltop)",
+                    "duration": f"{a.get('visit_duration_hours', 0.75)} hours",
+                    "cost": a.get("entry_fee", 0),
+                    "tip": a.get("tips", "Scenic hilltop attraction.")
+                })
+                used_attractions.add(a["name"])
+
+            # Evening
+            activities.append({
+                "time": "6:15 PM", "activity": "Evening temple aarti & illumination viewing",
+                "location": "Tirumala Temple (Zone A)", "duration": "45 mins", "cost": 0,
+                "tip": "Temple is beautifully illuminated after sunset. Soul-stirring experience."
+            })
+            # Dinner — pick a DIFFERENT Tirumala restaurant
+            dinner_r = _pick_restaurant("tirumala", used_restaurants)
+            used_restaurants.add(dinner_r["name"])
+            activities.append({
+                "time": "7:30 PM", "activity": f"Dinner at {dinner_r['name']} & rest at {top_hotel.get('name','hotel')}",
+                "location": "Tirumala (Zone A)", "duration": "1 hour",
+                "cost": dinner_r.get("price_per_person", 0),
+                "tip": f"TTD Annadanam also serves free dinner 6-10 PM. Overnight at {top_hotel.get('name','hotel')}."
+            })
+            # Day title based on activities
+            if afternoon_picks and any("nature" in t for a in afternoon_picks for t in a.get("interest_tags",[])):
+                day_title = "Darshan & Hilltop Nature Exploration"
+            elif afternoon_picks and any("spiritual" in t for a in afternoon_picks for t in a.get("interest_tags",[])):
+                day_title = "Darshan & Sacred Sites"
+            else:
+                day_title = "Darshan & Tirumala Hilltop Exploration"
+            itinerary.append({"day": day_num, "title": f"Day {day_num} — {day_title}", "activities": activities})
+
+        elif day_num == days:
+            # ═══ LAST DAY: departure day (works for 2-day, 3-day, etc.) ═══
+            activities.append({
+                "time": "6:30 AM", "activity": "Early breakfast & checkout",
+                "location": f"{top_hotel.get('name','Hotel')} (Zone A)" if days == 2 else "Hotel",
+                "duration": "1 hour", "cost": avg_meal_cost,
+                "tip": "Pack prasadam and souvenirs before leaving."
+            })
+            if days == 2:  # Still on hilltop, need to descend
+                activities.append({
+                    "time": "8:00 AM", "activity": "Bus down from Tirumala to Tirupati (45 min ghat road)",
+                    "location": "Tirumala → Tirupati", "duration": "45 mins", "cost": 75,
+                    "tip": "Enjoy the scenic ghat road views. Buses run every 2 minutes."
+                })
+
+            # Padmavathi temple (Zone C) — tradition says visit after Tirumala
+            padmavathi = [a for a in zone_c if "padmavathi" in a["name"].lower() and a["name"] not in used_attractions]
+            other_c = [a for a in zone_c if a["name"] not in used_attractions and a not in padmavathi]
+            start_time = 9 if days == 2 else 8
+            if padmavathi:
+                a = padmavathi[0]
+                activities.append({
+                    "time": f"{start_time}:00 AM",
+                    "activity": f"Visit {a['name']} (15 min auto from Tirupati)",
+                    "location": f"{a.get('location','Tiruchanoor')} (Zone C — 5 km from Tirupati)",
+                    "duration": f"{a.get('visit_duration_hours',1)} hours",
+                    "cost": a.get("entry_fee", 0),
+                    "tip": a.get("tips", "Must-visit: tradition says visit Goddess Padmavathi after Lord Venkateswara.")
+                })
+                used_attractions.add(a["name"])
+                start_time += 1
+
+            # Zone D excursion (Chandragiri) if interests match + enough time
+            zone_d_interests = {"history", "heritage", "architecture", "photography", "culture"}
+            if zone_d and (interest_set & zone_d_interests) and days >= 3:
+                a = zone_d[0]
+                activities.append({
+                    "time": f"{start_time}:00 AM",
+                    "activity": f"Half-day excursion to {a['name']} (35 min taxi, 15 km from Tirupati)",
+                    "location": f"{a.get('location','Chandragiri')} (Zone D — 15 km from Tirupati)",
+                    "duration": f"{a.get('visit_duration_hours',2)} hours",
+                    "cost": a.get("entry_fee", 0) + 800,
+                    "tip": f"Taxi: ~Rs.800 round trip. {a.get('tips', '')}"
+                })
+                used_attractions.add(a["name"])
+            else:
+                # Zone B town attractions
+                town_picks = _next_from_zone(zone_b, 2 if days == 2 else 3)
+                for i, a in enumerate(town_picks):
+                    t = f"{start_time + i}:{'30' if i else '00'} {'AM' if start_time + i < 12 else 'PM'}"
+                    dist_km = attr_distances.get(a["name"], {}).get("distance_from_tirupati_km", "2-5")
                     activities.append({
-                        "time": f"{h}:00 AM" if h < 12 else f"{h-12}:00 PM",
-                        "activity": f"Visit {a['name']}",
-                        "location": a.get("location", "Tirupati"),
-                        "duration": f"{a.get('visit_duration_hours', 1)} hours",
+                        "time": t,
+                        "activity": f"Visit {a['name']} ({dist_km} km from Tirupati center)",
+                        "location": f"{a.get('location','Tirupati')} (Zone B — Town)",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
                         "cost": a.get("entry_fee", 0),
                         "tip": a.get("tips", "")
                     })
-                    attr_idx += 1
-            activities.append({"time": "1:00 PM", "activity": "Lunch", "location": "Restaurant", "duration": "1 hour", "cost": 200, "tip": "Vegetarian food widely available"})
-            if d == days:
-                activities.append({"time": "4:00 PM", "activity": f"Return journey to {origin}", "location": "Tirupati", "duration": "3-5 hours", "cost": 350, "tip": "Buy prasadam and souvenirs before leaving"})
+                    used_attractions.add(a["name"])
 
-        itinerary.append({"day": d, "title": f"Day {d}", "activities": activities})
+            # Farewell lunch — pick a Tirupati restaurant
+            lunch_r = _pick_restaurant("tirupati", used_restaurants)
+            used_restaurants.add(lunch_r["name"])
+            activities.append({
+                "time": "12:30 PM" if days == 2 else "1:00 PM",
+                "activity": f"Farewell lunch at {lunch_r['name']}",
+                "location": "Tirupati (Zone B)", "duration": "1 hour",
+                "cost": lunch_r.get("price_per_person", 150),
+                "tip": f"Specialties: {', '.join(lunch_r.get('specialty_dishes',['Andhra meals'])[:2])}. Try the local flavors one last time!"
+            })
+            # Shopping if interested
+            if "shopping" in interest_set or "food" in interest_set:
+                activities.append({
+                    "time": "1:30 PM", "activity": "Shopping — TTD Laddu counters, dry fruit laddus, local handicrafts",
+                    "location": "Tirupati (Zone B)", "duration": "1 hour", "cost": 200,
+                    "tip": "Buy Srivari Laddu from TTD counter. Dry fruit laddus make great gifts."
+                })
+            else:
+                activities.append({
+                    "time": "1:30 PM", "activity": "Buy prasadam and souvenirs",
+                    "location": "Tirupati (Zone B)", "duration": "30 mins", "cost": 100,
+                    "tip": "TTD laddu counters available in Tirupati too."
+                })
+            activities.append({
+                "time": "2:30 PM", "activity": "Departure from Tirupati",
+                "location": "Tirupati Railway Station / Bus Stand", "duration": "-", "cost": 0,
+                "tip": "Allow extra time on weekends — traffic can be heavy. Govinda Govinda!"
+            })
+            day_title = "Tirupati Town, Shopping & Departure" if ("shopping" in interest_set or "food" in interest_set) else "Tirupati Town & Departure"
+            itinerary.append({"day": day_num, "title": f"Day {day_num} — {day_title}", "activities": activities})
 
+        elif day_num == 2:
+            # ═══ DAY 2 of 3+ day trip: More exploration ═══
+            remaining_zone_a = _next_from_zone(zone_a, 4)
+            # Decide: stay on hilltop or descend to town based on what's left + interests
+            nature_set = {"nature", "waterfalls", "trekking", "adventure", "wildlife", "birdwatching", "scenic", "photography"}
+            prefer_nature = bool(interest_set & nature_set) and len(remaining_zone_a) >= 2
+
+            if prefer_nature and remaining_zone_a:
+                # Stay on hilltop — nature day
+                activities.append({
+                    "time": "5:30 AM", "activity": "Sunrise nature walk — Tirumala hilltop trails",
+                    "location": "Tirumala (Zone A)", "duration": "1 hour", "cost": 0,
+                    "tip": "Cool mornings at 15-20°C. Spot deer, peacocks, and langurs on the trails."
+                })
+                breakfast_r = _pick_restaurant("tirumala", used_restaurants)
+                used_restaurants.add(breakfast_r["name"])
+                activities.append({
+                    "time": "7:00 AM", "activity": f"Breakfast at {breakfast_r['name']}",
+                    "location": "Tirumala (Zone A)", "duration": "45 mins",
+                    "cost": breakfast_r.get("price_per_person", 0),
+                    "tip": f"Specialties: {', '.join(breakfast_r.get('specialty_dishes',['South Indian breakfast'])[:2])}"
+                })
+                nature_slots = ["8:00 AM", "10:00 AM", "11:30 AM", "2:30 PM"]
+                for i, a in enumerate(remaining_zone_a[:4]):
+                    walk_info = f" ({a['_walk_mins']} min walk)" if a.get('_walk_mins') else ""
+                    activities.append({
+                        "time": nature_slots[i],
+                        "activity": f"Visit {a['name']}{walk_info}",
+                        "location": f"{a.get('location','Tirumala')} (Zone A — Hilltop)",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                lunch_r = _pick_restaurant("tirumala", used_restaurants)
+                used_restaurants.add(lunch_r["name"])
+                activities.append({
+                    "time": "12:30 PM", "activity": f"Lunch at {lunch_r['name']}",
+                    "location": "Tirumala (Zone A)", "duration": "1 hour",
+                    "cost": lunch_r.get("price_per_person", 0),
+                    "tip": f"Specialties: {', '.join(lunch_r.get('specialty_dishes',['Rice, sambar, curd'])[:2])}"
+                })
+                dinner_r = _pick_restaurant("tirumala", used_restaurants)
+                activities.append({
+                    "time": "7:00 PM", "activity": f"Dinner at {dinner_r['name']}",
+                    "location": "Tirumala (Zone A)", "duration": "1 hour",
+                    "cost": dinner_r.get("price_per_person", 0),
+                    "tip": "Relax after a day of nature exploration."
+                })
+                day_title = "Nature & Scenic Exploration"
+                if any("photography" in t for a in remaining_zone_a for t in a.get("interest_tags",[])):
+                    day_title = "Nature Photography & Scenic Spots"
+                itinerary.append({"day": day_num, "title": f"Day {day_num} — {day_title}", "activities": activities})
+
+            else:
+                # Descend to Tirupati town
+                activities.append({
+                    "time": "7:00 AM", "activity": "Breakfast & bus down to Tirupati (45 min ghat road)",
+                    "location": "Tirumala → Tirupati", "duration": "1.5 hours", "cost": avg_meal_cost + 75,
+                    "tip": "Scenic ghat road descent. Buses every 2 minutes."
+                })
+                # Zone C first
+                c_picks = _next_from_zone(zone_c, 1)
+                for a in c_picks:
+                    activities.append({
+                        "time": "9:00 AM", "activity": f"Visit {a['name']} (15 min auto from Tirupati)",
+                        "location": f"{a.get('location','Tiruchanoor')} (Zone C — 5 km)",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                # Zone B
+                b_picks = _next_from_zone(zone_b, 3)
+                b_times = ["10:30 AM", "12:00 PM", "2:30 PM"]
+                for i, a in enumerate(b_picks):
+                    dist_km = attr_distances.get(a["name"], {}).get("distance_from_tirupati_km", "2-5")
+                    activities.append({
+                        "time": b_times[i],
+                        "activity": f"Visit {a['name']} ({dist_km} km from center)",
+                        "location": f"{a.get('location','Tirupati')} (Zone B — Town)",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                lunch_r = _pick_restaurant("tirupati", used_restaurants)
+                used_restaurants.add(lunch_r["name"])
+                activities.append({
+                    "time": "1:00 PM", "activity": f"Lunch at {lunch_r['name']}",
+                    "location": "Tirupati (Zone B)", "duration": "1 hour",
+                    "cost": lunch_r.get("price_per_person", 150),
+                    "tip": f"Specialties: {', '.join(lunch_r.get('specialty_dishes',['Andhra meals'])[:2])}"
+                })
+                dinner_r = _pick_restaurant("tirupati", used_restaurants)
+                activities.append({
+                    "time": "7:00 PM", "activity": f"Dinner at {dinner_r['name']} & evening free time",
+                    "location": "Tirupati (Zone B)", "duration": "1.5 hours",
+                    "cost": dinner_r.get("price_per_person", 150),
+                    "tip": "Explore local bazaars for temple souvenirs and handicrafts."
+                })
+                day_title = "Tirupati Town & Temple Heritage" if (interest_set & {"history","heritage","architecture"}) else "Tirupati Town Exploration"
+                itinerary.append({"day": day_num, "title": f"Day {day_num} — {day_title}", "activities": activities})
+
+        else:
+            # ═══ MIDDLE DAYS (day 3+ on 4+ day trips) ═══
+            remaining_a = _next_from_zone(zone_a, 3)
+            remaining_b = _next_from_zone(zone_b, 3)
+            remaining_c = _next_from_zone(zone_c, 1)
+            remaining_d = _next_from_zone(zone_d, 1)
+
+            # Try Zone D excursion if available and not yet done
+            if remaining_d and (interest_set & {"history", "heritage", "photography", "architecture", "adventure"}):
+                a = remaining_d[0]
+                activities.append({
+                    "time": "7:00 AM", "activity": "Early breakfast",
+                    "location": "Hotel", "duration": "45 mins", "cost": avg_meal_cost,
+                    "tip": "Start early for the excursion."
+                })
+                activities.append({
+                    "time": "8:30 AM", "activity": f"Excursion to {a['name']} ({a.get('_dist_km','15')} km from Tirupati, ~35 min taxi)",
+                    "location": f"{a.get('location','nearby')} (Zone D)",
+                    "duration": f"{a.get('visit_duration_hours',2.5)} hours",
+                    "cost": a.get("entry_fee", 0) + 800,
+                    "tip": f"Taxi: ~Rs.800 round trip. {a.get('tips', '')}"
+                })
+                used_attractions.add(a["name"])
+                # Fill afternoon with remaining town attractions
+                remaining_mix = remaining_b + remaining_c
+                for i, a in enumerate(remaining_mix[:2]):
+                    activities.append({
+                        "time": f"{1 + i}:00 PM",
+                        "activity": f"Visit {a['name']}",
+                        "location": f"{a.get('location','Tirupati')} (Zone {a['_zone']})",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                day_title = "Excursion & Exploration"
+            elif remaining_a:
+                # More hilltop nature
+                activities.append({
+                    "time": "6:00 AM", "activity": "Morning meditation / nature walk",
+                    "location": "Tirumala (Zone A)", "duration": "1 hour", "cost": 0,
+                    "tip": "The hilltop is magical at dawn. Perfect for mindfulness."
+                })
+                for i, a in enumerate(remaining_a[:3]):
+                    activities.append({
+                        "time": f"{8 + i * 2}:00 AM" if i < 2 else "1:00 PM",
+                        "activity": f"Visit {a['name']}" + (f" ({a['_walk_mins']} min walk)" if a.get('_walk_mins') else ""),
+                        "location": f"{a.get('location','Tirumala')} (Zone A — Hilltop)",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                day_title = "Hilltop Nature Day"
+            else:
+                # More town
+                activities.append({
+                    "time": "7:00 AM", "activity": "Breakfast",
+                    "location": "Hotel", "duration": "45 mins", "cost": avg_meal_cost,
+                    "tip": "Try local idli, dosa, pongal."
+                })
+                remaining_all = remaining_b + remaining_c
+                for i, a in enumerate(remaining_all[:3]):
+                    activities.append({
+                        "time": f"{9 + i * 2}:00 AM" if i < 2 else "2:00 PM",
+                        "activity": f"Visit {a['name']}",
+                        "location": f"{a.get('location','Tirupati')} (Zone {a['_zone']})",
+                        "duration": f"{a.get('visit_duration_hours',1)} hours",
+                        "cost": a.get("entry_fee", 0),
+                        "tip": a.get("tips", "")
+                    })
+                    used_attractions.add(a["name"])
+                day_title = "Sightseeing & Cultural Exploration"
+
+            lunch_r = _pick_restaurant("tirupati", used_restaurants)
+            used_restaurants.add(lunch_r["name"])
+            activities.append({
+                "time": "12:30 PM", "activity": f"Lunch at {lunch_r['name']}",
+                "location": "Tirupati", "duration": "1 hour",
+                "cost": lunch_r.get("price_per_person", 150),
+                "tip": f"Specialties: {', '.join(lunch_r.get('specialty_dishes',['Andhra thali'])[:2])}"
+            })
+            dinner_r = _pick_restaurant("tirupati", used_restaurants)
+            activities.append({
+                "time": "7:00 PM", "activity": f"Dinner at {dinner_r['name']}",
+                "location": "Tirupati", "duration": "1 hour",
+                "cost": dinner_r.get("price_per_person", 150),
+                "tip": "Last evening to soak in the holy atmosphere."
+            })
+            itinerary.append({"day": day_num, "title": f"Day {day_num} — {day_title}", "activities": activities})
+
+    # ── Map points ──
     map_points = [{"name": "Tirupati Railway Station", "lat": 13.6288, "lng": 79.4192, "type": "transport", "day": 1}]
-    for a in attractions[:min(days * 3, len(attractions))]:
-        map_points.append({"name": a["name"], "lat": a.get("lat", 13.65), "lng": a.get("lng", 79.40), "type": a.get("type", "attraction"), "day": 1})
+    for a in ranked:
+        if a["name"] in used_attractions or a["name"] == "Sri Venkateswara Swamy Temple":
+            map_points.append({
+                "name": a["name"], "lat": a.get("lat", 13.65), "lng": a.get("lng", 79.40),
+                "type": a.get("type", "attraction"),
+                "day": 1 if a.get("_zone") == "A" else min(2, days)
+            })
 
-    total_pp = per_day * days
+    # ── Cost breakdown ──
+    accom = hotel_cost * (days - 1)
+    food_total = avg_meal_cost * 3 * days
+    local_trans = 75 * 2 + 100 * (days - 1)
+    seva_cost = seva_pick.get("cost", 0) if seva_pick else 0
+    attr_cost = sum(a.get("entry_fee", 0) for a in ranked if a["name"] in used_attractions)
+    excursion_cost = 800 if any(a["name"] in used_attractions for a in zone_d) else 0
+    total_pp = accom + food_total + local_trans + darshan_cost + seva_cost + attr_cost + excursion_cost + 300
+    packing = td.get("packing_essentials", [])[:8]
+    rules = td.get("rules_and_customs", [])
+    emergency = td.get("emergency_contacts", {})
+
+    # Build smart summary highlighting what makes THIS plan unique
+    highlight_places = [a["name"] for a in ranked if a["name"] in used_attractions][:3]
+    summary_parts = [f"A curated {budget} {days}-day {trip_theme.lower()} for {group_size} people."]
+    summary_parts.append(f"Highlights: {darshan_name}")
+    if highlight_places:
+        summary_parts.append(f"visits to {', '.join(highlight_places)}")
+    if seva_pick:
+        summary_parts.append(f"{seva_pick['name']} seva")
+    summary_parts.append(f"Stay at {top_hotel.get('name','TTD Guest House')}.")
+
     return {
-        "title": f"🛕 {days}-Day Tirumala Pilgrimage from {origin}",
-        "summary": f"A {budget} {days}-day trip to Tirumala-Tirupati from {origin} for {group_size} people. Includes main temple darshan, sightseeing, and local cuisine.",
-        "recommended_hotel": {"name": "TTD Guest House", "cost_per_night": per_day // 3, "reason": "Affordable and close to temples"},
+        "title": f"{days}-Day {trip_theme} — Tirumala & Tirupati",
+        "summary": ", ".join(summary_parts),
+        "hotel": top_hotel.get("name", "TTD Guest House"),
+        "recommended_hotel": {
+            "name": top_hotel.get("name", "TTD Guest House"),
+            "cost_per_night": hotel_cost,
+            "reason": f"{'⭐' * int(top_hotel.get('rating', 3))} rated, "
+                       f"{top_hotel.get('category','standard')} category with "
+                       f"{', '.join(top_hotel.get('amenities', ['basic amenities'])[:3])}"
+        },
         "itinerary": itinerary,
         "cost_breakdown": {
-            "transport_to_tirupati": 500, "local_transport": 300 * days,
-            "accommodation_total": (per_day // 3) * days, "food_total": 500 * days,
-            "darshan_sevas": 600, "attractions": 200, "miscellaneous": 500,
-            "total_per_person": total_pp, "total_group": total_pp * group_size
+            "accommodation": accom,
+            "food": food_total,
+            "transport": local_trans,
+            "darshan_sevas": darshan_cost + seva_cost,
+            "attractions": attr_cost,
+            "miscellaneous": 300,
+            "per_person": total_pp,
+            "group_total": total_pp * group_size
         },
         "map_points": map_points,
-        "packing_tips": td.get("packing_essentials", [])[:6],
-        "best_time_tip": "October to February is the best time — pleasant weather and fewer crowds on weekdays.",
+        "packing_tips": packing,
+        "best_time_tip": "October–February: pleasant weather, fewer midweek crowds. Avoid weekends & festival peaks.",
+        "emergency_info": f"TTD Helpline: {emergency.get('ttd_helpline', '0877-2233333')}, "
+                          f"Police: {emergency.get('police', '100')}, "
+                          f"Website: {emergency.get('ttd_website', 'tirumala.org')}",
+        "important_rules": rules[:6] if rules else [],
         "source": "fallback"
     }
 
 
-@app.route("/api/trip/plan", methods=["POST"])
-def trip_plan():
-    """AI Trip Planner — generates an itinerary for visitors already in Tirupati."""
-    data = request.get_json(silent=True) or {}
+# ═══════════════════════════════════════════════════════════════════════════════
+#  FLASK APP
+# ═══════════════════════════════════════════════════════════════════════════════
+app = Flask(__name__, static_folder="client/build", static_url_path="")
+CORS(app)
+
+
+# ── API: Health ─────────────────────────────────────────────────────
+@app.route("/api/health")
+def api_health():
+    return jsonify({"status": "ok", "data_rows": len(df_full)})
+
+
+# ── API: Predict Today ─────────────────────────────────────────────
+@app.route("/api/predict/today")
+def api_predict_today():
+    today = datetime.now()
+    predictions = predict_date_range(today, today)
+    p = predictions[0]
+    bn = BAND_NAMES[p["band"]]
+    events = hc_get_events(today.year, today.month, today.day)
+    ev_list = [e["name"] for e in events] if events else []
+    return jsonify({
+        "date": today.strftime("%Y-%m-%d"),
+        "day": DOW_NAMES[today.weekday()],
+        "predicted_band": bn,
+        "predicted_pilgrims": round(p.get("pilgrims", 0)),
+        "confidence": round(p["conf"], 3),
+        "reason": p["reason"],
+        "advice": BANDS[p["band"]].get("advice", ""),
+        "color": BAND_COLORS[bn],
+        "events": ev_list,
+    })
+
+
+# ── API: Predict (GET for quick forecast, POST for date range) ──────
+@app.route("/api/predict", methods=["GET", "POST"])
+def api_predict():
+    if request.method == "GET":
+        n = min(int(request.args.get("days", 7)), 90)
+        start = datetime.now()
+        end = start + timedelta(days=n - 1)
+        predictions = predict_date_range(start, end)
+        forecast = []
+        for p in predictions:
+            bn = BAND_NAMES[p["band"]]
+            forecast.append({
+                "date": p["date"].strftime("%Y-%m-%d"),
+                "day": DOW_NAMES[p["date"].weekday()],
+                "predicted_band": bn,
+                "band_name": bn,
+                "predicted_pilgrims": round(p.get("pilgrims", 0)),
+                "confidence": round(p["conf"], 3),
+                "reason": p["reason"],
+                "advice": BANDS[p["band"]].get("advice", ""),
+                "color": BAND_COLORS[bn],
+                "bg": BAND_BG[bn],
+                "is_weekend": p["date"].weekday() >= 5,
+            })
+        return jsonify({"forecast": forecast, "total": len(forecast)})
+
+    # POST — date range prediction
+    data = request.json or {}
+    start_str = data.get("start_date", "")
+    end_str   = data.get("end_date", "")
+    try:
+        start = datetime.strptime(start_str, "%Y-%m-%d")
+        end   = datetime.strptime(end_str,   "%Y-%m-%d")
+    except ValueError:
+        return jsonify({"error": "Invalid date format. Use YYYY-MM-DD."}), 400
+
+    if end < start:
+        return jsonify({"error": "End date must be after start date."}), 400
+    if (end - start).days > 90:
+        return jsonify({"error": "Maximum 90 days range."}), 400
+
+    predictions = predict_date_range(start, end)
+    results = []
+    for p in predictions:
+        bn = BAND_NAMES[p["band"]]
+        results.append({
+            "date": p["date"].strftime("%Y-%m-%d"),
+            "day":  DOW_NAMES[p["date"].weekday()],
+            "band": p["band"],
+            "band_name": bn,
+            "predicted_band": bn,
+            "predicted_pilgrims": round(p.get("pilgrims", 0)),
+            "confidence": round(p["conf"], 3),
+            "reason": p["reason"],
+            "advice": BANDS[p["band"]].get("advice", ""),
+            "color": BAND_COLORS[bn],
+            "bg": BAND_BG[bn],
+            "is_weekend": p["date"].weekday() >= 5,
+        })
+
+    from collections import Counter
+    band_counts = Counter(r["band_name"] for r in results)
+    summary = {bn: band_counts.get(bn, 0) for bn in BAND_NAMES}
+    best = sorted(results, key=lambda r: (r["band"], -r["confidence"]))[:3]
+
+    return jsonify({
+        "predictions": results,
+        "summary": summary,
+        "best_days": best,
+        "total_days": len(results),
+    })
+
+
+# ── API: Data Summary ──────────────────────────────────────────────
+@app.route("/api/data/summary")
+def api_data_summary():
+    s = df_full["total_pilgrims"]
+    return jsonify({
+        "total_records": len(df_full),
+        "date_range": {
+            "start": df_full.date.min().strftime("%Y-%m-%d"),
+            "end": df_full.date.max().strftime("%Y-%m-%d"),
+        },
+        "pilgrim_stats": {
+            "mean": round(s.mean()),
+            "median": round(s.median()),
+            "max": int(s.max()),
+            "min": int(s.min()),
+            "std": round(s.std()),
+        },
+    })
+
+
+# ── API: Model Info ─────────────────────────────────────────────────
+@app.route("/api/model-info")
+def api_model_info():
+    return jsonify({
+        "n_features": len(FEATURE_COLS),
+        "n_bands": N_BANDS,
+        "band_names": BAND_NAMES,
+        "bands": BANDS,
+        "data_end": df_full.date.max().strftime("%Y-%m-%d"),
+        "data_rows": len(df_full),
+        "best_alpha": BEST_ALPHA,
+        "last_retrain": META.get("last_retrain", ""),
+        "band_colors": BAND_COLORS,
+        "band_bg": BAND_BG,
+    })
+
+
+# ── API: Calendar ───────────────────────────────────────────────────
+@app.route("/api/calendar/<int:year>/<int:month>")
+def api_calendar(year, month):
+    hindu_info = get_hindu_month_info(month)
+    first_day  = datetime(year, month, 1)
+    last_day_n = calendar.monthrange(year, month)[1]
+    last_day   = datetime(year, month, last_day_n)
+    predictions = predict_date_range(first_day, last_day)
+    first_weekday = calendar.monthrange(year, month)[0]  # Mon=0
+
+    days = []
+    today_d = date.today()
+    for idx, p in enumerate(predictions):
+        day_num = idx + 1
+        bn = BAND_NAMES[p["band"]]
+        events = hc_get_events(year, month, day_num)
+        ev_list = []
+        for e in (events or [])[:2]:
+            imp = IMPACT.get(e.get("impact", "low"), {})
+            ev_list.append({
+                "name": e["name"],
+                "name_te": e.get("name_te", ""),
+                "emoji": e.get("emoji", "📌"),
+                "impact": e.get("impact", "low"),
+                "impact_color": {"extreme": "#B71C1C", "very_high": "#E65100",
+                                 "high": "#F57F17", "moderate": "#2E7D32",
+                                 "low": "#757575"}.get(e.get("impact", "low"), "#757575"),
+            })
+        days.append({
+            "day": day_num,
+            "band": p["band"],
+            "band_name": bn,
+            "confidence": round(p["conf"], 3),
+            "color": BAND_COLORS[bn],
+            "bg": BAND_BG[bn],
+            "events": ev_list,
+            "is_today": (year == today_d.year and month == today_d.month and day_num == today_d.day),
+        })
+
+    # Festivals this month
+    year_fests  = FESTIVALS.get(year, [])
+    month_fests = []
+    for f in year_fests:
+        if f[0] == month:
+            imp = IMPACT.get(f[5], IMPACT["low"])
+            month_fests.append({
+                "day": f[1], "name": f[2], "name_te": f[3],
+                "type": f[4], "impact": f[5], "impact_label": imp.get("label", ""),
+            })
+
+    return jsonify({
+        "year": year, "month": month,
+        "month_name": calendar.month_name[month],
+        "hindu_month": hindu_info,
+        "first_weekday": first_weekday,
+        "num_days": last_day_n,
+        "days": days,
+        "festivals": month_fests,
+    })
+
+
+# ── API: Chat (RAG-powered) ──────────────────────────────────────────
+@app.route("/api/chat", methods=["POST"])
+def api_chat():
+    data = request.json or {}
+    message = data.get("message", "").strip()
+    if not message:
+        return jsonify({"reply": "Please enter a question.", "source": "error"})
+
+    # Check for date-based crowd prediction queries
+    date_match = re.search(r'(\d{4}-\d{2}-\d{2})', message)
+    if date_match:
+        try:
+            fdate = datetime.strptime(date_match.group(1), "%Y-%m-%d")
+            predictions = predict_date_range(fdate, fdate)
+            p = predictions[0]
+            bn = BAND_NAMES[p["band"]]
+            events = hc_get_events(fdate.year, fdate.month, fdate.day)
+            ev_names = [e["name"] for e in events] if events else []
+            return jsonify({
+                "reply": f"Crowd prediction for {fdate.strftime('%B %d, %Y (%A)')}",
+                "prediction": {
+                    "date": fdate.strftime("%Y-%m-%d"),
+                    "band": bn, "confidence": f"{p['conf']:.0%}",
+                    "advice": BANDS[p["band"]].get("advice", ""),
+                    "reason": p["reason"],
+                    "events": ev_names,
+                },
+                "source": "prediction",
+            })
+        except Exception:
+            pass
+
+    # Check for crowd forecast keywords
+    crowd_keywords = ["crowd", "busy", "rush", "best time", "when to visit",
+                      "how many", "pilgrim", "footfall", "peak", "quiet", "darshan time"]
+    query_lower = message.lower()
+    if any(kw in query_lower for kw in crowd_keywords):
+        today_dt = datetime.now()
+        predictions = predict_date_range(today_dt, today_dt + timedelta(days=6))
+        forecast = []
+        for p in predictions:
+            bn = BAND_NAMES[p["band"]]
+            forecast.append({"date": p["date"].strftime("%b %d (%a)"), "band": bn, "conf": f"{p['conf']:.0%}"})
+        if forecast:
+            return jsonify({
+                "reply": "Here's the current crowd forecast for the next 7 days:",
+                "crowd_forecast": forecast,
+                "source": "forecast",
+            })
+
+    # RAG + LLM chatbot
+    result = _chatbot_respond(message)
+    if isinstance(result, tuple):
+        reply, source = result
+    else:
+        reply, source = result, "error"
+    return jsonify({"reply": reply, "source": source})
+
+
+# ── API: Trip Plan (LLM-powered) ──────────────────────────────────────
+@app.route("/api/trip-plan", methods=["POST"])
+def api_trip_plan():
+    data = request.json or {}
     params = {
-        "days": min(max(int(data.get("days", 2)), 1), 7),
+        "days": min(int(data.get("days", 2)), 7),
         "budget": data.get("budget", "standard"),
-        "origin": "Tirupati",
-        "group_size": min(max(int(data.get("group_size", 2)), 1), 20),
+        "group_size": min(int(data.get("group_size", data.get("num_people", 2))), 10),
+        "origin": data.get("origin", "Tirupati"),
+        "interests": data.get("interests", data.get("priorities", ["temples", "darshan"])),
+    }
+    plan = _generate_trip_plan(params)
+    return jsonify(plan)
+
+
+@app.route("/api/trip/plan", methods=["POST"])
+def api_trip_plan_v2():
+    data = request.json or {}
+    params = {
+        "days": min(int(data.get("days", 2)), 7),
+        "budget": data.get("budget", "standard"),
+        "group_size": min(int(data.get("group_size", 2)), 10),
+        "origin": data.get("origin", "Tirupati"),
         "interests": data.get("interests", ["temples", "darshan"]),
     }
     plan = _generate_trip_plan(params)
     return jsonify(plan)
 
 
-@app.route("/api/trip/data", methods=["GET"])
-def trip_data():
-    """Return raw trip data — hotels, attractions, transport costs."""
-    td = _load_trip_data()
+# ── API: History (with pagination & filtering) ─────────────────────
+@app.route("/api/history")
+def api_history():
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 50))
+    start_date = request.args.get("start_date")
+    end_date = request.args.get("end_date")
+
+    filtered = df_full.copy()
+    if start_date:
+        try:
+            filtered = filtered[filtered.date >= pd.Timestamp(start_date)]
+        except Exception:
+            pass
+    if end_date:
+        try:
+            filtered = filtered[filtered.date <= pd.Timestamp(end_date)]
+        except Exception:
+            pass
+
+    # Sort by date descending for recent-first
+    filtered = filtered.sort_values("date", ascending=False)
+    total = len(filtered)
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = max(1, min(page, total_pages))
+
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    page_df = filtered.iloc[start_idx:end_idx]
+
+    records = []
+    for _, r in page_df.iterrows():
+        val = int(r.total_pilgrims)
+        band_idx = pilgrims_to_band(val)
+        records.append({
+            "date": r.date.strftime("%Y-%m-%d"),
+            "total_pilgrims": val,
+            "band_index": band_idx,
+            "band_name": BAND_NAMES[band_idx],
+            "band_color": BAND_COLORS[BAND_NAMES[band_idx]],
+            "band_bg": BAND_BG[BAND_NAMES[band_idx]],
+            "day_of_week": DOW_NAMES[r.date.weekday()],
+            "is_weekend": r.date.weekday() >= 5,
+        })
+
+    # Summary stats for the full filtered dataset
+    s = filtered["total_pilgrims"]
+    busiest_row = filtered.loc[s.idxmax()]
+    quietest_row = filtered.loc[s.idxmin()]
+    summary = {
+        "avg": round(s.mean()),
+        "median": round(s.median()),
+        "max": int(s.max()),
+        "min": int(s.min()),
+        "busiest_date": busiest_row.date.strftime("%Y-%m-%d"),
+        "busiest_pilgrims": int(busiest_row.total_pilgrims),
+        "quietest_date": quietest_row.date.strftime("%Y-%m-%d"),
+        "quietest_pilgrims": int(quietest_row.total_pilgrims),
+        "date_start": filtered.date.min().strftime("%Y-%m-%d"),
+        "date_end": filtered.date.max().strftime("%Y-%m-%d"),
+    }
+
     return jsonify({
-        "hotels": td.get("hotels", {}),
-        "attractions": td.get("attractions", []),
-        "restaurants": td.get("restaurants", []),
-        "transport": td.get("transport", {}),
-        "daily_costs": td.get("daily_costs_estimate", {}),
-        "sevas": td.get("sevas", []),
-        "festivals": td.get("festivals", []),
-        "tips": td.get("tips", []),
+        "data": records,
+        "page": page,
+        "per_page": per_page,
+        "total": total,
+        "total_pages": total_pages,
+        "summary": summary,
+        "band_names": BAND_NAMES,
+        "band_colors": BAND_COLORS,
+        "band_bg": BAND_BG,
     })
 
 
-# ── Hindu Calendar (predictions + festivals + lunar events) ──
-@app.route("/api/calendar", methods=["GET"])
-def calendar_month():
-    """Return calendar data: predictions + festival annotations for a month."""
-    now = datetime.now()
-    year = request.args.get("year", now.year, type=int)
-    month = request.args.get("month", now.month, type=int)
-
-    if not (1 <= month <= 12) or not (2020 <= year <= 2030):
-        return jsonify({"error": "Invalid year/month"}), 400
-
-    try:
-        cache_key = f"calendar:{year}:{month}"
-        cached = _cache_get(cache_key)
-        if cached:
-            return jsonify(cached)
-        result = _build_calendar(year, month)
-        _cache_set(cache_key, result)
-        return jsonify(result)
-    except Exception as e:
-        logging.exception("Calendar error")
-        return jsonify({"error": str(e)}), 500
+# ── Serve React frontend (MUST be AFTER all /api routes) ───────────
+@app.route("/")
+def serve_react():
+    return send_from_directory(app.static_folder, "index.html")
 
 
-def _build_calendar(year: int, month: int) -> dict:
-    """Build calendar data for a given month (used by endpoint and cache warmer)."""
-    now = datetime.now()
-    _, days_in_month = _monthrange(year, month)
-    today = now.date()
-
-    # Historical data for past dates in this month
-    raw = manager._get_raw_data()
-    hist_mask = (raw["date"].dt.year == year) & (raw["date"].dt.month == month)
-    hist_data = raw[hist_mask].assign(date=lambda x: x["date"].dt.strftime("%Y-%m-%d"))
-    hist_map = {r["date"]: r for _, r in hist_data.iterrows()}
-
-    # Predictions for future dates
-    last_data_date = raw["date"].max().date()
-    month_end = date(year, month, days_in_month)
-    days_to_end = (month_end - last_data_date).days
-    pred_map = {}
-    if days_to_end > 0 and days_to_end <= 90:
-        forecast = manager.predict_next_days(min(days_to_end, 90))
-        pred_map = {f["date"]: f for f in forecast}
-
-    # Build day-by-day calendar
-    days = []
-    for d in range(1, days_in_month + 1):
-        date_str = f"{year}-{month:02d}-{d:02d}"
-        date_obj = date(year, month, d)
-        day_name = date_obj.strftime("%A")
-
-        entry = {
-            "date": date_str,
-            "day": d,
-            "day_name": day_name,
-            "is_weekend": date_obj.weekday() >= 5,
-            "is_today": date_obj == today,
-        }
-
-        # Pilgrim count (actual or predicted)
-        if date_str in hist_map:
-            entry["pilgrims"] = int(hist_map[date_str]["total_pilgrims"])
-            entry["source"] = "actual"
-        elif date_str in pred_map:
-            entry["pilgrims"] = pred_map[date_str]["predicted_pilgrims"]
-            entry["confidence_low"] = pred_map[date_str].get("confidence_low")
-            entry["confidence_high"] = pred_map[date_str].get("confidence_high")
-            entry["source"] = "predicted"
-
-        # Hindu calendar events
-        events = get_events_for_date(year, month, d)
-        entry["events"] = events
-        entry["max_impact"] = get_max_impact(events) if events else None
-        entry["crowd_reason"] = get_crowd_reason(events) if events else ""
-
-        days.append(entry)
-
-    # Hindu month info
-    hindu_info = get_hindu_month_info(month)
-
-    return {
-        "success": True,
-        "year": year,
-        "month": month,
-        "month_name": datetime(year, month, 1).strftime("%B"),
-        "hindu_month_te": hindu_info["telugu"],
-        "hindu_month_en": hindu_info["english"],
-        "days_in_month": days_in_month,
-        "first_day_weekday": date(year, month, 1).weekday(),  # 0=Mon
-        "days": days,
-    }
-
-
-# ── Serve React SPA ──
-@app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
-def serve_spa(path):
-    """Serve React build for production. All non-API routes fall through to index.html."""
-    if path and os.path.exists(os.path.join(STATIC_DIR, path)):
-        return send_from_directory(STATIC_DIR, path)
-    return send_from_directory(STATIC_DIR, "index.html")
+def serve_static(path):
+    fpath = os.path.join(app.static_folder, path)
+    if os.path.isfile(fpath):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.static_folder, "index.html")
 
 
-# ═══════════════════════════════════════════════════════════════════
-#  RUN
-# ═══════════════════════════════════════════════════════════════════
+@app.errorhandler(404)
+def not_found(e):
+    """SPA fallback — serve index.html for all non-API routes."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Not found"}), 404
+    return send_from_directory(app.static_folder, "index.html")
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
-    print("\n" + "=" * 60)
-    print("  🛕 శ్రీవారి సేవ — Tirumala Darshan Prediction API")
+    port = int(os.environ.get("PORT", 5000))
     print("=" * 60)
-    print(f"  Device: {DEVICE}")
-
-    # Pre-load models and warm cache in background
-    threading.Thread(target=_warm_cache, daemon=True).start()
-
-    # Check if production build exists
-    has_build = os.path.exists(os.path.join(STATIC_DIR, "index.html"))
-
-    print(f"  Frontend build: {'✅ Found' if has_build else '❌ Not found (run: cd client && npm run build)'}")
-    print(f"  Starting server on http://localhost:5000")
-    if has_build:
-        print(f"  🌐 Open http://localhost:5000 in your browser")
-    print("  API Endpoints:")
-    print("    GET  /api/health")
-    print("    GET  /api/predict?days=7")
-    print("    POST /api/predict/date  {\"date\": \"2026-03-01\"}")
-    print("    GET  /api/predict/range?start=...&end=...")
-    print("    GET  /api/data/summary")
-    print("    GET  /api/data/history?page=1&per_page=50")
-    print("    GET  /api/model/info")
-    print("=" * 60 + "\n")
-
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    print("  TIRUMALA CROWD ADVISORY - Flask API")
+    print(f"  Data: {len(df_full)} days  ({df_full.date.min().date()} to {df_full.date.max().date()})")
+    print(f"  Features: {len(FEATURE_COLS)}  |  Bands: {N_BANDS}")
+    print(f"  Alpha: {BEST_ALPHA}  (LGB={BEST_ALPHA:.0%}, XGB={1-BEST_ALPHA:.0%})")
+    print("=" * 60)
+    app.run(host="0.0.0.0", port=port, debug=False)

@@ -1,245 +1,301 @@
-import { useState } from "react";
-import { format } from "date-fns";
-import { MdFilterList, MdAutoGraph } from "react-icons/md";
-import { GiTempleDoor } from "react-icons/gi";
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { useState, useEffect, useMemo } from "react";
+import { useLang } from "../i18n/LangContext";
 import { getHistory } from "../api";
 import Loader from "../components/Loader";
-import { useLang } from "../i18n/LangContext";
+import { GiTempleDoor } from "react-icons/gi";
+import {
+  MdHistory, MdPeople, MdCalendarMonth, MdFilterList,
+  MdArrowUpward, MdArrowDownward, MdTrendingUp,
+} from "react-icons/md";
+import {
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  CartesianGrid, ReferenceLine, BarChart, Bar, Cell,
+} from "recharts";
+import { format, parseISO } from "date-fns";
+
+const PER_PAGE = 30;
 
 export default function History() {
   const { t } = useLang();
-  const today = new Date().toISOString().slice(0, 10);
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000)
-    .toISOString()
-    .slice(0, 10);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [summary, setSummary] = useState(null);
+  const [bandInfo, setBandInfo] = useState({ names: [], colors: {}, bg: {} });
 
-  const [startDate, setStartDate] = useState(thirtyDaysAgo);
-  const [endDate, setEndDate] = useState(today);
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  /* ── Filters ── */
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [filterBand, setFilterBand] = useState("ALL");
+  const [sortCol, setSortCol] = useState("date");
+  const [sortAsc, setSortAsc] = useState(false);
 
-  async function handleFilter() {
-    if (!startDate || !endDate) return;
+  useEffect(() => { fetchData(); }, [page, startDate, endDate]);
+
+  async function fetchData() {
     setLoading(true);
-    setError(null);
     try {
-      const res = await getHistory(1, 5000, null, null, startDate, endDate);
-      setData(res.data);
-    } catch (e) {
-      setError(e.response?.data?.error || e.message);
+      const res = await getHistory(page, PER_PAGE, startDate || undefined, endDate || undefined);
+      const d = res.data;
+      const rows = d?.data || [];
+      setData(Array.isArray(rows) ? rows : []);
+      setTotalPages(d?.total_pages || 1);
+      setTotal(d?.total || rows.length);
+      setSummary(d?.summary || null);
+      setBandInfo({
+        names: d?.band_names || [],
+        colors: d?.band_colors || {},
+        bg: d?.band_bg || {},
+      });
+    } catch {
+      setData([]);
     } finally {
       setLoading(false);
     }
   }
 
-  const records = data?.data || [];
-  const total = data?.total_records || 0;
+  function applyFilters() {
+    setPage(1);
+    fetchData();
+  }
+  function clearFilters() {
+    setStartDate("");
+    setEndDate("");
+    setFilterBand("ALL");
+    setPage(1);
+  }
 
-  // Compute stats
-  const avgPilgrims =
-    records.length > 0
-      ? Math.round(
-          records.reduce((s, r) => s + (r.total_pilgrims || 0), 0) /
-            records.length
-        )
-      : 0;
-  const maxPilgrims =
-    records.length > 0
-      ? Math.max(...records.map((r) => r.total_pilgrims || 0))
-      : 0;
-  const minPilgrims =
-    records.length > 0
-      ? Math.min(...records.map((r) => r.total_pilgrims || 0))
-      : 0;
+  /* ── Sort + filter data for display ── */
+  const displayData = useMemo(() => {
+    let rows = [...data];
+    if (filterBand !== "ALL") {
+      rows = rows.filter((r) => r.band_name === filterBand);
+    }
+    rows.sort((a, b) => {
+      let cmp = 0;
+      if (sortCol === "date") cmp = a.date.localeCompare(b.date);
+      else if (sortCol === "pilgrims") cmp = a.total_pilgrims - b.total_pilgrims;
+      else if (sortCol === "band") cmp = a.band_index - b.band_index;
+      return sortAsc ? cmp : -cmp;
+    });
+    return rows;
+  }, [data, filterBand, sortCol, sortAsc]);
+
+  /* ── Chart data — reverse so old dates are on left ── */
+  const chartData = useMemo(() => {
+    return [...data]
+      .filter((r) => r.date && r.total_pilgrims != null)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((r) => ({
+        date: format(parseISO(r.date), "dd MMM ''yy"),
+        fullDate: format(parseISO(r.date), "EEE, dd MMM yyyy"),
+        pilgrims: r.total_pilgrims,
+        band: r.band_name,
+        color: r.band_color,
+        day: r.day_of_week,
+      }));
+  }, [data]);
+
+  const avgLine = summary ? summary.avg : 0;
+
+  function toggleSort(col) {
+    if (sortCol === col) setSortAsc(!sortAsc);
+    else { setSortCol(col); setSortAsc(col === "date" ? false : true); }
+  }
+  const SortIcon = ({ col }) =>
+    sortCol === col ? (sortAsc ? <MdArrowUpward size={14} /> : <MdArrowDownward size={14} />) : null;
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) return null;
+    const d = payload[0].payload;
+    return (
+      <div className="history-tooltip">
+        <div className="history-tooltip-date">{d.fullDate}</div>
+        <div className="history-tooltip-value">
+          <span className="history-tooltip-dot" style={{ background: d.color }} />
+          {d.pilgrims.toLocaleString("en-IN")} pilgrims
+        </div>
+        <div className="history-tooltip-band" style={{ color: d.color }}>{d.band}</div>
+      </div>
+    );
+  };
 
   return (
-    <div className="main-content fade-in">
-      <h2 className="section-title">
-        <GiTempleDoor className="ornament" />
-        {t.historyTitle}
-      </h2>
+    <section className="page history-page">
+      <div className="page-header">
+        <GiTempleDoor className="page-header-icon" />
+        <h2>{t.historyTitle || "Historical Crowd Data"}</h2>
+        <p className="page-subtitle">
+          <MdHistory style={{ verticalAlign: "middle", marginRight: 4 }} />
+          {t.historySubtitle || "Daily pilgrim footfall records from TTD (2022 — 2026)"}
+        </p>
+      </div>
 
-      {/* Date Range Picker */}
-      <div className="card" style={{ marginBottom: "1.5rem" }}>
-        <div className="card-header">
-          <MdFilterList className="icon" />
-          <h2>{t.filterData || "Select Date Range"}</h2>
+      {/* ── Summary Stats ── */}
+      {summary && (
+        <div className="history-stats-row">
+          <div className="history-stat-card">
+            <div className="history-stat-label">Total Records</div>
+            <div className="history-stat-value">{total.toLocaleString("en-IN")}</div>
+            <div className="history-stat-sub">{summary.date_start} → {summary.date_end}</div>
+          </div>
+          <div className="history-stat-card">
+            <div className="history-stat-label">Daily Average</div>
+            <div className="history-stat-value">{summary.avg.toLocaleString("en-IN")}</div>
+            <div className="history-stat-sub">Median: {summary.median.toLocaleString("en-IN")}</div>
+          </div>
+          <div className="history-stat-card history-stat-busy">
+            <div className="history-stat-label">🔴 Busiest Day</div>
+            <div className="history-stat-value">{summary.busiest_pilgrims.toLocaleString("en-IN")}</div>
+            <div className="history-stat-sub">{format(parseISO(summary.busiest_date), "EEE, dd MMM yyyy")}</div>
+          </div>
+          <div className="history-stat-card history-stat-quiet">
+            <div className="history-stat-label">🔵 Quietest Day</div>
+            <div className="history-stat-value">{summary.quietest_pilgrims.toLocaleString("en-IN")}</div>
+            <div className="history-stat-sub">{format(parseISO(summary.quietest_date), "EEE, dd MMM yyyy")}</div>
+          </div>
         </div>
-        <div className="card-body">
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "flex-end",
-              flexWrap: "wrap",
-            }}
-          >
-            <div className="form-group" style={{ minWidth: 160, marginBottom: 0 }}>
-              <label className="form-label">{t.startDate || "Start Date"}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                max={endDate}
-              />
-            </div>
-            <div className="form-group" style={{ minWidth: 160, marginBottom: 0 }}>
-              <label className="form-label">{t.endDate || "End Date"}</label>
-              <input
-                type="date"
-                className="form-input"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                min={startDate}
-                max={today}
-              />
-            </div>
-            <button
-              className="btn btn-primary"
-              onClick={handleFilter}
-              disabled={loading}
-            >
-              <MdFilterList /> {t.btnFilter || "Show Data"}
-            </button>
+      )}
+
+      {/* ── Filters ── */}
+      <div className="card filter-card">
+        <div className="card-header"><MdFilterList /> Filter Data</div>
+        <div className="card-body filter-row">
+          <div className="filter-group">
+            <label>From</label>
+            <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
+                   min="2022-02-01" max="2026-02-12" />
+          </div>
+          <div className="filter-group">
+            <label>To</label>
+            <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
+                   min="2022-02-01" max="2026-02-12" />
+          </div>
+          <div className="filter-group">
+            <label>Crowd Level</label>
+            <select value={filterBand} onChange={(e) => setFilterBand(e.target.value)}>
+              <option value="ALL">All Levels</option>
+              {bandInfo.names.map((name) => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="filter-actions">
+            <button className="btn btn-sm btn-gold" onClick={applyFilters}>Apply</button>
+            <button className="btn btn-sm btn-outline" onClick={clearFilters}>Clear</button>
           </div>
         </div>
       </div>
 
-      {loading && <Loader text={t.histLoading} />}
-      {error && <div className="error-message">⚠️ {error}</div>}
+      {loading && <Loader text="Loading historical data..." />}
 
-      {records.length > 0 && !loading && (
-        <>
-          {/* Info badge */}
-          <div className="info-tag" style={{ marginBottom: "1rem" }}>
-            📊 {total.toLocaleString()} {t.records || "records"} —{" "}
-            {format(new Date(startDate + "T00:00:00"), "MMM d, yyyy")} to{" "}
-            {format(new Date(endDate + "T00:00:00"), "MMM d, yyyy")}
+      {/* ── Chart — Bar chart with crowd level colors ── */}
+      {chartData.length > 0 && (
+        <div className="card chart-card">
+          <div className="card-header">
+            <MdTrendingUp /> {t.historyChart || "Footfall Trend"} — {chartData.length} days
           </div>
-
-          {/* Stats */}
-          <div className="stat-grid" style={{ marginBottom: "1.5rem" }}>
-            <div className="stat-card">
-              <div className="stat-icon">📊</div>
-              <div className="stat-value">{avgPilgrims.toLocaleString()}</div>
-              <div className="stat-label">{t.avgDailyPilgrims || "Avg Daily"}</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">📈</div>
-              <div className="stat-value">{maxPilgrims.toLocaleString()}</div>
-              <div className="stat-label">{t.peakDay || "Peak Day"}</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">📉</div>
-              <div className="stat-value">{minPilgrims.toLocaleString()}</div>
-              <div className="stat-label">{t.quietDay || "Quietest Day"}</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">📅</div>
-              <div className="stat-value">{total.toLocaleString()}</div>
-              <div className="stat-label">{t.totalDays || "Total Days"}</div>
-            </div>
-          </div>
-
-          {/* Chart */}
-          <div className="card">
-            <div className="card-header">
-              <MdAutoGraph className="icon" />
-              <h2>{t.historyChart || "Pilgrim Footfall Trend"}</h2>
-            </div>
-            <div className="card-body">
-              <div className="chart-container">
-                <ResponsiveContainer width="100%" height={450}>
-                  <AreaChart data={records}>
-                    <defs>
-                      <linearGradient id="histGold" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#C5A028" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#C5A028" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fill: "#6B5B4E", fontSize: 11 }}
-                      tickFormatter={(v) =>
-                        format(new Date(v + "T00:00:00"), "MMM d")
-                      }
-                      interval={Math.max(
-                        0,
-                        Math.floor(records.length / 12)
-                      )}
-                    />
-                    <YAxis
-                      tick={{ fill: "#6B5B4E", fontSize: 12 }}
-                      tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        background: "#FFF",
-                        border: "1px solid #C5A028",
-                        borderRadius: 8,
-                        fontSize: 13,
-                      }}
-                      formatter={(v) => [
-                        v?.toLocaleString(),
-                        t.pilgrims || "Pilgrims",
-                      ]}
-                      labelFormatter={(v) =>
-                        format(new Date(v + "T00:00:00"), "EEE, MMM d yyyy")
-                      }
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="total_pilgrims"
-                      stroke="#C5A028"
-                      strokeWidth={2.5}
-                      fill="url(#histGold)"
-                      dot={false}
-                      activeDot={{
-                        r: 5,
-                        fill: "#800020",
-                        stroke: "#C5A028",
-                      }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
+          <div className="card-body">
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={chartData} barCategoryGap="1%">
+                <CartesianGrid strokeDasharray="3 3" stroke="#E8D48B" vertical={false} />
+                <XAxis dataKey="date" tick={{ fill: "#6B5B4E", fontSize: 10 }}
+                       interval={Math.max(0, Math.floor(chartData.length / 8) - 1)}
+                       angle={-35} textAnchor="end" height={60} />
+                <YAxis tick={{ fill: "#6B5B4E", fontSize: 11 }}
+                       tickFormatter={(v) => (v / 1000).toFixed(0) + "K"}
+                       domain={["dataMin - 5000", "dataMax + 5000"]} />
+                <Tooltip content={<CustomTooltip />} />
+                {avgLine > 0 && (
+                  <ReferenceLine y={avgLine} stroke="#800020" strokeDasharray="6 4"
+                    label={{ value: `Avg: ${(avgLine / 1000).toFixed(0)}K`, fill: "#800020", fontSize: 11, position: "right" }} />
+                )}
+                <Bar dataKey="pilgrims" radius={[2, 2, 0, 0]}>
+                  {chartData.map((entry, idx) => (
+                    <Cell key={idx} fill={entry.color} fillOpacity={0.85} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+            {/* Band legend */}
+            <div className="chart-legend">
+              {bandInfo.names.map((name) => (
+                <span key={name} className="legend-item">
+                  <span className="legend-dot" style={{ background: bandInfo.colors[name] }} />
+                  {name}
+                </span>
+              ))}
             </div>
           </div>
-        </>
-      )}
-
-      {data && records.length === 0 && !loading && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "3rem",
-            color: "var(--text-muted)",
-          }}
-        >
-          📊 {t.noData || "No data available for the selected date range."}
         </div>
       )}
 
-      {/* Prompt user to select a range if no data loaded yet */}
-      {!data && !loading && (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "3rem",
-            color: "var(--text-muted)",
-            fontSize: ".95rem",
-          }}
-        >
-          📅 {t.selectRange || "Select a date range above and click Show Data to view the pilgrim footfall chart."}
+      {/* ── Table ── */}
+      {displayData.length > 0 && (
+        <div className="card history-table-card">
+          <div className="card-header">
+            <MdPeople /> {t.historyTable || "Records"} — {total.toLocaleString("en-IN")} total
+          </div>
+          <div className="card-body table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th className="sortable" onClick={() => toggleSort("date")}>
+                    Date <SortIcon col="date" />
+                  </th>
+                  <th>Day</th>
+                  <th className="sortable" onClick={() => toggleSort("pilgrims")}>
+                    Total Pilgrims <SortIcon col="pilgrims" />
+                  </th>
+                  <th className="sortable" onClick={() => toggleSort("band")}>
+                    Crowd Level <SortIcon col="band" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayData.map((r, i) => (
+                  <tr key={i} style={{ borderLeft: `4px solid ${r.band_color}` }}>
+                    <td className="td-date">
+                      {r.date ? format(parseISO(r.date), "dd MMM yyyy") : ""}
+                    </td>
+                    <td className={`td-day ${r.is_weekend ? "weekend" : ""}`}>
+                      {r.day_of_week}
+                    </td>
+                    <td className="td-pilgrims">
+                      {(r.total_pilgrims || 0).toLocaleString("en-IN")}
+                    </td>
+                    <td>
+                      <span className="crowd-badge" style={{
+                        background: r.band_bg,
+                        color: r.band_color,
+                        border: `1px solid ${r.band_color}`,
+                      }}>
+                        {r.band_name}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination */}
+          <div className="pagination">
+            <button className="btn btn-sm" disabled={page <= 1}
+                    onClick={() => setPage(1)} title="First page">⏮</button>
+            <button className="btn btn-sm" disabled={page <= 1}
+                    onClick={() => setPage((p) => p - 1)}>← Prev</button>
+            <span className="page-info">
+              Page {page} of {totalPages}
+            </span>
+            <button className="btn btn-sm" disabled={page >= totalPages}
+                    onClick={() => setPage((p) => p + 1)}>Next →</button>
+            <button className="btn btn-sm" disabled={page >= totalPages}
+                    onClick={() => setPage(totalPages)} title="Last page">⏭</button>
+          </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }

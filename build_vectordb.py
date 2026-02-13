@@ -22,9 +22,11 @@ def _chunk_corpus(text: str, max_tokens=400, overlap=60) -> list[dict]:
         sec = sec.strip()
         if len(sec) < 30:
             continue
+
         # Extract a title from the first line
         lines = sec.split('\n')
         title = lines[0].strip('#').strip() if lines else "General"
+
         # If section is short enough, keep as one chunk
         words = sec.split()
         if len(words) <= max_tokens:
@@ -92,6 +94,9 @@ def _chunks_from_trip(td: dict) -> list[dict]:
             f"Visit Duration: {a.get('visit_duration_hours', 'N/A')} hours\n"
             f"Timings: {a.get('timings', 'N/A')}\n"
             f"Entry Fee: ₹{a.get('entry_fee', 0)}\n"
+            f"Best Time to Visit: {a.get('best_time_to_visit', 'N/A')}\n"
+            f"Accessibility: {a.get('accessibility', 'N/A')}\n"
+            f"Interest Tags: {', '.join(a.get('interest_tags', []))}\n"
             f"Tips: {a.get('tips', '')}\n"
             f"Coordinates: {a.get('lat', '')}, {a.get('lng', '')}"
         )
@@ -105,6 +110,9 @@ def _chunks_from_trip(td: dict) -> list[dict]:
             f"Price per Person: ₹{r.get('price_per_person', 'N/A')}\n"
             f"Timings: {r.get('timings', 'N/A')}\n"
             f"Location: {r.get('location', 'N/A')}\n"
+            f"Specialty Dishes: {', '.join(r.get('specialty_dishes', []))}\n"
+            f"Ambiance: {r.get('ambiance', 'N/A')}\n"
+            f"Rating: {r.get('rating', 'N/A')}/5\n"
             f"Description: {r.get('description', '')}"
         )
         chunks.append({"text": text, "title": r["name"], "source": "restaurants"})
@@ -130,7 +138,10 @@ def _chunks_from_trip(td: dict) -> list[dict]:
             f"Cost: ₹{s['cost']}\n"
             f"Time: {s['time']}\n"
             f"Description: {s['description']}\n"
-            f"Booking: {'Online' if s.get('online_booking') else 'Counter'}"
+            f"Duration: {s.get('duration_minutes', 'N/A')} minutes\n"
+            f"Booking: {s.get('booking', 'Counter')}\n"
+            f"Availability: {s.get('availability', 'daily')}\n"
+            f"Max Persons: {s.get('max_persons', 'N/A')}"
         )
         chunks.append({"text": text, "title": s["name"], "source": "sevas"})
 
@@ -153,15 +164,118 @@ def _chunks_from_trip(td: dict) -> list[dict]:
     for i, tip in enumerate(td.get("tips", []), 1):
         chunks.append({"text": f"Travel Tip #{i}: {tip}", "title": f"Tip {i}", "source": "tips"})
 
+    # Darshan Types (NEW)
+    for d in td.get("darshan_types", []):
+        text = (
+            f"Darshan Type: {d.get('name','')}\n"
+            f"Cost: ₹{d.get('cost',0)}\n"
+            f"Wait Time: {d.get('wait_hours','N/A')} hours\n"
+            f"Booking: {d.get('booking','N/A')}\n"
+            f"Timings: {d.get('timings','N/A')}\n"
+            f"Dress Code: {d.get('dress_code','Traditional')}\n"
+            f"Queue Entry: {d.get('queue_entry','N/A')}\n"
+            f"Tips: {d.get('tips','')}"
+        )
+        chunks.append({"text": text, "title": d.get("name", "Darshan"), "source": "darshan_types"})
+
+    # Rules and Customs (NEW)
+    rules = td.get("rules_and_customs", [])
+    if rules:
+        # Group rules into chunks of 5
+        for i in range(0, len(rules), 5):
+            batch = rules[i:i+5]
+            text = "Tirumala Temple Rules and Customs:\n" + "\n".join(f"- {r}" for r in batch)
+            chunks.append({"text": text, "title": f"Rules {i+1}-{i+len(batch)}", "source": "rules"})
+
+    # Scheduling Guide (NEW)
+    sched = td.get("scheduling_guide", {})
+    if sched:
+        sched_parts = []
+        for slot, info in sched.items():
+            if isinstance(info, dict) and "time" in info:
+                sched_parts.append(f"{slot.replace('_',' ').title()}: {info.get('time','')} — Best for: {info.get('best_for','')}")
+            elif isinstance(info, dict):
+                for k, v in info.items():
+                    sched_parts.append(f"{k.replace('_',' ').title()}: {v}")
+        if sched_parts:
+            text = "Tirumala Scheduling Guide:\n" + "\n".join(sched_parts)
+            chunks.append({"text": text, "title": "Scheduling Guide", "source": "scheduling"})
+
+    # Emergency Contacts (NEW)
+    emergency = td.get("emergency_contacts", {})
+    if emergency:
+        parts = [f"{k.replace('_',' ').title()}: {v}" for k, v in emergency.items()]
+        text = "Emergency Contacts in Tirumala/Tirupati:\n" + "\n".join(parts)
+        chunks.append({"text": text, "title": "Emergency Contacts", "source": "emergency"})
+
+    # Travel Logistics & Zone-based Planning
+    logistics = td.get("travel_logistics", {})
+    if logistics:
+        # Zone definitions
+        for zone_key, zone_info in logistics.get("zone_definitions", {}).items():
+            text = (
+                f"Travel Zone: {zone_info.get('label','')}\n"
+                f"Description: {zone_info.get('description','')}\n"
+                f"Places: {', '.join(zone_info.get('places',[]))}\n"
+                f"Internal Travel: {zone_info.get('internal_travel','')}\n"
+                f"Exploration Time: {zone_info.get('recommended_hours_to_explore','')}\n"
+                f"Notes: {zone_info.get('notes','')}"
+            )
+            chunks.append({"text": text, "title": zone_info.get("label", zone_key), "source": "travel_logistics"})
+
+        # Inter-zone travel times
+        iz_parts = []
+        for route, info in logistics.get("inter_zone_travel", {}).items():
+            iz_parts.append(
+                f"{info.get('description','')}: {info.get('distance_km','')}km, "
+                f"{info.get('travel_time_mins','')} min by {info.get('mode','')}"
+            )
+        if iz_parts:
+            text = "Inter-Zone Travel Times (Tirumala-Tirupati Area):\n" + "\n".join(iz_parts)
+            chunks.append({"text": text, "title": "Inter-Zone Travel Times", "source": "travel_logistics"})
+
+        # Realistic itinerary patterns
+        for pattern_key, pattern_data in logistics.get("realistic_itinerary_patterns", {}).items():
+            desc = pattern_data.get("description", "")
+            notes = pattern_data.get("notes", "")
+            zones = ", ".join(pattern_data.get("zones_covered", []))
+            pattern = pattern_data.get("pattern", "")
+            if isinstance(pattern, list):
+                pattern_str = "\n".join(pattern)
+            elif isinstance(pattern, dict):
+                pattern_str = "\n".join(f"{k}: {', '.join(v) if isinstance(v, list) else v}" for k, v in pattern.items())
+            else:
+                pattern_str = str(pattern)
+            text = (
+                f"Realistic Itinerary: {pattern_key.replace('_',' ').title()}\n"
+                f"Description: {desc}\n"
+                f"Zones Covered: {zones}\n"
+                f"Pattern:\n{pattern_str}\n"
+                f"Notes: {notes}"
+            )
+            chunks.append({"text": text, "title": pattern_key.replace("_", " ").title(), "source": "itinerary_patterns"})
+
+        # Critical distance rules
+        critical_rules = logistics.get("critical_rules", [])
+        if critical_rules:
+            text = "CRITICAL Trip Planning Rules (Distance & Zone Constraints):\n" + "\n".join(f"- {r}" for r in critical_rules)
+            chunks.append({"text": text, "title": "Distance Planning Rules", "source": "travel_logistics"})
+
+    # Packing Essentials
+    packing = td.get("packing_essentials", [])
+    if packing:
+        text = "Packing Essentials for Tirumala Trip:\n" + "\n".join(f"- {p}" for p in packing)
+        chunks.append({"text": text, "title": "Packing Essentials", "source": "packing"})
+
     return chunks
 
 
 def build():
-    """Main build: chunk data → embed → store in ChromaDB."""
+    """Main build: chunk data -> embed -> store in ChromaDB."""
     import chromadb
     from chromadb.utils import embedding_functions
 
-    log.info("📚 Loading data sources...")
+    log.info("Loading data sources...")
     all_chunks = []
 
     # 1. Corpus
@@ -170,7 +284,7 @@ def build():
             corpus_text = f.read()
         corpus_chunks = _chunk_corpus(corpus_text)
         all_chunks.extend(corpus_chunks)
-        log.info("  ✅ Corpus: %d chunks", len(corpus_chunks))
+        log.info("  Corpus: %d chunks", len(corpus_chunks))
 
     # 2. Knowledge Base QA
     if os.path.exists(KB_JSON):
@@ -178,7 +292,7 @@ def build():
             kb = json.load(f)
         kb_chunks = _chunks_from_kb(kb)
         all_chunks.extend(kb_chunks)
-        log.info("  ✅ Knowledge Base: %d chunks", len(kb_chunks))
+        log.info("  Knowledge Base: %d chunks", len(kb_chunks))
 
     # 3. Trip Data
     if os.path.exists(TRIP_JSON):
@@ -186,12 +300,12 @@ def build():
             td = json.load(f)
         trip_chunks = _chunks_from_trip(td)
         all_chunks.extend(trip_chunks)
-        log.info("  ✅ Trip Data: %d chunks", len(trip_chunks))
+        log.info("  Trip Data: %d chunks", len(trip_chunks))
 
-    log.info("📊 Total chunks: %d", len(all_chunks))
+    log.info("Total chunks: %d", len(all_chunks))
 
     # 4. Build ChromaDB with sentence-transformers
-    log.info("🧠 Initializing embedding model (all-MiniLM-L6-v2)...")
+    log.info("Initializing embedding model (all-MiniLM-L6-v2)...")
     ef = embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name="all-MiniLM-L6-v2"
     )
@@ -219,12 +333,12 @@ def build():
         )
         log.info("  Added batch %d-%d / %d", i, i+len(batch), len(all_chunks))
 
-    log.info("✅ Vector DB built at %s with %d documents", DB_DIR, collection.count())
+    log.info("Vector DB built at %s with %d documents", DB_DIR, collection.count())
     log.info("   Collection count: %d", collection.count())
 
     # Quick test
     results = collection.query(query_texts=["How to book darshan tickets?"], n_results=3)
-    log.info("🔍 Test query: 'How to book darshan tickets?'")
+    log.info("Test query: 'How to book darshan tickets?'")
     for doc, meta in zip(results["documents"][0], results["metadatas"][0]):
         log.info("   [%s] %s", meta["source"], doc[:100])
 

@@ -159,10 +159,13 @@ def scrape_incremental(max_pages: int = 5) -> int:
 
     new_df = pd.DataFrame(all_new)
     new_df["date"] = pd.to_datetime(new_df["date"])
+    # Keep only the 2 columns needed for the ML pipeline
+    new_df = new_df[["date", "total_pilgrims"]].copy()
     new_df = new_df.drop_duplicates(subset=["date"], keep="first")
 
     # Merge with existing, keeping latest value for each date
     if not existing.empty:
+        existing = existing[["date", "total_pilgrims"]].copy()
         combined = pd.concat([existing, new_df], ignore_index=True)
         combined = combined.drop_duplicates(subset=["date"], keep="last")
     else:

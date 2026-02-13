@@ -62,15 +62,9 @@ function renderBotText(text) {
       elements.push(<h3 key={i} className="bot-heading">{trimmed.slice(3)}</h3>);
     } else if (trimmed.startsWith("# ")) {
       flushList();
-      elements.push(<h3 key={i} className="bot-heading">{trimmed.slice(2)}</h3>);
-    } else if (/^[-*•]\s/.test(trimmed)) {
-      const content = trimmed.replace(/^[-*•]\s/, "");
-      const boldParsed = content.split(/\*\*(.*?)\*\*/g).map((part, j) =>
-        j % 2 === 1 ? <strong key={j}>{part}</strong> : part
-      );
-      listItems.push(<li key={i}>{boldParsed}</li>);
-    } else if (/^\d+[.)]\s/.test(trimmed)) {
-      const content = trimmed.replace(/^\d+[.)]\s/, "");
+      elements.push(<h2 key={i} className="bot-heading">{trimmed.slice(2)}</h2>);
+    } else if (/^[-*•]\s/.test(trimmed) || /^\d+[.)]\s/.test(trimmed)) {
+      const content = trimmed.replace(/^[-*•]\s|^\d+[.)]\s/, "");
       const boldParsed = content.split(/\*\*(.*?)\*\*/g).map((part, j) =>
         j % 2 === 1 ? <strong key={j}>{part}</strong> : part
       );
@@ -92,7 +86,7 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([
     {
       role: "bot",
-      text: t.chatWelcome || "🙏 Om Namo Venkatesaya! Welcome to the TTD AI Chatbot. I'm powered by AI and can help with darshan, sevas, accommodation, travel, and trip planning!",
+      text: t.chatWelcome || "🙏 Om Namo Venkatesaya! Welcome to the TTD AI Chatbot.",
       source: "system",
     },
   ]);
@@ -202,14 +196,24 @@ export default function Chatbot() {
                   <div className="bubble-text">
                     {m.role === "bot" ? renderBotText(m.text) : m.text}
                   </div>
-                  {m.role === "bot" && (m.source === "rag" || m.source === "gemini") && (
+                  {m.role === "bot" && (m.source === "rag" || m.source === "llm") && (
                     <div className="ai-source-tag">
-                      <MdAutoAwesome size={12} /> {m.source === "rag" ? "RAG + AI" : "AI"}
+                      <MdAutoAwesome size={12} /> AI-Powered (RAG)
                     </div>
                   )}
-                  {m.role === "bot" && m.source === "rag_direct" && (
-                    <div className="ai-source-tag" style={{background: "var(--tirumala-maroon, #8B1A1A)"}}>
-                      <MdAutoAwesome size={12} /> Vector Search
+                  {m.role === "bot" && m.source === "knowledge_base" && (
+                    <div className="ai-source-tag">
+                      <MdAutoAwesome size={12} /> Knowledge Base
+                    </div>
+                  )}
+                  {m.role === "bot" && m.source === "fallback" && (
+                    <div className="ai-source-tag" style={{ background: "#666" }}>
+                      <MdAutoAwesome size={12} /> Fallback
+                    </div>
+                  )}
+                  {m.role === "bot" && m.source === "prediction" && (
+                    <div className="ai-source-tag" style={{ background: "var(--gold-dark)" }}>
+                      <MdAutoAwesome size={12} /> Prediction
                     </div>
                   )}
                 </div>

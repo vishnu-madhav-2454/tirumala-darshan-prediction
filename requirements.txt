@@ -1,21 +1,29 @@
-# Core ML/DL
+# Core ML
 numpy
 pandas
 scikit-learn
 lightgbm
 xgboost
-catboost
 joblib
 holidays
+scipy
+statsmodels
 
-# Deep Learning
-torch
-chronos-forecasting
+# Explainability
+shap>=0.43
 
-# Flask API
+# Web App
 flask
 flask-cors
-waitress
+gunicorn
+
+# RAG / Chatbot
+chromadb
+sentence-transformers
+
+# LLM
+huggingface-hub
+python-dotenv
 
 # Scraping
 requests

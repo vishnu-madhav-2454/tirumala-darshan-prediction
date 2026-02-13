@@ -3,7 +3,6 @@ import { useLang } from "../i18n/LangContext";
 
 export default function Footer() {
   const { t } = useLang();
-
   return (
     <footer className="footer">
       <div className="gold-strip" style={{ marginBottom: "1.5rem" }} />

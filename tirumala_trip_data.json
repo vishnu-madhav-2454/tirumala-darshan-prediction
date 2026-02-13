@@ -1,13 +1,166 @@
 {
   "meta": {
-    "version": "1.0",
-    "last_updated": "2025-07-01",
-    "source": "tirumala.org, Wikipedia, public travel data",
+    "version": "3.0",
+    "last_updated": "2026-07-27",
+    "source": "tirumala.org, ttdevasthanams.ap.gov.in, Wikipedia, public travel data, TTD official publications, Holidify, scraped travel guides",
     "coordinates": {
       "tirupati": {"lat": 13.6288, "lng": 79.4192},
       "tirumala": {"lat": 13.6833, "lng": 79.3472},
       "tiruchanoor": {"lat": 13.5951, "lng": 79.4125}
     }
+  },
+
+  "travel_logistics": {
+    "zone_definitions": {
+      "A_tirumala_hilltop": {
+        "label": "Tirumala Hilltop",
+        "description": "All places on the Tirumala hill (elevation ~3,200 ft). Connected by walking paths and TTD shuttle buses. Most attractions are within 1-5 km of the main temple.",
+        "elevation_ft": 3200,
+        "places": ["Sri Venkateswara Swamy Temple", "Swami Pushkarini", "Silathoranam", "Sri Venkateswara Museum", "TTD Gardens", "Deer Park", "Papavinasanam Dam", "Akasa Ganga Waterfalls", "Gogarbham Dam", "Japali Theertham"],
+        "internal_travel": "Walking (10-30 min between most places) or TTD shuttle bus",
+        "max_internal_travel_mins": 30,
+        "recommended_hours_to_explore": "4-6 hours (excluding darshan time)",
+        "notes": "All these places can be covered on foot in a single day. They are all on the same hilltop. TTD shuttle buses connect main points."
+      },
+      "B_tirupati_town": {
+        "label": "Tirupati Town",
+        "description": "Places within Tirupati city limits. Accessible by auto-rickshaw, taxi, or city bus. Most are within 1-5 km of the railway station.",
+        "places": ["Sri Govindarajaswami Temple", "ISKCON Temple", "Kodandarama Temple", "Regional Science Centre", "Kapila Theertham", "Sri Venkateswara Zoological Park"],
+        "internal_travel": "Auto-rickshaw (Rs.50-150) or city bus (Rs.10-20)",
+        "max_internal_travel_mins": 20,
+        "recommended_hours_to_explore": "4-5 hours",
+        "notes": "Compact area. Auto-rickshaws are readily available. All places can be covered in half a day."
+      },
+      "C_tiruchanoor_nearby": {
+        "label": "Tiruchanoor & Nearby",
+        "description": "Tiruchanoor village (5 km south of Tirupati) and nearby temples. Quick auto/taxi ride from Tirupati.",
+        "places": ["Sri Padmavathi Ammavari Temple", "Sri Kalyana Venkateswara Swamy Temple"],
+        "internal_travel": "Auto-rickshaw (Rs.100-200)",
+        "max_internal_travel_mins": 15,
+        "recommended_hours_to_explore": "2-3 hours",
+        "notes": "Usually combined with Tirupati town visit. Visit Padmavathi temple before or after Tirumala darshan (tradition says visit Goddess first)."
+      },
+      "D_nearby_excursions": {
+        "label": "Nearby Excursions (10-20 km)",
+        "description": "Places 10-20 km from Tirupati that require 30-60 min drive each way. Best as a dedicated half-day outing.",
+        "places": ["Chandragiri Fort", "Sri Venkateswara National Park"],
+        "internal_travel": "Taxi/rental car recommended (Rs.800-1500 for half day)",
+        "max_internal_travel_mins": 45,
+        "recommended_hours_to_explore": "3-4 hours (including travel)",
+        "notes": "Need dedicated half-day. Cannot be combined with Tirumala hilltop activities on the same half-day."
+      },
+      "E_day_trips": {
+        "label": "Day Trips (30+ km)",
+        "description": "Distant places requiring a full day trip. 1-2 hours travel each way. Only feasible on trips of 3+ days.",
+        "places": ["Talakona Waterfalls", "Srikalahasti Temple", "Kanipakam Vinayaka Temple"],
+        "internal_travel": "Rental car mandatory (Rs.2000-3000 for full day)",
+        "recommended_hours_to_explore": "Full day (6-8 hours including travel)",
+        "notes": "ONLY for trips of 3+ days. Never combine with Tirumala darshan day. Requires early morning start."
+      }
+    },
+    "inter_zone_travel": {
+      "A_to_B": {"description": "Tirumala Hilltop to Tirupati Town", "distance_km": 26, "travel_time_mins": 45, "mode": "Bus (Rs.75) or Taxi (Rs.1200)", "via": "Ghat road (hairpin bends)", "restrictions": "Vehicles banned 12 AM - 3 AM"},
+      "A_to_C": {"description": "Tirumala Hilltop to Tiruchanoor", "distance_km": 30, "travel_time_mins": 60, "mode": "Bus + Auto or Taxi", "via": "Down ghat road then 5 km south"},
+      "A_to_D": {"description": "Tirumala Hilltop to Nearby Excursions", "distance_km": 35, "travel_time_mins": 75, "mode": "Taxi only", "via": "Down ghat road then road to site"},
+      "B_to_C": {"description": "Tirupati Town to Tiruchanoor", "distance_km": 5, "travel_time_mins": 15, "mode": "Auto (Rs.100-200)", "via": "Direct road"},
+      "B_to_D": {"description": "Tirupati Town to Nearby Excursions", "distance_km": 13, "travel_time_mins": 30, "mode": "Taxi (Rs.500-800)", "via": "Highways/local roads"},
+      "B_to_E": {"description": "Tirupati Town to Day Trip Sites", "distance_km": "30-50", "travel_time_mins": "60-120", "mode": "Rental car mandatory", "via": "Highways"}
+    },
+    "attraction_distances": {
+      "Sri Venkateswara Swamy Temple": {"zone": "A", "distance_from_tirupati_km": 26, "distance_from_tirumala_center_km": 0, "travel_time_from_tirupati_mins": 45},
+      "Swami Pushkarini": {"zone": "A", "distance_from_tirupati_km": 26, "distance_from_tirumala_center_km": 0.2, "travel_time_from_tirupati_mins": 45, "walk_from_temple_mins": 3},
+      "Silathoranam": {"zone": "A", "distance_from_tirupati_km": 27, "distance_from_tirumala_center_km": 1, "travel_time_from_tirupati_mins": 50, "walk_from_temple_mins": 15},
+      "Sri Venkateswara Museum": {"zone": "A", "distance_from_tirupati_km": 26, "distance_from_tirumala_center_km": 0.3, "travel_time_from_tirupati_mins": 45, "walk_from_temple_mins": 5},
+      "TTD Gardens": {"zone": "A", "distance_from_tirupati_km": 26, "distance_from_tirumala_center_km": 0.5, "travel_time_from_tirupati_mins": 45, "walk_from_temple_mins": 8},
+      "Deer Park": {"zone": "A", "distance_from_tirupati_km": 26, "distance_from_tirumala_center_km": 0.6, "travel_time_from_tirupati_mins": 45, "walk_from_temple_mins": 10},
+      "Papavinasanam Dam": {"zone": "A", "distance_from_tirupati_km": 30, "distance_from_tirumala_center_km": 5, "travel_time_from_tirupati_mins": 55, "walk_from_temple_mins": 40, "shuttle_available": true},
+      "Akasa Ganga Waterfalls": {"zone": "A", "distance_from_tirupati_km": 29, "distance_from_tirumala_center_km": 3, "travel_time_from_tirupati_mins": 50, "walk_from_temple_mins": 25},
+      "Gogarbham Dam": {"zone": "A", "distance_from_tirupati_km": 30, "distance_from_tirumala_center_km": 4, "travel_time_from_tirupati_mins": 55, "walk_from_temple_mins": 35},
+      "Japali Theertham": {"zone": "A", "distance_from_tirupati_km": 27, "distance_from_tirumala_center_km": 1.5, "travel_time_from_tirupati_mins": 50, "walk_from_temple_mins": 20},
+      "Sri Padmavathi Ammavari Temple": {"zone": "C", "distance_from_tirupati_km": 5, "distance_from_tirumala_center_km": 31, "travel_time_from_tirupati_mins": 15},
+      "Sri Govindarajaswami Temple": {"zone": "B", "distance_from_tirupati_km": 1, "distance_from_tirumala_center_km": 27, "travel_time_from_tirupati_mins": 5},
+      "Kapila Theertham": {"zone": "B", "distance_from_tirupati_km": 3, "distance_from_tirumala_center_km": 24, "travel_time_from_tirupati_mins": 10},
+      "Sri Venkateswara Zoological Park": {"zone": "B", "distance_from_tirupati_km": 5, "distance_from_tirumala_center_km": 22, "travel_time_from_tirupati_mins": 15},
+      "ISKCON Temple": {"zone": "B", "distance_from_tirupati_km": 2, "distance_from_tirumala_center_km": 28, "travel_time_from_tirupati_mins": 8},
+      "Kodandarama Temple": {"zone": "B", "distance_from_tirupati_km": 0.5, "distance_from_tirumala_center_km": 27, "travel_time_from_tirupati_mins": 5},
+      "Regional Science Centre": {"zone": "B", "distance_from_tirupati_km": 3, "distance_from_tirumala_center_km": 28, "travel_time_from_tirupati_mins": 10},
+      "Sri Kalyana Venkateswara Swamy Temple": {"zone": "C", "distance_from_tirupati_km": 7, "distance_from_tirumala_center_km": 33, "travel_time_from_tirupati_mins": 20},
+      "Chandragiri Fort": {"zone": "D", "distance_from_tirupati_km": 15, "distance_from_tirumala_center_km": 40, "travel_time_from_tirupati_mins": 35},
+      "Sri Venkateswara National Park": {"zone": "D", "distance_from_tirupati_km": 12, "distance_from_tirumala_center_km": 15, "travel_time_from_tirupati_mins": 30},
+      "Talakona Waterfalls": {"zone": "E", "distance_from_tirupati_km": 50, "distance_from_tirumala_center_km": 55, "travel_time_from_tirupati_mins": 90}
+    },
+    "realistic_itinerary_patterns": {
+      "1_day_trip": {
+        "description": "Rush trip — darshan only, no sightseeing. Most common for pilgrims from nearby cities.",
+        "pattern": [
+          "3:00-5:00 AM: Arrive Tirupati, take first bus to Tirumala (45 min)",
+          "6:00 AM: Join darshan queue (Sarva: 4-8h wait / SED: 1-2h with booking)",
+          "10:00 AM-12:00 PM: Complete darshan, collect laddu prasadam",
+          "12:30 PM: Quick lunch at TTD Annadanam (free) or nearby restaurant",
+          "1:00 PM: Optional — Swami Pushkarini holy dip (5 min walk from temple)",
+          "2:00 PM: Bus back to Tirupati (45 min)",
+          "3:00 PM: Optional quick visit to Sri Padmavathi Temple, Tiruchanoor (15 min from Tirupati)",
+          "4:30 PM: Depart from Tirupati"
+        ],
+        "zones_covered": ["A (partial — temple only)"],
+        "feasible_attractions": 1,
+        "notes": "On a 1-day trip, forget sightseeing — darshan itself takes most of the day. Only temple + Pushkarini dip is realistic."
+      },
+      "2_day_trip": {
+        "description": "Most popular trip duration. Day 1 = Darshan + nearby Tirumala spots. Day 2 = Tirupati town + departure.",
+        "pattern": {
+          "day_1": [
+            "5:00 AM: Bus to Tirumala (45 min)",
+            "6:00-10:00 AM: Darshan (SED recommended for 2-day trip to save time)",
+            "10:30 AM: Swami Pushkarini holy dip (3 min walk)",
+            "11:00 AM: Sri Venkateswara Museum (10 min walk, 1 hour visit)",
+            "12:00 PM: Lunch at TTD Annadanam or nearby restaurant",
+            "1:30 PM: Attend a Seva if interested (Kalyanam/Unjal/Sahasra Deepalankarana)",
+            "3:00 PM: Walk to Silathoranam (15 min) + Japali Theertham (20 min further)",
+            "4:30 PM: Visit TTD Gardens + Deer Park area (10 min walk back)",
+            "6:00 PM: Evening temple aarti and illumination",
+            "7:00 PM: Dinner and rest at Tirumala accommodation"
+          ],
+          "day_2": [
+            "6:00 AM: Optional — Sunrise walk to Akasa Ganga or Papavinasanam (30-40 min walk)",
+            "8:00 AM: Breakfast and checkout from Tirumala accommodation",
+            "9:00 AM: Bus down to Tirupati (45 min)",
+            "10:00 AM: Visit Sri Padmavathi Temple, Tiruchanoor (15 min auto, 1 hour visit)",
+            "11:30 AM: Sri Govindarajaswami Temple (15 min auto to city center, 1 hour)",
+            "12:30 PM: Lunch in Tirupati (Laxmi Narayana Bhavan / Ruchi / Konark)",
+            "2:00 PM: Optional — Kapila Theertham (10 min auto, 1 hour) OR ISKCON Temple (8 min auto, 45 min)",
+            "3:30 PM: Depart from Tirupati"
+          ]
+        },
+        "zones_covered": ["A (full)", "B (partial)", "C"],
+        "feasible_attractions": "8-10",
+        "notes": "Keep Day 1 entirely on Tirumala hilltop. Day 2 is all Tirupati town + Tiruchanoor. NEVER go back up the hill on Day 2."
+      },
+      "3_day_trip": {
+        "description": "Comprehensive trip with darshan, sightseeing, and optional excursion.",
+        "pattern": {
+          "day_1": "Darshan day — Same as 2-day Day 1 (Tirumala hilltop only)",
+          "day_2": "Tirumala nature sightseeing: Akasa Ganga, Papavinasanam, Gogarbham Dam, nature walk. OR Tirupati town sightseeing.",
+          "day_3_option_a": "Tirupati town + Tiruchanoor temples + departure",
+          "day_3_option_b": "Chandragiri Fort excursion (15 km, 35 min drive) + departure"
+        },
+        "zones_covered": ["A (full)", "B (full)", "C", "D (optional)"],
+        "feasible_attractions": "12-15",
+        "notes": "3 days allows covering all Tirumala + Tirupati attractions. Chandragiri Fort is only feasible as a dedicated half-day trip on Day 3. NEVER schedule Tirumala hilltop and Chandragiri on the same day."
+      }
+    },
+    "critical_rules": [
+      "NEVER schedule Tirumala hilltop (Zone A) and Tirupati town (Zone B) activities on the same half-day — the 45 min ghat road travel each way makes it impractical",
+      "NEVER schedule distant excursions (Zone D/E) on the same day as Tirumala darshan",
+      "Talakona Waterfalls (Zone E, 50 km away, 90 min drive) is ONLY feasible on 3+ day trips as a full day trip",
+      "Chandragiri Fort (Zone D, 15 km) needs a dedicated half-day — do NOT combine with any hilltop activities",
+      "All Tirumala hilltop attractions (Zone A) can be walked between — they are within 1-5 km of the main temple",
+      "Tirupati to Tirumala ghat road: 26 km, 45 min by bus, 35 min by taxi. Vehicles banned 12 AM - 3 AM",
+      "Always group Zone A activities together (1 full day on hilltop), Zone B+C together (half to full day in town)",
+      "For 1-day trips, ONLY temple darshan + Pushkarini dip is realistic — do not suggest sightseeing",
+      "Walking from Tirumala temple to Silathoranam is 15 min, to Japali Theertham is 20 min further — these cluster naturally",
+      "Papavinasanam Dam and Akasa Ganga are 3-5 km from temple — allow 30-40 min walking or use TTD shuttle"
+    ]
   },
 
   "hotels": {
@@ -256,205 +409,337 @@
       "type": "temple",
       "location": "tirumala",
       "lat": 13.6833, "lng": 79.3472,
-      "description": "The world-famous temple of Lord Venkateswara, richest Hindu temple in the world. Guinness World Record holder for most visited temple.",
+      "description": "The world-famous temple of Lord Venkateswara, the richest Hindu temple in the world and a Guinness World Record holder for the most visited place of worship. The temple sits atop Venkatadri, one of the seven peaks of the Tirumala hills at 3,200 ft elevation. The sanctum sanctorum houses the self-manifested (Swayambhu) deity adorned with priceless jewels and the legendary diamond-studded crown.",
       "visit_duration_hours": 3,
       "timings": "5:30 AM - 9:30 PM (Darshan hours vary)",
       "entry_fee": 0,
       "special_entry": 300,
       "tips": "Carry ID proof. Wear traditional clothes. No electronic devices inside sanctum.",
-      "priority": 1
+      "priority": 1,
+      "interest_tags": ["temples", "spiritual", "pilgrimage", "iconic"],
+      "best_time_to_visit": "Early morning (before 6 AM) or weekday afternoons for shortest queues",
+      "accessibility": "moderate",
+      "nearby": ["Swami Pushkarini", "Sri Venkateswara Museum", "Silathoranam"]
     },
     {
       "name": "Sri Padmavathi Ammavari Temple",
       "type": "temple",
       "location": "tiruchanoor",
       "lat": 13.5951, "lng": 79.4125,
-      "description": "Temple of Goddess Padmavathi, consort of Lord Venkateswara. 5 km from Tirupati.",
+      "description": "Temple of Goddess Padmavathi, the consort of Lord Venkateswara, located 5 km south of Tirupati at Tiruchanoor. This ancient temple is an important stop for pilgrims visiting Tirumala, as tradition holds that one must first seek the blessings of the Goddess before visiting the Lord. The temple features exquisite Dravidian architecture with intricate carvings and a serene atmosphere.",
       "visit_duration_hours": 1.5,
       "timings": "8:30 AM - 8:00 PM",
       "entry_fee": 0,
-      "tips": "Visit after Tirumala darshan. Beautiful architecture.",
-      "priority": 2
+      "tips": "Visit after Tirumala darshan. Beautiful architecture. Special puja on Fridays.",
+      "priority": 2,
+      "interest_tags": ["temples", "spiritual", "pilgrimage"],
+      "best_time_to_visit": "Morning hours (8:30-11 AM) for less crowd",
+      "accessibility": "easy",
+      "nearby": ["Sri Kalyana Venkateswara Swamy Temple", "Tiruchanoor Market"]
     },
     {
       "name": "Sri Govindarajaswami Temple",
       "type": "temple",
       "location": "tirupati",
       "lat": 13.6295, "lng": 79.4220,
-      "description": "Ancient temple in heart of Tirupati, dedicated to Lord Govindaraja (form of Vishnu). Built around 1130 CE.",
+      "description": "One of the oldest and most important temples in Tirupati, dedicated to Lord Govindaraja (a form of Vishnu in reclining posture). Built around 1130 CE by the Chola dynasty, this temple is situated in the heart of Tirupati city. The temple complex spans a large area with beautiful gopurams and mandapams showcasing rich Dravidian sculptural traditions.",
       "visit_duration_hours": 1,
       "timings": "7:00 AM - 8:00 PM",
       "entry_fee": 0,
-      "tips": "Located in the heart of Tirupati city. Rich Dravidian architecture.",
-      "priority": 3
+      "tips": "Located in the heart of Tirupati city. Rich Dravidian architecture. Evening aarti is captivating.",
+      "priority": 3,
+      "interest_tags": ["temples", "spiritual", "history", "architecture"],
+      "best_time_to_visit": "Morning or evening aarti time",
+      "accessibility": "easy",
+      "nearby": ["Kodandarama Temple", "Tirupati City Market", "Laxmi Narayana Bhavan"]
     },
     {
       "name": "Kapila Theertham",
       "type": "temple",
       "location": "tirupati",
       "lat": 13.6400, "lng": 79.4050,
-      "description": "Ancient Shiva temple with a beautiful waterfall. Only Shiva temple in Tirupati area. Has natural waterfall during monsoon.",
+      "description": "The only Shiva temple in the Tirupati area, Kapila Theertham is an ancient shrine nestled at the foot of the Tirumala hills. It features a stunning natural waterfall that cascades during the monsoon season, creating a sacred theertham (holy pool). The temple is associated with the sage Kapila and offers a unique spiritual ambiance different from the predominantly Vaishnavite shrines in the region.",
       "visit_duration_hours": 1.5,
       "timings": "6:00 AM - 8:00 PM",
       "entry_fee": 0,
-      "tips": "Best visited during monsoon (July-Nov) for waterfall. Sacred theertham.",
-      "priority": 4
+      "tips": "Best visited during monsoon (July-Nov) for waterfall. Sacred theertham. Peaceful and scenic.",
+      "priority": 4,
+      "interest_tags": ["temples", "spiritual", "nature", "waterfalls", "photography"],
+      "best_time_to_visit": "July to November for waterfall; mornings for peaceful visit",
+      "accessibility": "moderate",
+      "nearby": ["Alipiri Steps starting point", "Sri Venkateswara Zoological Park"]
     },
     {
       "name": "Sri Venkateswara Zoological Park",
       "type": "attraction",
       "location": "tirupati",
       "lat": 13.6500, "lng": 79.3900,
-      "description": "Asia's largest zoo spanning 5,532 acres. Built on Hindu mythology concept with animals from Ramayana, Mahabharata.",
+      "description": "One of Asia's largest zoos spanning 5,532 acres in the foothills of the Seshachalam hills. Built on a Hindu mythology concept, the zoo is divided into sections inspired by Ramayana and Mahabharata. It houses over 100 species of animals including lions, tigers, elephants, giraffes, and numerous bird species. A lion safari and bear safari are major attractions.",
       "visit_duration_hours": 3,
       "timings": "9:00 AM - 5:00 PM (Closed on Mondays)",
       "entry_fee": 50,
-      "tips": "Carry water and snacks. Large area, comfortable walking shoes needed.",
-      "priority": 5
+      "tips": "Carry water and snacks. Large area, comfortable walking shoes needed. Battery-operated vehicles available.",
+      "priority": 5,
+      "interest_tags": ["wildlife", "nature", "family", "photography"],
+      "best_time_to_visit": "Morning hours (9-11 AM) when animals are most active",
+      "accessibility": "easy",
+      "nearby": ["Kapila Theertham", "Sri Venkateswara National Park"]
     },
     {
       "name": "Silathoranam (Natural Arch)",
       "type": "natural",
       "location": "tirumala",
       "lat": 13.6820, "lng": 79.3460,
-      "description": "A rare natural rock arch formation, 8m wide and 3m high. Eroded from quartzite over 1600 million years. 1 km from main temple.",
+      "description": "A rare natural rock arch formation approximately 8 meters wide and 3 meters high, formed by the erosion of quartzite rock over 1,600 million years. It is one of the very few natural rock arches in Asia and is located about 1 km north of the main temple. The arch's shape is remarkably similar to the hood of a serpent (Adisesha), lending it deep mythological significance.",
       "visit_duration_hours": 0.5,
       "timings": "6:00 AM - 6:00 PM",
       "entry_fee": 0,
-      "tips": "Short walk from main temple. Geological wonder. Good photo spot.",
-      "priority": 6
+      "tips": "Short walk from main temple. Geological wonder. Great photo spot. Best in morning light.",
+      "priority": 6,
+      "interest_tags": ["nature", "geology", "photography", "unique"],
+      "best_time_to_visit": "Early morning for best photography light and fewer crowds",
+      "accessibility": "moderate",
+      "nearby": ["Sri Venkateswara Swamy Temple", "TTD Gardens", "Papavinasanam Dam"]
     },
     {
       "name": "Chandragiri Fort",
       "type": "historical",
       "location": "chandragiri",
       "lat": 13.5843, "lng": 79.3148,
-      "description": "11th century historical fort, former capital of Vijayanagara rulers. Houses ASI Archaeological Museum. 15 km from Tirupati.",
+      "description": "An 11th-century hilltop fort that served as the capital of the Vijayanagara Empire during its final phase (1586-1646 CE). The fort complex includes the Raja Mahal and Rani Mahal palaces, now housing an ASI Archaeological Museum with artefacts from the Vijayanagara period. It was here that Sri Venkatapati Raya, the last great Vijayanagara ruler, held court. The fort offers panoramic views of the surrounding countryside.",
       "visit_duration_hours": 2,
       "timings": "9:00 AM - 5:00 PM (Closed on Fridays)",
       "entry_fee": 25,
-      "tips": "Beautiful sunset views. Light and sound show in evenings. Historical significance.",
-      "priority": 7
+      "tips": "Beautiful sunset views. Light and sound show in evenings (check schedule). Historical significance. 15 km from Tirupati.",
+      "priority": 7,
+      "interest_tags": ["history", "culture", "architecture", "photography", "heritage"],
+      "best_time_to_visit": "Late afternoon for sunset views and light-and-sound show",
+      "accessibility": "moderate",
+      "nearby": ["Sri Kalyana Venkateswara Swamy Temple"]
     },
     {
       "name": "Sri Venkateswara National Park",
       "type": "natural",
       "location": "tirumala",
       "lat": 13.6500, "lng": 79.3200,
-      "description": "National park and biosphere reserve in Seshachalam hills. 353 sq km area. Home to 1,500+ plant species and 178 bird species.",
+      "description": "A national park and UNESCO biosphere reserve spread across 353 sq km of the Seshachalam hills. Home to over 1,500 plant species, 178 bird species, and numerous mammals including the Indian leopard, sloth bear, and chital deer. The park is famous for the endemic yellow-throated bulbul and the red sanders tree found only in these hills. Trekking trails offer breathtaking views of the Eastern Ghats.",
       "visit_duration_hours": 3,
       "timings": "6:00 AM - 6:00 PM",
       "entry_fee": 30,
-      "tips": "Bird watching paradise. Rare species like yellow-throated bulbul. Carry binoculars.",
-      "priority": 8
+      "tips": "Bird watching paradise. Rare species like yellow-throated bulbul. Carry binoculars. Guide recommended.",
+      "priority": 8,
+      "interest_tags": ["nature", "wildlife", "birdwatching", "trekking", "photography"],
+      "best_time_to_visit": "October to February for pleasant weather and migratory birds",
+      "accessibility": "difficult",
+      "nearby": ["Tirumala Temple", "Talakona Waterfalls"]
     },
     {
       "name": "Talakona Waterfalls",
       "type": "natural",
       "location": "seshachalam",
       "lat": 13.7000, "lng": 79.1900,
-      "description": "Highest waterfall in Andhra Pradesh at 270 feet. Located in Seshachalam hills, about 50 km from Tirupati.",
+      "description": "The highest waterfall in Andhra Pradesh at 270 feet, nestled deep within the Seshachalam biosphere reserve about 50 km from Tirupati. The falls are surrounded by dense tropical forest teeming with medicinal plants and wildlife. The trek to the waterfall is scenic, passing through lush greenery. The water is considered sacred and is believed to have medicinal properties due to the herbs it flows through.",
       "visit_duration_hours": 4,
       "timings": "8:00 AM - 4:00 PM",
       "entry_fee": 50,
-      "tips": "Best during monsoon. Full day trip from Tirupati. Trekking involved.",
-      "priority": 9
+      "tips": "Best during monsoon. Full day trip from Tirupati. Trekking involved. Carry sturdy footwear and water.",
+      "priority": 9,
+      "interest_tags": ["nature", "waterfalls", "trekking", "adventure", "photography"],
+      "best_time_to_visit": "July to December when water flow is strongest",
+      "accessibility": "difficult",
+      "nearby": ["Sri Venkateswara National Park", "Gundalakona Waterfalls"]
     },
     {
       "name": "Swami Pushkarini",
       "type": "sacred_water",
       "location": "tirumala",
       "lat": 13.6835, "lng": 79.3475,
-      "description": "Sacred tank adjacent to the main temple. Devotees take a holy dip before darshan. Mentioned in ancient scriptures.",
+      "description": "The most sacred tank adjacent to the main temple, mentioned in ancient scriptures as having been brought from Vaikuntha by Garuda. Devotees take a holy dip in this tank before proceeding for darshan as it is believed to wash away sins. The tank is beautifully maintained with stone steps on all sides and offers a serene, reflective setting with the temple gopuram visible in the background.",
       "visit_duration_hours": 0.5,
       "timings": "5:00 AM - 9:00 PM",
       "entry_fee": 0,
-      "tips": "Take a dip before darshan for spiritual merit. Very peaceful atmosphere.",
-      "priority": 3
+      "tips": "Take a dip before darshan for spiritual merit. Very peaceful atmosphere. Best at dawn.",
+      "priority": 3,
+      "interest_tags": ["spiritual", "sacred", "photography", "peaceful"],
+      "best_time_to_visit": "Early morning (5-6 AM) for a serene holy dip before darshan",
+      "accessibility": "easy",
+      "nearby": ["Sri Venkateswara Swamy Temple", "Sri Venkateswara Museum"]
     },
     {
       "name": "Papavinasanam Dam",
       "type": "natural",
       "location": "tirumala",
       "lat": 13.6900, "lng": 79.3400,
-      "description": "Sacred dam and waterfall in Tirumala hills. The water is believed to wash away sins. Beautiful scenic spot.",
+      "description": "A sacred dam and waterfall in the Tirumala hills, about 5 km north of the main temple. The name literally means 'destroyer of sins' — the water flowing here is believed to absolve devotees of their past sins. The dam is surrounded by dense forest and is one of the primary water sources for Tirumala. The scenic walk to the dam through verdant hills is itself a rewarding experience.",
       "visit_duration_hours": 1,
       "timings": "7:00 AM - 6:00 PM",
       "entry_fee": 0,
-      "tips": "Holy waters. Scenic walk from main temple area. Peaceful.",
-      "priority": 5
+      "tips": "Holy waters. Scenic walk from main temple area. Peaceful. Combine with Akasa Ganga visit.",
+      "priority": 5,
+      "interest_tags": ["spiritual", "nature", "scenic", "peaceful"],
+      "best_time_to_visit": "Morning hours; best during and after monsoon season",
+      "accessibility": "moderate",
+      "nearby": ["Akasa Ganga Waterfalls", "Silathoranam", "TTD Gardens"]
     },
     {
       "name": "Akasa Ganga Waterfalls",
       "type": "natural",
       "location": "tirumala",
       "lat": 13.6870, "lng": 79.3420,
-      "description": "Two sacred waterfalls on Tirumala hills. Water used in temple rituals. Beautiful natural scenery.",
+      "description": "Twin sacred waterfalls cascading down the Tirumala hills, about 3 km from the main temple. The water from these falls is used in the daily abhishekam (sacred bathing) rituals of Lord Venkateswara. According to legend, the water flows from the feet of Lord Vishnu in the heavens. The surrounding forest provides a tranquil backdrop for meditation and reflection.",
       "visit_duration_hours": 1,
       "timings": "6:00 AM - 6:00 PM",
       "entry_fee": 0,
-      "tips": "Walk from bus stand. Water is sacred. Best in monsoon.",
-      "priority": 6
+      "tips": "Walk from bus stand. Water is sacred. Best in monsoon. Morning hours for fewer crowds.",
+      "priority": 6,
+      "interest_tags": ["spiritual", "nature", "waterfalls", "peaceful", "photography"],
+      "best_time_to_visit": "July to November during monsoon; early morning for solitude",
+      "accessibility": "moderate",
+      "nearby": ["Papavinasanam Dam", "Gogarbham Dam", "Sri Venkateswara Swamy Temple"]
     },
     {
       "name": "Sri Venkateswara Museum",
       "type": "museum",
       "location": "tirumala",
       "lat": 13.6830, "lng": 79.3468,
-      "description": "Museum showcasing Tirupati temple architecture, historical artefacts, ancient weaponry, puja items, and comprehensive photo gallery.",
+      "description": "A well-curated museum showcasing the rich history and heritage of the Tirumala temple and TTD. Exhibits include ancient inscriptions, historical photographs, replicas of temple architecture, ancient weaponry, puja items, deity ornaments, and a comprehensive photo gallery documenting the temple's evolution over centuries. The museum provides valuable cultural context for pilgrims and history enthusiasts alike.",
       "visit_duration_hours": 1,
       "timings": "8:00 AM - 8:00 PM",
       "entry_fee": 10,
-      "tips": "Learn about temple history. Great collection of sculptures and artefacts.",
-      "priority": 7
+      "tips": "Learn about temple history. Great collection of sculptures and artefacts. Guided tours available.",
+      "priority": 7,
+      "interest_tags": ["history", "culture", "museum", "education"],
+      "best_time_to_visit": "Midday (10 AM - 2 PM) when darshan queues are long",
+      "accessibility": "easy",
+      "nearby": ["Sri Venkateswara Swamy Temple", "Swami Pushkarini", "TTD Gardens"]
     },
     {
       "name": "ISKCON Temple",
       "type": "temple",
       "location": "tirupati",
       "lat": 13.6250, "lng": 79.4150,
-      "description": "Beautiful Lotus Temple of ISKCON in Tirupati. Dedicated to Lord Krishna. Known for festivals and Krishna Janmashtami celebrations.",
+      "description": "A beautiful Lotus-shaped temple of the International Society for Krishna Consciousness (ISKCON) in Tirupati, dedicated to Lord Krishna and Radha. The temple is known for its stunning architecture inspired by a blooming lotus flower, vibrant festivals especially during Krishna Janmashtami, and serene chanting sessions. Free prasadam is distributed generously to visitors.",
       "visit_duration_hours": 1,
       "timings": "4:30 AM - 8:30 PM",
       "entry_fee": 0,
-      "tips": "Beautiful architecture. Free prasadam. Evening aarti is special.",
-      "priority": 8
+      "tips": "Beautiful architecture. Free prasadam. Evening aarti is special. Hare Krishna chanting sessions.",
+      "priority": 8,
+      "interest_tags": ["temples", "spiritual", "architecture", "peaceful"],
+      "best_time_to_visit": "Evening (5-7 PM) for aarti ceremony",
+      "accessibility": "easy",
+      "nearby": ["Tirupati Railway Station", "Sri Govindarajaswami Temple"]
     },
     {
       "name": "Sri Kalyana Venkateswara Swamy Temple",
       "type": "temple",
       "location": "srinivasamangapuram",
       "lat": 13.6100, "lng": 79.3900,
-      "description": "Temple commemorating the celestial wedding of Lord Venkateswara with Padmavathi. Located at Srinivasamangapuram.",
+      "description": "This temple commemorates the celestial wedding (Kalyanam) of Lord Venkateswara with Goddess Padmavathi at Srinivasamangapuram. The temple complex is beautifully maintained and features marriage-themed sculptures throughout. Couples seek special blessings here. The temple is also the starting point for the Srivari Mettu walking path to Tirumala.",
       "visit_duration_hours": 1,
       "timings": "6:00 AM - 8:00 PM",
       "entry_fee": 0,
-      "tips": "Couples visit for blessings. Beautiful temple with wedding theme.",
-      "priority": 8
+      "tips": "Couples visit for blessings. Beautiful temple with wedding theme. Starting point for Srivari Mettu walk.",
+      "priority": 8,
+      "interest_tags": ["temples", "spiritual", "culture", "couples"],
+      "best_time_to_visit": "Morning hours for peaceful visit",
+      "accessibility": "easy",
+      "nearby": ["Srivari Mettu starting point", "Sri Padmavathi Ammavari Temple"]
     },
     {
       "name": "Kodandarama Temple",
       "type": "temple",
       "location": "tirupati",
       "lat": 13.6280, "lng": 79.4225,
-      "description": "Ancient temple dedicated to Lord Rama. One of the oldest temples in Tirupati. Rich architectural heritage.",
+      "description": "One of the oldest temples in Tirupati, dedicated to Lord Rama in the Kodanda form (holding the Kodanda bow). The temple has rich architectural heritage dating back several centuries. It is situated in the heart of the city and is an important part of Tirupati's temple circuit, attracting devotees who wish to pay respects to Lord Rama along with their Tirumala pilgrimage.",
       "visit_duration_hours": 0.5,
       "timings": "6:00 AM - 8:00 PM",
       "entry_fee": 0,
-      "tips": "Located in city center. Quick visit possible.",
-      "priority": 9
+      "tips": "Located in city center. Quick visit possible. Ancient Rama temple with historic significance.",
+      "priority": 9,
+      "interest_tags": ["temples", "spiritual", "history", "architecture"],
+      "best_time_to_visit": "Any time during temple hours",
+      "accessibility": "easy",
+      "nearby": ["Sri Govindarajaswami Temple", "Tirupati City Market"]
     },
     {
       "name": "Regional Science Centre",
       "type": "attraction",
       "location": "tirupati",
       "lat": 13.6350, "lng": 79.4150,
-      "description": "Science centre with digital planetarium (first in AP), Space Exposition Hall and Innovation Space.",
+      "description": "A modern science centre featuring Andhra Pradesh's first digital planetarium, a Space Exposition Hall, Innovation Space, and interactive science exhibits. The centre hosts regular shows in the planetarium showcasing celestial phenomena and space exploration. An excellent educational destination for families and students with hands-on exhibits covering physics, biology, and space science.",
       "visit_duration_hours": 2,
       "timings": "10:00 AM - 5:30 PM",
       "entry_fee": 30,
-      "tips": "Great for families with children. Planetarium shows at fixed times.",
-      "priority": 10
+      "tips": "Great for families with children. Planetarium shows at fixed times. Check show schedule on arrival.",
+      "priority": 10,
+      "interest_tags": ["science", "education", "family", "planetarium"],
+      "best_time_to_visit": "Midday; check planetarium show timings in advance",
+      "accessibility": "easy",
+      "nearby": ["Tirupati City", "ISKCON Temple"]
+    },
+    {
+      "name": "Japali Theertham",
+      "type": "temple",
+      "location": "tirumala",
+      "lat": 13.6810, "lng": 79.3455,
+      "description": "An ancient sacred site on Tirumala hills associated with sage Jabali, who is believed to have performed intense penance here. The theertham (holy pool) is fed by a natural spring and is surrounded by dense forest. A small Hanuman temple stands nearby. The peaceful and secluded setting of Japali Theertham makes it a favourite among devotees seeking a meditative retreat away from the main temple crowd.",
+      "visit_duration_hours": 1,
+      "timings": "6:00 AM - 6:00 PM",
+      "entry_fee": 0,
+      "tips": "Quiet and serene spot. Short trek required. Combine with Silathoranam visit. Carry water.",
+      "priority": 7,
+      "interest_tags": ["spiritual", "nature", "peaceful", "trekking"],
+      "best_time_to_visit": "Morning hours for a meditative experience",
+      "accessibility": "moderate",
+      "nearby": ["Silathoranam", "Sri Venkateswara Swamy Temple"]
+    },
+    {
+      "name": "Gogarbham Dam",
+      "type": "natural",
+      "location": "tirumala",
+      "lat": 13.6880, "lng": 79.3430,
+      "description": "A picturesque dam built across a stream in the Tirumala hills, serving as a water source for the temple town. The dam is surrounded by lush greenery and offers scenic walking trails with views of the Seshachalam hills. It is a popular spot for a peaceful break during a Tirumala visit. The area around the dam is home to deer and various bird species.",
+      "visit_duration_hours": 1,
+      "timings": "6:00 AM - 6:00 PM",
+      "entry_fee": 0,
+      "tips": "Scenic and quiet. Good for a relaxing walk. Spot deer and birds. Combine with Akasa Ganga trip.",
+      "priority": 8,
+      "interest_tags": ["nature", "scenic", "peaceful", "photography", "birdwatching"],
+      "best_time_to_visit": "Morning or late afternoon for best light and wildlife spotting",
+      "accessibility": "moderate",
+      "nearby": ["Akasa Ganga Waterfalls", "Papavinasanam Dam"]
+    },
+    {
+      "name": "TTD Gardens (Srivari Padala Mandapam Garden)",
+      "type": "garden",
+      "location": "tirumala",
+      "lat": 13.6825, "lng": 79.3465,
+      "description": "Well-maintained ornamental gardens near the main temple, featuring manicured lawns, flower beds, topiary, and shaded walkways. The gardens offer a pleasant green escape for pilgrims waiting for darshan or resting between visits. A variety of flowering plants, including the sacred Tulasi (holy basil), are cultivated here. Children's play areas are also available.",
+      "visit_duration_hours": 0.5,
+      "timings": "6:00 AM - 7:00 PM",
+      "entry_fee": 0,
+      "tips": "Relaxing spot near temple. Good for families with children. Flower displays change seasonally.",
+      "priority": 9,
+      "interest_tags": ["nature", "garden", "family", "relaxation"],
+      "best_time_to_visit": "Late afternoon for pleasant weather",
+      "accessibility": "easy",
+      "nearby": ["Sri Venkateswara Swamy Temple", "Sri Venkateswara Museum", "Silathoranam"]
+    },
+    {
+      "name": "Deer Park (Sri Venkateswara Deer Park)",
+      "type": "attraction",
+      "location": "tirumala",
+      "lat": 13.6815, "lng": 79.3480,
+      "description": "A small but charming deer park maintained by TTD near the main temple at Tirumala. The park is home to spotted deer (chital), sambar deer, and blackbuck that roam freely in a semi-natural enclosure. It is a popular stop for families with children and offers a tranquil experience amidst the hills. The deer are accustomed to visitors and can be observed at close range.",
+      "visit_duration_hours": 0.5,
+      "timings": "8:00 AM - 5:00 PM",
+      "entry_fee": 0,
+      "tips": "Great for children. Deer are friendly. No feeding allowed. Quick visit near temple area.",
+      "priority": 9,
+      "interest_tags": ["wildlife", "family", "nature", "relaxation"],
+      "best_time_to_visit": "Morning or late afternoon when deer are most active",
+      "accessibility": "easy",
+      "nearby": ["Sri Venkateswara Swamy Temple", "TTD Gardens", "Sri Venkateswara Museum"]
     }
   ],
 
@@ -465,9 +750,12 @@
       "lat": 13.6833, "lng": 79.3470,
       "cuisine": "South Indian Vegetarian",
       "price_per_person": 0,
-      "description": "Free meals served to all pilgrims by TTD. Serves 3 meals daily to over 50,000 devotees.",
+      "description": "Free meals served to all pilgrims by TTD. Serves 3 meals daily to over 50,000 devotees. The world's largest free feeding programme, run entirely on donations.",
       "timings": "Breakfast 7-10 AM, Lunch 11 AM-3 PM, Dinner 6-10 PM",
-      "category": "free"
+      "category": "free",
+      "specialty_dishes": ["Rice with sambar and rasam", "Curd rice", "Pulihora (tamarind rice)", "Pongal", "Sweet pongal"],
+      "ambiance": "Large community dining halls with efficient serving system",
+      "rating": 4.5
     },
     {
       "name": "TTD Tirumala Tirupati Prasadam",
@@ -475,9 +763,12 @@
       "lat": 13.6831, "lng": 79.3472,
       "cuisine": "Prasadam",
       "price_per_person": 25,
-      "description": "Tirumala's famous laddu prasadam (₹25 small, ₹50 large), Vada, Dosa, Pongal also available.",
-      "timings": "After darshan",
-      "category": "budget"
+      "description": "Tirumala's famous laddu prasadam — a sweet made with besan flour, sugar, cashews, cardamom and ghee, prepared in the temple kitchen (Potu). Available in two sizes. Other prasadam items also available.",
+      "timings": "After darshan; laddu counters open extended hours",
+      "category": "budget",
+      "specialty_dishes": ["Srivari Laddu (small ₹25, large ₹50)", "Vada", "Dosa", "Pongal", "Pulihora", "Mysorepak"],
+      "ambiance": "Prasadam distribution counters with orderly queues",
+      "rating": 4.8
     },
     {
       "name": "Annamacharya Bhavan",
@@ -485,9 +776,12 @@
       "lat": 13.6829, "lng": 79.3468,
       "cuisine": "South Indian Vegetarian",
       "price_per_person": 100,
-      "description": "Vegetarian restaurant near temple. Serves authentic Andhra meals.",
+      "description": "Popular vegetarian restaurant near the main temple, serving authentic Andhra-style meals and tiffin items. Named after the great saint-poet Annamacharya, it is a convenient dining option for pilgrims.",
       "timings": "7:00 AM - 10:00 PM",
-      "category": "budget"
+      "category": "budget",
+      "specialty_dishes": ["Andhra meals (thali)", "Pesarattu", "Idli-Vada-Dosa", "Pulihora", "Curd rice"],
+      "ambiance": "Simple, clean, and bustling pilgrim restaurant",
+      "rating": 3.8
     },
     {
       "name": "Laxmi Narayana Bhavan",
@@ -495,9 +789,12 @@
       "lat": 13.6300, "lng": 79.4210,
       "cuisine": "South Indian Vegetarian",
       "price_per_person": 120,
-      "description": "Popular vegetarian restaurant in Tirupati. Known for dosa, idli, and meals.",
+      "description": "One of the most popular vegetarian restaurants in Tirupati, known for crispy dosas, fluffy idlis, and authentic Andhra meals. A favourite among devotees and locals alike, with consistently good quality and fast service.",
       "timings": "6:30 AM - 10:30 PM",
-      "category": "budget"
+      "category": "budget",
+      "specialty_dishes": ["Masala Dosa", "Ghee Idli", "Andhra Meals", "Filter Coffee", "Pongal"],
+      "ambiance": "Traditional South Indian restaurant, brisk and lively",
+      "rating": 4.1
     },
     {
       "name": "Ruchi Restaurant",
@@ -505,9 +802,12 @@
       "lat": 13.6310, "lng": 79.4215,
       "cuisine": "Multi-Cuisine Vegetarian",
       "price_per_person": 200,
-      "description": "Well-known restaurant serving North & South Indian cuisine.",
+      "description": "Well-known vegetarian restaurant serving both North and South Indian cuisine. Popular for its thalis, Chinese items, and sweets counter. Centrally located and convenient for pilgrims staying in Tirupati.",
       "timings": "7:00 AM - 11:00 PM",
-      "category": "standard"
+      "category": "standard",
+      "specialty_dishes": ["North Indian Thali", "Paneer Butter Masala", "Chinese Fried Rice", "Gulab Jamun", "Andhra Meals"],
+      "ambiance": "Clean, air-conditioned, family-friendly dining",
+      "rating": 4.0
     },
     {
       "name": "Maya Restaurant (Fortune Select Grand Ridge)",
@@ -515,9 +815,12 @@
       "lat": 13.6350, "lng": 79.4180,
       "cuisine": "Multi-Cuisine",
       "price_per_person": 500,
-      "description": "Fine dining at Fortune hotel. Multi-cuisine with Andhra specialties.",
+      "description": "Fine dining restaurant at the Fortune Select Grand Ridge hotel. Offers a refined multi-cuisine menu with Andhra specialties, North Indian classics, and Continental dishes. Elegant interiors and attentive service.",
       "timings": "7:00 AM - 11:00 PM",
-      "category": "premium"
+      "category": "premium",
+      "specialty_dishes": ["Andhra Biryani (Veg)", "Paneer Tikka", "Continental Platter", "Hyderabadi Dum Biryani (Veg)", "Live counters at breakfast buffet"],
+      "ambiance": "Upscale fine dining with elegant decor and ambient lighting",
+      "rating": 4.3
     },
     {
       "name": "Konark Restaurant",
@@ -525,9 +828,90 @@
       "lat": 13.6305, "lng": 79.4205,
       "cuisine": "South Indian Vegetarian",
       "price_per_person": 150,
-      "description": "Popular among devotees. Authentic Andhra meals and tiffins.",
+      "description": "Popular among devotees for authentic Andhra meals and tiffins. Known for generous portions and home-style cooking. Conveniently located near major accommodation areas in Tirupati.",
       "timings": "6:00 AM - 10:00 PM",
-      "category": "budget"
+      "category": "budget",
+      "specialty_dishes": ["Andhra Meals", "Pesarattu with Upma", "Masala Dosa", "Tomato Pappu Rice", "Buttermilk"],
+      "ambiance": "Simple and homely with quick service",
+      "rating": 3.9
+    },
+    {
+      "name": "Minerva Coffee Shop",
+      "location": "tirupati",
+      "lat": 13.6305, "lng": 79.4218,
+      "cuisine": "South Indian and Multi-Cuisine Vegetarian",
+      "price_per_person": 180,
+      "description": "In-house restaurant at the Minerva Grand hotel, serving a wide range of South Indian, North Indian, and Chinese vegetarian dishes. Known for their excellent filter coffee and breakfast spread. A reliable mid-range option in Tirupati.",
+      "timings": "6:00 AM - 11:00 PM",
+      "category": "standard",
+      "specialty_dishes": ["Filter Coffee", "Minerva Special Dosa", "Paneer Manchurian", "Thali Meals", "Rava Kesari"],
+      "ambiance": "Modern hotel restaurant with comfortable seating",
+      "rating": 4.0
+    },
+    {
+      "name": "Raj Bhavan Restaurant",
+      "location": "tirupati",
+      "lat": 13.6312, "lng": 79.4200,
+      "cuisine": "South Indian and North Indian Vegetarian",
+      "price_per_person": 160,
+      "description": "A well-established vegetarian restaurant in Tirupati known for its consistent quality and wide menu. Serves hearty Andhra-style meals along with popular North Indian dishes. Frequented by both pilgrims and local families.",
+      "timings": "7:00 AM - 10:30 PM",
+      "category": "standard",
+      "specialty_dishes": ["Rajma Chawal", "Andhra Meals", "Chole Bhature", "Palak Paneer", "Gulab Jamun"],
+      "ambiance": "Spacious and traditional, family-friendly atmosphere",
+      "rating": 3.9
+    },
+    {
+      "name": "Woodlands Restaurant",
+      "location": "tirupati",
+      "lat": 13.6308, "lng": 79.4198,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 200,
+      "description": "Part of the well-known Woodlands chain, this restaurant offers authentic South Indian vegetarian cuisine prepared in traditional style. The elaborate South Indian thali and crispy dosas are signature offerings. Clean, reliable, and centrally located.",
+      "timings": "7:00 AM - 10:30 PM",
+      "category": "standard",
+      "specialty_dishes": ["Woodlands Special Thali", "Set Dosa", "Mysore Masala Dosa", "Rasam Vada", "Payasam"],
+      "ambiance": "Classic South Indian restaurant chain ambiance, well-maintained",
+      "rating": 4.1
+    },
+    {
+      "name": "Tirumala Tirupati Guesthouse Canteen",
+      "location": "tirumala",
+      "lat": 13.6832, "lng": 79.3470,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 80,
+      "description": "Canteen facility within the TTD guesthouse complex at Tirumala. Offers affordable, homely vegetarian food for guests and pilgrims. The menu focuses on simple, sattvic South Indian preparations ideal for pilgrims.",
+      "timings": "6:00 AM - 10:00 PM",
+      "category": "budget",
+      "specialty_dishes": ["Idli-Sambar", "Pongal", "Rice-Sambar-Rasam", "Lemon Rice", "Curd Rice"],
+      "ambiance": "Basic canteen-style, clean and functional",
+      "rating": 3.5
+    },
+    {
+      "name": "Sree Lakshmi Caterers and Tiffins",
+      "location": "tirupati",
+      "lat": 13.6292, "lng": 79.4190,
+      "cuisine": "South Indian Vegetarian",
+      "price_per_person": 90,
+      "description": "A popular budget eatery near Tirupati railway station, famous for early morning tiffins catering to pilgrims departing for Tirumala. Quick service and authentic Andhra flavours make it a preferred stop for budget travellers.",
+      "timings": "4:30 AM - 10:00 PM",
+      "category": "budget",
+      "specialty_dishes": ["Poori-Curry", "Pesarattu-Upma", "Mirchi Bajji", "Filter Coffee", "Idli-Chutney"],
+      "ambiance": "No-frills, bustling pilgrim eatery near station",
+      "rating": 3.7
+    },
+    {
+      "name": "Hotel Bhimas Paradise Restaurant",
+      "location": "tirupati",
+      "lat": 13.6316, "lng": 79.4208,
+      "cuisine": "Multi-Cuisine Vegetarian",
+      "price_per_person": 250,
+      "description": "An air-conditioned multi-cuisine restaurant at Hotel Bhimas offering a comfortable dining experience. Known for its elaborate buffet meals and well-presented a la carte menu. A good choice for pilgrims seeking a slightly upscale meal in Tirupati.",
+      "timings": "7:00 AM - 11:00 PM",
+      "category": "standard",
+      "specialty_dishes": ["Buffet Lunch", "Paneer Butter Masala", "Hyderabadi Biryani (Veg)", "Tandoori Platter", "Ice Cream Sundae"],
+      "ambiance": "Air-conditioned hotel restaurant with buffet counter",
+      "rating": 4.0
     }
   ],
 
@@ -586,10 +970,43 @@
       },
       "on_foot": {
         "routes": [
-          {"name": "Alipiri Steps", "distance_km": 11, "steps": 3550, "duration_hours": 3.5, "start_point": "Alipiri", "note": "Most popular and ancient route. Roofed path. 4 Gopurams along the way."},
-          {"name": "Srivari Mettu", "distance_km": 6, "duration_hours": 2, "start_point": "Srinivasamangapuram", "note": "Shorter route. Also fully roofed."}
+          {
+            "name": "Alipiri Steps",
+            "distance_km": 11,
+            "steps": 3550,
+            "duration_hours": 3.5,
+            "start_point": "Alipiri",
+            "note": "Most popular and ancient route. Fully roofed path. 4 Gopurams along the way. Countless devotees walk this path daily chanting 'Govinda Govinda'.",
+            "divya_darshan_eligible": true,
+            "difficulty_level": "moderate",
+            "facilities_en_route": ["Roofed pathway throughout", "Drinking water stations every 500m", "Toilet blocks at regular intervals", "Rest mandapams with seating", "Free buttermilk/juice stalls by donors", "Medical aid post at midpoint", "CCTV surveillance", "Emergency call boxes", "Free luggage transfer service to Tirumala"],
+            "best_start_time": "3:00 AM - 5:00 AM for Divya Darshan token; otherwise 5:00 AM - 7:00 AM for pleasant weather"
+          },
+          {
+            "name": "Srivari Mettu",
+            "distance_km": 6,
+            "duration_hours": 2,
+            "start_point": "Srinivasamangapuram (near Sri Kalyana Venkateswara Swamy Temple)",
+            "note": "Shorter and steeper route. Fully roofed. Less crowded than Alipiri. Starts from Srinivasamangapuram near the Kalyana Venkateswara temple.",
+            "divya_darshan_eligible": true,
+            "difficulty_level": "moderate_to_difficult",
+            "facilities_en_route": ["Roofed walkway", "Drinking water points", "Toilet facilities", "Rest shelters", "Security personnel", "Free luggage transfer service"],
+            "best_start_time": "4:00 AM - 6:00 AM for Divya Darshan; 6:00 AM - 8:00 AM for regular walk"
+          },
+          {
+            "name": "Neeru Chetti Foot Path",
+            "distance_km": 9,
+            "duration_hours": 3,
+            "start_point": "Chandragiri Road side, near Tirupati outskirts",
+            "note": "The third and least-known walking path to Tirumala. Less crowded and more scenic than Alipiri. Passes through dense forest sections of the Seshachalam hills. Partially roofed. Recommended for experienced walkers and nature lovers.",
+            "divya_darshan_eligible": false,
+            "difficulty_level": "difficult",
+            "facilities_en_route": ["Partial roofing", "Drinking water at select points", "Security checkpoints", "Rest shelters at intervals", "Scenic forest views"],
+            "best_start_time": "5:00 AM - 7:00 AM for safety and cooler temperatures"
+          }
         ],
-        "facilities": "Rest houses, security, canteen, toilets, drinking water, medical help, free luggage transfer"
+        "facilities": "Rest houses, security, canteen, toilets, drinking water, medical help, free luggage transfer",
+        "general_tips": "Wear comfortable, non-slip footwear. Carry a water bottle and light snacks. Walking at night is common for Alipiri route. Biometric tokens for Divya Darshan are issued at the foot of the hill."
       },
       "ghat_road_restrictions": "Buses and vehicles banned from 12 AM to 3 AM on ghat road",
       "automobile_clinic": "TTD offers vehicle breakdown service on ghat roads. Call 0877-2263636"
@@ -636,53 +1053,433 @@
   },
 
   "sevas": [
-    {"name": "Suprabhatam", "cost": 300, "time": "2:30 AM - 3:00 AM", "description": "Wake-up seva to the Lord. Most auspicious."},
-    {"name": "Thomala Seva", "cost": 300, "time": "3:30 AM", "description": "Garland decoration seva."},
-    {"name": "Archana", "cost": 100, "time": "Multiple slots", "description": "Recitation of divine names."},
-    {"name": "Kalyanam", "cost": 500, "time": "1:00 PM - 2:00 PM", "description": "Divine wedding ceremony."},
-    {"name": "Unjal Seva", "cost": 300, "time": "After Kalyanam", "description": "Swing ceremony of Lord."},
-    {"name": "Sahasra Deepalankarana Seva", "cost": 500, "time": "After Unjal", "description": "Thousand lamp decoration. Spectacular visual."},
-    {"name": "Arjitha Brahmotsavam", "cost": 300, "time": "Specific dates", "description": "Condensed Brahmotsavam experience."},
-    {"name": "Visesha Puja", "cost": 200, "time": "Various", "description": "Special worship service."}
+    {
+      "name": "Suprabhatam",
+      "cost": 300,
+      "time": "2:30 AM - 3:00 AM",
+      "description": "The most auspicious wake-up seva to the Lord. Devotees recite the Suprabhatam (divine wake-up hymn) composed by Prativadi Bhayankara Annangaracharya in the presence of the deity.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Thomala Seva",
+      "cost": 300,
+      "time": "3:30 AM - 4:00 AM",
+      "description": "Garland decoration seva where the deity is adorned with fresh flower garlands. Devotees witness the deity being decorated with elaborate floral arrangements.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Archana",
+      "cost": 100,
+      "time": "Multiple slots throughout the day",
+      "description": "Recitation of the 108 or 1,008 divine names (Sahasranama) of Lord Venkateswara in the presence of the deity. One of the most accessible sevas.",
+      "booking": "both",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 20
+    },
+    {
+      "name": "Kalyanam (Celestial Wedding)",
+      "cost": 500,
+      "time": "1:00 PM - 2:00 PM",
+      "description": "The divine wedding ceremony re-enacting the celestial marriage of Lord Venkateswara with Goddess Padmavathi and Sridevi. A grand and elaborate seva with Vedic chanting.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 60
+    },
+    {
+      "name": "Unjal Seva (Swing Ceremony)",
+      "cost": 300,
+      "time": "After Kalyanam, approximately 2:30 PM",
+      "description": "Swing ceremony where the processional deities are placed on an ornate golden swing and gently swung to the accompaniment of devotional music. A visually beautiful seva.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Sahasra Deepalankarana Seva",
+      "cost": 500,
+      "time": "After Unjal Seva, approximately 3:00 PM - 4:00 PM",
+      "description": "Spectacular thousand-lamp decoration seva where the sanctum is illuminated with a thousand oil lamps creating a breathtaking visual of the deity bathed in golden light. One of the most visually stunning sevas.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 60
+    },
+    {
+      "name": "Arjitha Brahmotsavam",
+      "cost": 300,
+      "time": "Specific dates (check TTD calendar)",
+      "description": "A condensed Brahmotsavam experience where the processional deity is taken on a specific vahana (divine vehicle). Available on select dates throughout the year as per TTD schedule.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 45
+    },
+    {
+      "name": "Visesha Puja",
+      "cost": 200,
+      "time": "Various time slots",
+      "description": "Special worship service with personalised prayers offered on behalf of the devotee. Includes close darshan of the deity after the puja ceremony.",
+      "booking": "both",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Nijapada Darshan",
+      "cost": 200,
+      "time": "Specific dates (typically Ekadasi days)",
+      "description": "A rare and highly coveted darshan where devotees get to see the original sacred feet (Nijapada) of Lord Venkateswara without the usual ornamental covering. Available only on specific auspicious days as determined by TTD.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 15
+    },
+    {
+      "name": "Dolotsavam (Swing Festival Seva)",
+      "cost": 100,
+      "time": "Evening, after Ekanta Seva preparations",
+      "description": "The processional deities are ceremonially placed on a decorated swing and gently rocked while devotees sing devotional songs. A serene and meditative seva experience, distinct from Unjal Seva.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Vasanthotsavam (Spring Festival Seva)",
+      "cost": 100,
+      "time": "During Vasantotsavam season (typically March-April)",
+      "description": "A seasonal seva celebrating the spring season where the deity is decorated with fresh spring flowers and sprinkled with rose water and sandalwood paste. A fragrant and colourful celebration.",
+      "booking": "online",
+      "availability": "seasonal",
+      "max_persons": 2,
+      "duration_minutes": 45
+    },
+    {
+      "name": "Astadala Pada Padmaradhana",
+      "cost": 200,
+      "time": "Morning slot (check TTD schedule)",
+      "description": "A floral worship seva where the sacred feet of the Lord are adorned with flowers arranged in an eight-petalled lotus pattern (Astadala Padma). A deeply devotional and meditative seva.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 30
+    },
+    {
+      "name": "Sahasra Kalasabhishekam",
+      "cost": 750,
+      "time": "Early morning (specific dates)",
+      "description": "A grand abhishekam (sacred bathing) of the deity with water from a thousand sacred pots (kalasas). Each pot contains holy water mixed with milk, curd, honey, turmeric, and sandal paste. One of the most elaborate and premium sevas.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 90
+    },
+    {
+      "name": "Tiruppavai-Thiruvembavai",
+      "cost": 200,
+      "time": "During Dhanurmasam (December-January, early morning)",
+      "description": "A seasonal seva conducted during the Tamil month of Margazhi (Dhanurmasam). Devotees recite the Tiruppavai hymns composed by Andal and Thiruvembavai by Manikkavasagar in the divine presence of the Lord.",
+      "booking": "online",
+      "availability": "seasonal",
+      "max_persons": 2,
+      "duration_minutes": 45
+    },
+    {
+      "name": "Abhishekam",
+      "cost": 300,
+      "time": "Early morning (check TTD schedule)",
+      "description": "Sacred bathing ritual of the deity with milk, honey, sandalwood paste, and holy water. Devotees receive the abhishekam prasadam (sacred water). Available on select days.",
+      "booking": "online",
+      "availability": "specific_days",
+      "max_persons": 2,
+      "duration_minutes": 45
+    },
+    {
+      "name": "Ekanta Seva",
+      "cost": 400,
+      "time": "10:30 PM onwards (last seva of the day)",
+      "description": "The final ritual of the day — the Lord is ceremonially put to rest. Lullabies and night-time hymns are recited. Devotees witness the deity being prepared for divine rest. A deeply intimate and moving seva.",
+      "booking": "online",
+      "availability": "daily",
+      "max_persons": 2,
+      "duration_minutes": 30
+    }
   ],
 
+  "darshan_types": [
+    {
+      "name": "Sarva Darshan (General/Free Darshan)",
+      "cost": 0,
+      "wait_hours": "4-12",
+      "booking": "walk-in, no advance booking needed",
+      "dress_code": "Traditional only — Men: dhoti/pants with shirt; Women: saree/churidar/salwar",
+      "timings": "24 hours (queue operates round the clock)",
+      "queue_entry": "Vaikuntam Queue Complex (VQC)",
+      "id_required": true,
+      "tips": "Arrive early (before 5 AM) for shorter queues. Weekdays are significantly less crowded. Carry snacks and water for the wait. Queue shelters are covered and have fans. Free food is distributed in the queue by donors. Do not carry electronic devices — deposit in lockers at VQC."
+    },
+    {
+      "name": "Special Entry Darshan (SED)",
+      "cost": 300,
+      "wait_hours": "1-3",
+      "booking": "online at ttdevasthanams.ap.gov.in",
+      "advance_days": 5,
+      "dress_code": "Traditional only — Men: dhoti/pants with shirt; Women: saree/churidar/salwar",
+      "timings": "Time slot assigned during booking (usually between 9 AM - 7 PM)",
+      "queue_entry": "Supadham (SED entrance near the temple)",
+      "id_required": true,
+      "tips": "Book exactly when slots open online (they sell out fast). Report at least 1 hour before your allotted slot. The ₹300 ticket includes a ₹50 laddu prasadam coupon. Keep the printed/digital ticket and ID proof ready."
+    },
+    {
+      "name": "Divya Darshan",
+      "cost": 0,
+      "wait_hours": "1-2",
+      "booking": "walk-in only — biometric token issued to pilgrims who walk up via Alipiri or Srivari Mettu",
+      "dress_code": "Traditional only",
+      "timings": "Token issued at foothill; darshan typically within a few hours of reaching Tirumala",
+      "queue_entry": "Separate Divya Darshan queue at Tirumala",
+      "id_required": true,
+      "eligibility": "Must walk to Tirumala via Alipiri Steps or Srivari Mettu. Biometric registration at the base of the hill. Only those with registered biometric tokens are eligible.",
+      "tips": "Start walking by 3-4 AM from Alipiri for best chances. Biometric token is scanned at the top. This is the fastest free darshan available. Priority is given to first-time walkers."
+    },
+    {
+      "name": "VIP/Break Darshan",
+      "cost": "By donation / Protocol",
+      "wait_hours": "0.5-1",
+      "booking": "Through protocol section — for constitutional authorities, senior government officials, judiciary, large donors",
+      "dress_code": "Traditional only",
+      "timings": "As per protocol schedule",
+      "queue_entry": "Protocol entrance, separate from general devotees",
+      "id_required": true,
+      "tips": "Available for constitutional dignitaries, IAS/IPS officers, judges, MLAs/MPs, and large donations to TTD Hundi. Not bookable by general public through regular channels."
+    },
+    {
+      "name": "Senior Citizen / Differently Abled Darshan",
+      "cost": 0,
+      "wait_hours": "2-4",
+      "booking": "walk-in with age/disability proof",
+      "dress_code": "Traditional only",
+      "timings": "Separate counters operate during regular darshan hours",
+      "queue_entry": "Dedicated counters at VQC for seniors (65+) and persons with disabilities",
+      "id_required": true,
+      "tips": "Carry age proof (Aadhaar showing DOB) or disability certificate. One attendant allowed per person. Wheelchair assistance available on request from TTD."
+    }
+  ],
+
+  "rules_and_customs": [
+    "Strictly vegetarian food only in Tirumala area — no non-vegetarian food is allowed anywhere on the hill",
+    "No alcohol, tobacco, gutka, or any intoxicating substances permitted in Tirumala",
+    "Mobile phones must be deposited in lockers (₹5 per device) before entering the temple queue — no electronic devices inside",
+    "Photography and videography are strictly prohibited inside the temple premises",
+    "Dress code strictly enforced: Men — dhoti/mundu/pants with shirt (no shorts, bermudas, torn jeans, or sleeveless tops); Women — saree/churidar/salwar kameez (no western wear, jeans, or short skirts)",
+    "Shoes and footwear must be deposited at designated shoe stands before entering the temple area",
+    "Hair tonsure (mundan/head shaving) is offered free of charge at Kalyana Katta — this is a common offering to the Lord",
+    "Only 2 laddu prasadams per person per darshan token — additional laddus can be purchased separately at designated counters",
+    "Queue system: SED tokens have specific time slots that must be adhered to; Sarva Darshan is first-come-first-served with no time guarantee",
+    "Children below 12 years of age do not need a separate darshan ticket — they enter with the parent's ticket",
+    "Senior citizens (65+) and physically disabled persons have separate darshan counters and priority lines",
+    "Carry valid government-issued photo ID (Aadhaar, PAN, Passport, Voter ID) — mandatory for all devotees",
+    "Do not touch or attempt to touch the deity during darshan — maintain the queue flow",
+    "Mantras and loud chanting are not permitted inside the sanctum — maintain silence and reverence",
+    "Prasadam should be received with both hands and consumed respectfully",
+    "Do not sit or sleep in the corridors of the temple — use designated rest areas",
+    "Hundi (donation box) is located inside the temple near the sanctum — there is no compulsory donation",
+    "No commercial activity or begging is permitted within Tirumala limits"
+  ],
+
+  "scheduling_guide": {
+    "early_morning": {
+      "time": "3:00 AM - 6:00 AM",
+      "best_for": "Suprabhatam Seva (2:30 AM), Thomala Seva (3:30 AM), starting Alipiri walk for Divya Darshan, less crowded Sarva Darshan queue entry",
+      "tips": "The quietest and most spiritually charged time on Tirumala. Temperatures are cool (15-20°C). Ideal for seva participation."
+    },
+    "morning": {
+      "time": "6:00 AM - 10:00 AM",
+      "best_for": "Holy dip at Swami Pushkarini, darshan entry, breakfast at Annadanam or local restaurants, visiting Japali Theertham",
+      "tips": "Darshan queues begin building up. Enter VQC queue as early as possible. Breakfast available from 7 AM at TTD Annadanam."
+    },
+    "midday": {
+      "time": "10:00 AM - 2:00 PM",
+      "best_for": "Attractions (Museum, Silathoranam), shopping at TTD stores, lunch at Annadanam (11 AM onwards), Kalyanam Seva (1 PM)",
+      "tips": "Peak crowd time for darshan. Better to use this time for sightseeing and meals. Temperatures peak in Tirupati but remain pleasant in Tirumala."
+    },
+    "afternoon": {
+      "time": "2:00 PM - 5:00 PM",
+      "best_for": "Nature spots (Papavinasanam, Akasa Ganga, Gogarbham Dam), Unjal Seva, Sahasra Deepalankarana Seva, Museum visit, Deer Park",
+      "tips": "Good time to explore Tirumala's natural attractions. Carry water. Weather is typically pleasant at Tirumala elevation."
+    },
+    "evening": {
+      "time": "5:00 PM - 9:00 PM",
+      "best_for": "Evening aarti and temple illumination, dinner at Annadanam (6-10 PM), laddu prasadam collection, night darshan queue entry",
+      "tips": "Temple is beautifully illuminated after sunset. Evening aarti is a soul-stirring experience. Collect prasadam before counters close."
+    },
+    "travel_tips": {
+      "tirupati_to_tirumala_best_time": "Early morning (5:00-6:00 AM) or late evening (7:00 PM onwards) for minimal traffic on ghat road. Avoid 8-11 AM and 4-6 PM peak hours.",
+      "darshan_best_days": "Tuesday, Wednesday, and Thursday are generally the least crowded days of the week",
+      "darshan_worst_days": "Saturday, Sunday, public holidays, and the day before/after major festivals",
+      "avoid_days": "Saturdays, Sundays, public holidays, school vacation periods, and major festival periods (Brahmotsavam, Vaikunta Ekadasi)",
+      "best_months": "October through February — pleasant weather, moderate crowd (except festival dates)",
+      "avoid_months": "May-June (extreme heat in Tirupati, 40°C+), August-September (heavy monsoon rains)"
+    }
+  },
+
   "festivals": [
-    {"name": "Srivari Brahmotsavams", "month": "September-October", "duration_days": 9, "description": "Most important annual festival. Processional deity on different vahanas."},
-    {"name": "Vaikunta Ekadasi", "month": "December-January", "duration_days": 10, "description": "Vaikunta Dwaram opening. Heavenly gate. Massive crowds."},
-    {"name": "Rathasapthami", "month": "January-February", "duration_days": 1, "description": "Seven vahana processions in one day from dawn to night."},
-    {"name": "Ugadi", "month": "March-April", "duration_days": 1, "description": "Telugu New Year. Special decorations."},
-    {"name": "Sri Rama Navami", "month": "March-April", "duration_days": 3, "description": "Lord Rama's birthday celebrations."},
-    {"name": "Krishna Janmashtami", "month": "August-September", "duration_days": 2, "description": "Lord Krishna's birthday. Midnight celebrations."},
-    {"name": "Navaratri", "month": "September-October", "duration_days": 9, "description": "Nine nights of divine celebrations."},
-    {"name": "Deepavali", "month": "October-November", "duration_days": 3, "description": "Festival of lights. Temple illuminated."},
-    {"name": "Padmavathi Brahmotsavams", "month": "Variable", "duration_days": 9, "description": "Celebrations at Tiruchanoor temple. Panchami Theertham special."},
-    {"name": "Tirupati Ganga Jatara", "month": "May", "duration_days": 7, "description": "Week-long carnival. Gangamma deity worship."}
+    {
+      "name": "Srivari Brahmotsavams",
+      "month": "September-October",
+      "duration_days": 9,
+      "description": "The most important annual festival of Tirumala. The processional deity is taken out on nine different divine vehicles (vahanas) — including Garuda, Hanumantha, and Seshavahana. Lakhs of devotees throng Tirumala during this period.",
+      "crowd_impact": "extreme",
+      "special_darshan": "Chakra Snanam on the final day; special processional darshan each evening",
+      "recommendation": "Experience it at least once in a lifetime for the divine spectacle. Book accommodation and darshan months in advance. Be prepared for very long waits and massive crowds. Carry patience and provisions."
+    },
+    {
+      "name": "Vaikunta Ekadasi",
+      "month": "December-January",
+      "duration_days": 10,
+      "description": "The opening of the Vaikunta Dwaram (Heavenly Gate). Devotees believe that passing through this gate ensures liberation (moksha). One of the busiest periods at Tirumala, with crowds exceeding 1 lakh per day.",
+      "crowd_impact": "extreme",
+      "special_darshan": "Devotees pass through the Vaikunta Dwaram; special deity decorations each day",
+      "recommendation": "Extremely crowded — only visit if you are specifically seeking the Vaikunta Dwaram experience. Queue times can exceed 24 hours. Book everything far in advance."
+    },
+    {
+      "name": "Rathasapthami",
+      "month": "January-February",
+      "duration_days": 1,
+      "description": "The chariot festival marking the Sun God's northward journey. Seven vahana processions occur in a single day from dawn to night, making it a spectacular marathon of divine pageantry.",
+      "crowd_impact": "high",
+      "special_darshan": "Seven vahana processions; Surya Prabha Vahana at dawn is the highlight",
+      "recommendation": "A unique single-day festival experience. Arrive the night before to secure a viewing spot. Less chaotic than Brahmotsavams but still very crowded."
+    },
+    {
+      "name": "Ugadi",
+      "month": "March-April",
+      "duration_days": 1,
+      "description": "Telugu New Year. The temple is decorated with special festive arrangements. Panchanga Sravanam (hearing the new year's almanac) is a highlight. Special prasadam distributed.",
+      "crowd_impact": "medium",
+      "special_darshan": "Special decorations and Panchanga Sravanam ceremony",
+      "recommendation": "Moderately crowded. A good time to visit for festive atmosphere without the extreme crowds of Brahmotsavam. Pleasant weather."
+    },
+    {
+      "name": "Sri Rama Navami",
+      "month": "March-April",
+      "duration_days": 3,
+      "description": "Celebration of Lord Rama's birthday with special pujas, cultural programmes, and processions. The temple is decorated with lights and flowers. Special Kalyanam and aarti ceremonies.",
+      "crowd_impact": "medium",
+      "special_darshan": "Special Sita Rama Kalyanam ceremony; evening procession",
+      "recommendation": "Worth visiting for the festive celebrations. Manageable crowd levels compared to major festivals. Book darshan online for a smooth experience."
+    },
+    {
+      "name": "Krishna Janmashtami",
+      "month": "August-September",
+      "duration_days": 2,
+      "description": "Lord Krishna's birthday celebrated with midnight aarti, special decorations, and devotional programmes. The temple and surroundings are beautifully lit. Dahi Handi celebrations at some locations.",
+      "crowd_impact": "high",
+      "special_darshan": "Midnight darshan and special deity decoration in Krishna-themed alankaram",
+      "recommendation": "Monsoon season — carry rain gear. Midnight celebrations are the highlight. Moderate to heavy crowds. Combine with Tirumala nature spots (waterfalls at their best)."
+    },
+    {
+      "name": "Navaratri",
+      "month": "September-October",
+      "duration_days": 9,
+      "description": "Nine nights of divine celebrations honouring Goddess Durga/Devi. Special pujas, cultural performances (music and dance), and unique deity decorations each night. Often overlaps with or is close to Brahmotsavams.",
+      "crowd_impact": "high",
+      "special_darshan": "Special Devi alankaram decorations; cultural evening performances",
+      "recommendation": "Festive and culturally rich. Often coincides near Brahmotsavams — check dates carefully. Evening cultural programmes are a special attraction."
+    },
+    {
+      "name": "Deepavali",
+      "month": "October-November",
+      "duration_days": 3,
+      "description": "Festival of Lights. The entire Tirumala temple complex is illuminated with thousands of oil lamps and electric lights. Special fireworks and Lakshmi Puja celebrations. A visually stunning time to visit.",
+      "crowd_impact": "high",
+      "special_darshan": "Temple illumination with thousands of lamps; special Lakshmi Puja",
+      "recommendation": "Beautiful illuminations — great for photography from a distance. Crowded but not as extreme as Brahmotsavam. October weather is pleasant."
+    },
+    {
+      "name": "Padmavathi Brahmotsavams",
+      "month": "Variable (check TTD calendar)",
+      "duration_days": 9,
+      "description": "Grand nine-day celebrations at Sri Padmavathi Ammavari Temple in Tiruchanoor. Panchami Theertham on the fifth day is the most sacred event, where the deity is taken in a grand procession to the river.",
+      "crowd_impact": "medium",
+      "special_darshan": "Panchami Theertham procession; special vahana sevas each day",
+      "recommendation": "Less crowded than Tirumala Brahmotsavams. Good for those who want a festive experience without extreme crowds. Tiruchanoor is easily accessible from Tirupati."
+    },
+    {
+      "name": "Tirupati Ganga Jatara",
+      "month": "May",
+      "duration_days": 7,
+      "description": "A week-long carnival celebrating Gangamma, the local folk deity. Features colorful processions, traditional folk art, and unique cultural rituals. One of the oldest folk festivals of the region with roots in pre-Vedic traditions.",
+      "crowd_impact": "medium",
+      "special_darshan": "Folk deity processions; unique cultural performances not seen elsewhere",
+      "recommendation": "Very hot month (May). Culturally fascinating and unique. Attend for a different cultural perspective beyond the Vaishnavite tradition. Evening hours are more comfortable."
+    }
   ],
 
   "packing_essentials": [
-    "Government ID proof (Aadhaar/PAN/Passport) — mandatory",
-    "Traditional dress: Dhoti/Saree/Churidar (no jeans/shorts/skirts)",
-    "Comfortable walking shoes/chappals",
-    "Sweater/shawl (Tirumala is cooler at 3,200 ft altitude)",
-    "Water bottle",
-    "Light snacks for long darshan queue",
-    "Phone charger/power bank",
-    "Small bag (large bags not allowed in temple)",
-    "Medicines if any (first aid)",
-    "Umbrella/raincoat (monsoon season)",
-    "Printout of online booking confirmations"
+    "Government ID proof (Aadhaar/PAN/Passport/Voter ID) — mandatory for darshan and accommodation",
+    "Traditional dress: Dhoti/Saree/Churidar (no jeans/shorts/skirts/sleeveless)",
+    "Comfortable walking shoes/chappals (will need to remove before temple)",
+    "Sweater/shawl (Tirumala is cooler at 3,200 ft altitude, especially early morning)",
+    "Water bottle (refillable — water stations available throughout)",
+    "Light snacks for long darshan queue (biscuits, dry fruits)",
+    "Phone charger/power bank (phone must be deposited before temple entry)",
+    "Small bag only (large bags not allowed in temple — deposit at counters)",
+    "Medicines if any (basic first aid kit)",
+    "Umbrella/raincoat (essential during monsoon season June-October)",
+    "Printout of online booking confirmations (darshan, accommodation, sevas)",
+    "Change/coins for locker deposits (₹5 for phone locker, ₹2 for shoe stand)"
   ],
 
   "tips": [
-    "Book darshan and accommodation online at ttdevasthanams.ap.gov.in well in advance",
-    "Weekdays have less crowd than weekends. Tuesdays and Wednesdays are best.",
-    "Avoid festivals (Brahmotsavam, Vaikunta Ekadasi) unless you want the festive experience and can handle massive crowds",
-    "Tirumala is at 3,200 ft elevation — weather is cooler than Tirupati (5-8°C difference)",
-    "Mobile phones allowed but must be deposited in lockers before entering temple",
-    "Hair tonsure (mundan) is offered free at Kalyana Katta. Long queues on weekends.",
-    "TTD Annadanam provides free meals 3 times a day — no need to spend on food",
-    "Carry minimum luggage to Tirumala. Free luggage service for walking pilgrims.",
-    "Best months to visit: October to February (pleasant weather, post-monsoon)",
-    "Avoid May-June (extreme heat in Tirupati, 40°C+) and heavy monsoon months (August-September)"
-  ]
+    "Book darshan and accommodation online at ttdevasthanams.ap.gov.in well in advance — slots fill up fast, especially for weekends and festivals",
+    "Weekdays have significantly less crowd than weekends. Tuesday, Wednesday, and Thursday are the best days for shortest queues.",
+    "Avoid festivals (Brahmotsavam, Vaikunta Ekadasi) unless you specifically want the festive experience and can handle massive crowds (10+ hour waits)",
+    "Tirumala is at 3,200 ft elevation — weather is 5-8°C cooler than Tirupati. Carry a light sweater especially for early morning sevas",
+    "Mobile phones are allowed in Tirumala but must be deposited in lockers (₹5) before entering the temple queue. Keep your locker token safe.",
+    "Hair tonsure (mundan) is offered free at Kalyana Katta. Weekday mornings have shorter queues compared to weekends.",
+    "TTD Annadanam provides free meals 3 times a day to all pilgrims — no need to spend on food. The quality is excellent and hygienic.",
+    "Carry minimum luggage to Tirumala. Free luggage transfer service is available for walking pilgrims from Alipiri and Srivari Mettu.",
+    "Best months to visit: October to February (pleasant weather, post-monsoon, moderate crowds outside festival dates)",
+    "Avoid May-June (extreme heat in Tirupati, 40°C+) and heavy monsoon months (August-September) unless you enjoy rain and waterfalls",
+    "For Divya Darshan (free, fast darshan), walk up via Alipiri Steps starting at 3-4 AM. Register biometric token at the foothill before starting.",
+    "Always keep your darshan token/ticket and ID proof accessible — multiple checkpoints will verify them throughout the queue process",
+    "If visiting with elderly or differently abled persons, use the dedicated darshan counters at VQC for priority access",
+    "Buy laddu prasadam immediately after darshan — collect at the exit counters. You get 2 laddus per token. Additional laddus available at separate counters.",
+    "The ₹300 SED ticket includes one free laddu prasadam coupon worth ₹50 — don't forget to redeem it",
+    "Use the free APSRTC buses from Tirupati railway station/bus stand to reach Alipiri (foothill) — no need to pay for auto/taxi for this leg",
+    "For photography enthusiasts: the best views of the temple gopuram are from Swami Pushkarini tank. Tirumala sunrises are spectacular.",
+    "Deposit shoes at the shoe stands near the temple (₹2). Avoid wearing expensive footwear — the walk from shoe stand to temple is barefoot.",
+    "If you plan to visit both Tirumala and Tiruchanoor (Padmavathi temple), schedule Tiruchanoor for the morning/evening of arrival/departure day",
+    "Download the TTD official app for real-time updates on darshan wait times, seva availability, accommodation status, and bus schedules",
+    "Carry ₹5 and ₹10 coins — useful for lockers, shoe stands, and small purchases. UPI payments are accepted at most TTD counters.",
+    "For a calm and spiritually immersive experience, plan a 2-night stay in Tirumala. A single day visit feels rushed.",
+    "The Tirumala bus stand has clean restrooms and left-luggage counters. Use them if you arrive before check-in time for accommodation."
+  ],
+
+  "emergency_contacts": {
+    "ttd_helpline": "0877-2233333",
+    "tirumala_police": "0877-2277777",
+    "ambulance": "108",
+    "fire_service": "101",
+    "ttd_website": "ttdevasthanams.ap.gov.in",
+    "online_booking": "ttdsevaonline.com",
+    "tirumala_info": "0877-2277777",
+    "lost_and_found": "0877-2263636",
+    "automobile_clinic_ghat_road": "0877-2263636",
+    "tirupati_railway_enquiry": "139",
+    "tirupati_airport": "0877-2272374",
+    "women_helpline": "181",
+    "ttd_vigilance": "0877-2264422",
+    "central_reception_office_tirumala": "0877-2277777"
+  }
 }

@@ -3,5 +3,9 @@ __pycache__/
 *.pyc
 .venv_dl/
 node_modules/
-vectordb/chroma.sqlite3
 *.log
+eda_outputs/
+client/node_modules/
+client/build/
+app_gradio.py
+test_*.py

@@ -1,39 +1,34 @@
-# ═══════════════════════════════════════════════════════════════
-#  Dockerfile — Hugging Face Spaces (Docker SDK)
-#  శ్రీవారి సేవ — Tirumala Darshan Prediction
-# ═══════════════════════════════════════════════════════════════
-
 FROM python:3.11-slim
-
-# Install Node.js for React build
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# ── Python dependencies (CPU-only torch + Chronos) ──
-COPY requirements-hf.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements-hf.txt
+# Install system deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl && \
+    rm -rf /var/lib/apt/lists/*
 
-# ── Copy project files ──
+# Install Node.js for building React frontend
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source
 COPY . .
 
-# ── Build React frontend ──
-RUN cd client && npm install && npm run build && rm -rf node_modules
+# Build React frontend
+WORKDIR /app/client
+RUN npm ci && npm run build
+WORKDIR /app
 
-# ── Build Vector DB for RAG chatbot ──
-RUN python build_vectordb.py || echo 'Vector DB build skipped — will use fallback'
+# Build vector database for RAG chatbot (needs sentence-transformers)
+RUN python build_vectordb.py || echo "VectorDB build skipped (will rebuild on first request)"
 
-# ── HF Spaces uses port 7860 ──
-ENV PORT=7860
-ENV HF_HUB_OFFLINE=0
-ENV TOKENIZERS_PARALLELISM=false
-ENV GEMINI_API_KEY=
+# Expose port 7860 (HuggingFace default)
 EXPOSE 7860
 
-# ── Start production server ──
-CMD ["python", "deploy.py", "--port", "7860", "--threads", "4"]
+# Run with gunicorn — increased timeout for LLM calls
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "2", "--timeout", "180", "flask_api:app"]

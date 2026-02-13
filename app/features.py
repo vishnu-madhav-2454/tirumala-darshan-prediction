@@ -10,9 +10,14 @@ import numpy as np
 import pandas as pd
 import holidays
 from datetime import timedelta
+import sys, os
 
 # Suppress Pandas DataFrame fragmentation warnings (cosmetic only)
 warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
+
+# Ensure project root is importable
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from festival_calendar import get_festival_features_series
 
 # Indian holidays for AP state
 _ih = holidays.India(years=range(2013, 2030), state="AP")
@@ -100,6 +105,11 @@ def make_features(data: pd.DataFrame) -> pd.DataFrame:
     df["near_fm"] = ((df["lunar"] >= 13) & (df["lunar"] <= 16)).astype(int)
     df["near_nm"] = ((df["lunar"] <= 2) | (df["lunar"] >= 28)).astype(int)
 
+    # E2. Festival features from extended calendar (2013-2027)
+    fest_df = get_festival_features_series(d)
+    for col in fest_df.columns:
+        df[col] = fest_df[col].values
+
     # F. Lags
     for lag in [1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 60, 90]:
         df[f"L{lag}"] = tp.shift(lag)
@@ -159,6 +169,25 @@ def make_features(data: pd.DataFrame) -> pd.DataFrame:
     df["r1_rm30"] = df["L1"] / (df["rm30"] + 1)
     df["r1_dav"] = df["L1"] / (df["dow_av"] + 1)
 
+    # O. Extreme-aware features (signal for predicting tails)
+    _p_hi = (past > 80000).astype(int)
+    _p_lo = (past < 60000).astype(int)
+    for w in [7, 14, 30]:
+        df[f"hi80_{w}"] = _p_hi.rolling(w, min_periods=1).sum()
+        df[f"lo60_{w}"] = _p_lo.rolling(w, min_periods=1).sum()
+    df["hi80_f30"] = _p_hi.rolling(30, min_periods=1).mean()
+    df["lo60_f30"] = _p_lo.rolling(30, min_periods=1).mean()
+    df["summer_wknd"] = df["is_summer"] * df["is_weekend"]
+    df["peak_sun"] = df["month"].isin([5, 6, 7]).astype(int) * df["is_sun"]
+    _is_fest = df.get("is_festival", pd.Series(0, index=df.index)).astype(int)
+    df["fest_wknd"] = _is_fest * df["is_weekend"]
+    df["l1_dm_dev"] = (df["L1"] - df["dm_av"]) / (df["dm_av"] + 1)
+    df["sd1w_dm_dev"] = (df["sd1w"] - df["dm_av"]) / (df["dm_av"] + 1)
+    df["rr7_norm"] = df["rr7"] / (df["rm7"] + 1)
+    df["rr30_norm"] = df["rr30"] / (df["rm30"] + 1)
+    df["yoy_364"] = tp.shift(364)
+    df["yoy_dev"] = (df["yoy_364"] - df["dm_av"]) / (df["dm_av"] + 1)
+
     return df
 
 
@@ -196,11 +225,26 @@ def get_dl_features(raw: pd.DataFrame) -> pd.DataFrame:
     df["is_hol"] = df.date.apply(lambda d: d in _ih).astype(float)
     df["lunar"] = np.sin(2 * np.pi * df.date.dt.day / 29.53)
 
+    # Festival features from extended calendar (2013-2027)
+    fest_df = get_festival_features_series(df["date"])
+    for col in fest_df.columns:
+        df[col] = fest_df[col].values.astype(float)
+
     # Yearly Fourier (3 harmonics)
     t_idx = np.arange(len(df))
     for k in range(1, 4):
         df[f"f_y_sin_{k}"] = np.sin(2 * np.pi * k * t_idx / 365.25)
         df[f"f_y_cos_{k}"] = np.cos(2 * np.pi * k * t_idx / 365.25)
+
+    # Extreme-aware features (DL)
+    _past_dl = tp.shift(1)
+    _ph = (_past_dl > 80000).astype(float)
+    _pl = (_past_dl < 60000).astype(float)
+    for w in [7, 30]:
+        df[f"hi80_f{w}"] = _ph.rolling(w, min_periods=1).mean()
+        df[f"lo60_f{w}"] = _pl.rolling(w, min_periods=1).mean()
+    df["summer_wknd"] = (df.date.dt.month.isin([4, 5])).astype(float) * (df.date.dt.dayofweek >= 5).astype(float)
+    df["peak_sun"] = (df.date.dt.month.isin([5, 6, 7])).astype(float) * (df.date.dt.dayofweek == 6).astype(float)
 
     df = df.dropna().reset_index(drop=True)
     return df

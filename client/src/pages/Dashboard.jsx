@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
+import { MdCalendarToday, MdTrendingUp, MdAutoGraph, MdPeople, MdInfo } from "react-icons/md";
 import {
-  MdCalendarToday,
-  MdTrendingUp,
-  MdAutoGraph,
-} from "react-icons/md";
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  Cell, ReferenceLine,
 } from "recharts";
 import { predictDays, getDataSummary } from "../api";
 import HinduCalendar from "../components/HinduCalendar";
 import Loader from "../components/Loader";
 import { useLang } from "../i18n/LangContext";
+
+const BAND_EMOJI = {
+  QUIET: "🔵", LIGHT: "🟢", MODERATE: "🟡",
+  BUSY: "🟠", HEAVY: "🔴", EXTREME: "⛔",
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -26,21 +27,14 @@ export default function Dashboard() {
   useEffect(() => {
     async function load() {
       try {
-        const [tRes, s] = await Promise.all([
-          predictDays(7),
-          getDataSummary(),
-        ]);
+        const [tRes, s] = await Promise.all([predictDays(7), getDataSummary()]);
         const forecast = tRes.data.forecast || [];
         const todayStr = new Date().toISOString().slice(0, 10);
         let todayPrediction = forecast[0] || null;
         for (const f of forecast) {
           if (f.date === todayStr) { todayPrediction = f; break; }
         }
-        setTodayData({
-          today: todayStr,
-          today_prediction: todayPrediction,
-          week_forecast: forecast,
-        });
+        setTodayData({ today: todayStr, today_prediction: todayPrediction, week_forecast: forecast });
         setSummary(s.data);
       } catch {
         setError(true);
@@ -52,24 +46,47 @@ export default function Dashboard() {
   }, []);
 
   if (loading) return <Loader text={t.loading} />;
-
-  if (error)
-    return (
-      <div style={{ padding: "3rem", textAlign: "center" }}>
-        <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🙏</div>
-        <div style={{ fontSize: "1.1rem", color: "var(--maroon)", marginBottom: ".5rem" }}>
-          {t.serviceError}
-        </div>
-        <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>
-          {t.serviceErrorSub}
-        </p>
-      </div>
-    );
+  if (error) return (
+    <div style={{ padding: "3rem", textAlign: "center" }}>
+      <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🙏</div>
+      <div style={{ fontSize: "1.1rem", color: "var(--maroon)", marginBottom: ".5rem" }}>{t.serviceError}</div>
+      <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>{t.serviceErrorSub}</p>
+    </div>
+  );
 
   const todayPred = todayData?.today_prediction;
   const weekForecast = todayData?.week_forecast || [];
   const stats = summary?.pilgrim_stats;
   const todayDate = new Date();
+  const todayStr = todayDate.toISOString().slice(0, 10);
+
+  /* Chart data */
+  const chartData = weekForecast.map((f) => ({
+    date: format(new Date(f.date + "T00:00:00"), "EEE, MMM d"),
+    pilgrims: f.predicted_pilgrims || 0,
+    band: f.predicted_band || f.band_name || "MODERATE",
+    color: f.color || "#8BC34A",
+    confidence: f.confidence,
+    isToday: f.date === todayStr,
+  }));
+  const avgPilgrims = stats?.mean || 0;
+
+  const ChartTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) return null;
+    const d = payload[0].payload;
+    return (
+      <div className="dash-tooltip">
+        <div className="dash-tooltip-date">{d.date}</div>
+        <div className="dash-tooltip-val" style={{ color: d.color }}>
+          {BAND_EMOJI[d.band]} {d.band}
+        </div>
+        <div className="dash-tooltip-pilgrims">
+          <MdPeople size={14} /> ~{d.pilgrims.toLocaleString("en-IN")} pilgrims
+        </div>
+        <div className="dash-tooltip-conf">{(d.confidence * 100).toFixed(0)}% confidence</div>
+      </div>
+    );
+  };
 
   return (
     <div className="fade-in">
@@ -80,15 +97,11 @@ export default function Dashboard() {
           <h1>{t.heroTitle}</h1>
           <p style={{ fontSize: "1.05rem", marginBottom: ".25rem" }}>{t.heroSub}</p>
           <p style={{ opacity: 0.7, fontSize: ".9rem" }}>{t.heroPlan}</p>
-
-          {/* Today's date */}
           <div style={{ marginTop: "1.25rem", display: "inline-block", background: "rgba(197,160,40,.15)", padding: ".5rem 1.25rem", borderRadius: "9999px", border: "1px solid rgba(197,160,40,.3)" }}>
             <span style={{ color: "var(--gold-light)", fontWeight: 600, fontSize: ".95rem" }}>
               📅 {format(todayDate, "EEEE, MMMM d, yyyy")}
             </span>
           </div>
-
-          {/* Quick actions */}
           <div className="quick-predict">
             <button className="btn btn-primary" onClick={() => navigate("/predict")}>
               <MdCalendarToday /> {t.btnPickDate}
@@ -100,26 +113,51 @@ export default function Dashboard() {
       <div className="gold-strip" />
 
       <div className="main-content">
-        {/* Today's prediction — main card */}
+        {/* Today's prediction — FULL CARD */}
         {todayPred && (
-          <div className="card" style={{ marginBottom: "2rem" }}>
+          <div className="card today-prediction-card" style={{ borderLeft: `5px solid ${todayPred.color || "#FFC107"}` }}>
             <div className="card-header">
               <MdTrendingUp className="icon" />
-              <h2>
-                {t.todayPredTitle} — {format(todayDate, "MMM d, yyyy")} ({format(todayDate, "EEEE")})
-              </h2>
+              <h2>{t.todayPredTitle} — {format(todayDate, "EEE, MMM d, yyyy")}</h2>
             </div>
             <div className="card-body">
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexWrap: "wrap", gap: "2rem" }}>
-                {/* Big number */}
-                <div className="prediction-result" style={{ padding: "1rem" }}>
-                  <div className="prediction-value">
-                    {todayPred.predicted_pilgrims?.toLocaleString()}
+              <div className="today-grid">
+                {/* Band + Pilgrims */}
+                <div className="today-main">
+                  <div className="today-band-badge" style={{
+                    background: todayPred.bg || "#FFF8E1",
+                    color: todayPred.color || "#FFC107",
+                    border: `2px solid ${todayPred.color || "#FFC107"}`,
+                  }}>
+                    {BAND_EMOJI[todayPred.predicted_band]} {todayPred.predicted_band}
                   </div>
-                  <div className="prediction-label">{t.estimatedPilgrims}</div>
-                  <div className="prediction-confidence">
-                    {todayPred.confidence_low?.toLocaleString()} — {todayPred.confidence_high?.toLocaleString()} {t.range}
+                  <div className="today-pilgrims">
+                    <MdPeople size={20} />
+                    <span>~{(todayPred.predicted_pilgrims || 0).toLocaleString("en-IN")}</span>
+                    <span className="today-pilgrims-label">estimated pilgrims</span>
                   </div>
+                  <div className="today-confidence">
+                    {(todayPred.confidence * 100).toFixed(0)}% confidence
+                  </div>
+                </div>
+                {/* Advice + Reason */}
+                <div className="today-details">
+                  {todayPred.advice && (
+                    <div className="today-advice">
+                      <MdInfo size={16} />
+                      <span>{todayPred.advice}</span>
+                    </div>
+                  )}
+                  {todayPred.reason && (
+                    <div className="today-reason">
+                      <strong>Why?</strong> {todayPred.reason.split(" | ").map((r, i) => (
+                        <span key={i} className="reason-tag">{r}</span>
+                      ))}
+                    </div>
+                  )}
+                  {todayPred.is_weekend && (
+                    <div className="today-weekend-tag">📅 Weekend — expect higher footfall</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -127,37 +165,36 @@ export default function Dashboard() {
         )}
 
         {/* Stats grid */}
-        <div className="stat-grid">
-          <div className="stat-card">
-            <div className="stat-icon">🛕</div>
-            <div className="stat-value">{stats?.mean?.toLocaleString()}</div>
-            <div className="stat-label">{t.avgDaily}</div>
-            {t.avgDailySub && <div className="stat-sub">{t.avgDailySub}</div>}
+        {stats && (
+          <div className="stat-grid">
+            <div className="stat-card">
+              <div className="stat-icon">🛕</div>
+              <div className="stat-value">{stats.mean?.toLocaleString("en-IN")}</div>
+              <div className="stat-label">{t.avgDaily}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">🔱</div>
+              <div className="stat-value">{stats.max?.toLocaleString("en-IN")}</div>
+              <div className="stat-label">{t.highestRecord}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">📅</div>
+              <div className="stat-value">{summary?.total_records?.toLocaleString("en-IN")}</div>
+              <div className="stat-label">{t.totalDays}</div>
+              <div className="stat-sub">{summary?.date_range?.start} {t.since}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-icon">🙏</div>
+              <div className="stat-value">{stats.median?.toLocaleString("en-IN")}</div>
+              <div className="stat-label">{t.medianDaily}</div>
+            </div>
           </div>
-          <div className="stat-card">
-            <div className="stat-icon">🔱</div>
-            <div className="stat-value">{stats?.max?.toLocaleString()}</div>
-            <div className="stat-label">{t.highestRecord}</div>
-            {t.highestRecordSub && <div className="stat-sub">{t.highestRecordSub}</div>}
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">📅</div>
-            <div className="stat-value">{summary?.total_records?.toLocaleString()}</div>
-            <div className="stat-label">{t.totalDays}</div>
-            <div className="stat-sub">{summary?.date_range?.start} {t.since}</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-icon">🙏</div>
-            <div className="stat-value">{stats?.median?.toLocaleString()}</div>
-            <div className="stat-label">{t.medianDaily}</div>
-            {t.medianDailySub && <div className="stat-sub">{t.medianDailySub}</div>}
-          </div>
-        </div>
+        )}
 
-        {/* ── Hindu Calendar ─────────────────────────────── */}
+        {/* Hindu Calendar */}
         <HinduCalendar />
 
-        {/* 7-day chart */}
+        {/* 7-day forecast chart — BAR CHART with crowd colors */}
         {weekForecast.length > 0 && (
           <div className="card">
             <div className="card-header">
@@ -166,51 +203,62 @@ export default function Dashboard() {
             </div>
             <div className="card-body">
               <div className="chart-container">
-                <ResponsiveContainer width="100%" height={350}>
-                  <AreaChart data={weekForecast}>
-                    <defs>
-                      <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#C5A028" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="#C5A028" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" />
-                    <XAxis dataKey="date" tick={{ fill: "#6B5B4E", fontSize: 12 }} tickFormatter={(v) => format(new Date(v + "T00:00:00"), "EEE, MMM d")} />
-                    <YAxis tick={{ fill: "#6B5B4E", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip
-                      contentStyle={{ background: "#FFF", border: "1px solid #C5A028", borderRadius: 8, fontSize: 13 }}
-                      formatter={(v) => [v.toLocaleString() + " " + t.pilgrims, t.estimate]}
-                      labelFormatter={(v) => format(new Date(v + "T00:00:00"), "EEEE, MMM d yyyy")}
-                    />
-                    <Area type="monotone" dataKey="predicted_pilgrims" stroke="#C5A028" strokeWidth={3} fill="url(#goldGrad)" dot={{ fill: "#800020", stroke: "#C5A028", strokeWidth: 2, r: 5 }} activeDot={{ r: 7, fill: "#C5A028" }} />
-                  </AreaChart>
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={chartData} barCategoryGap="15%">
+                    <CartesianGrid strokeDasharray="3 3" stroke="#F5EDDA" vertical={false} />
+                    <XAxis dataKey="date" tick={{ fill: "#6B5B4E", fontSize: 12 }} />
+                    <YAxis tick={{ fill: "#6B5B4E", fontSize: 11 }}
+                           tickFormatter={(v) => (v / 1000).toFixed(0) + "K"} />
+                    <Tooltip content={<ChartTooltip />} />
+                    {avgPilgrims > 0 && (
+                      <ReferenceLine y={avgPilgrims} stroke="#800020" strokeDasharray="6 4"
+                        label={{ value: `Avg: ${(avgPilgrims / 1000).toFixed(0)}K`, fill: "#800020", fontSize: 11, position: "right" }} />
+                    )}
+                    <Bar dataKey="pilgrims" radius={[6, 6, 0, 0]}>
+                      {chartData.map((entry, idx) => (
+                        <Cell key={idx} fill={entry.color} fillOpacity={entry.isToday ? 1 : 0.75}
+                              stroke={entry.isToday ? "#800020" : "none"} strokeWidth={entry.isToday ? 2 : 0} />
+                      ))}
+                    </Bar>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
           </div>
         )}
 
-        {/* Week at a glance */}
+        {/* Week forecast cards */}
         {weekForecast.length > 0 && (
-          <div style={{ marginTop: "2rem" }}>
-            <h3 className="section-title" style={{ fontSize: "1.2rem" }}>
-              <span className="ornament">🗓️</span>
-              {t.weekStatus}
-            </h3>
-            <div className="forecast-grid">
-              {weekForecast.map((f) => (
-                <div key={f.date} className="forecast-card">
-                  <div>
-                    <div className="fc-date">{format(new Date(f.date + "T00:00:00"), "MMM d, yyyy")}</div>
-                    <div className="fc-day">{f.day}</div>
+          <div className="forecast-grid">
+            {weekForecast.map((f) => {
+              const band = f.predicted_band || f.band_name || "MODERATE";
+              const color = f.color || "#8BC34A";
+              const isToday = f.date === todayStr;
+              return (
+                <div key={f.date} className={`forecast-card ${isToday ? "forecast-today" : ""}`}
+                     style={{ borderLeft: `4px solid ${color}` }}>
+                  <div className="fc-date-row">
+                    <div>
+                      <div className="fc-date">{format(new Date(f.date + "T00:00:00"), "MMM d, yyyy")}</div>
+                      <div className={`fc-day ${f.is_weekend ? "fc-weekend" : ""}`}>
+                        {f.day} {f.is_weekend ? "🗓️" : ""}
+                      </div>
+                    </div>
+                    {isToday && <span className="fc-today-badge">TODAY</span>}
                   </div>
-                  <div className="fc-value">{f.predicted_pilgrims.toLocaleString()}</div>
-                  <div className="fc-range">
-                    {f.confidence_low.toLocaleString()} — {f.confidence_high.toLocaleString()} {t.pilgrims}
+                  <div className="fc-band" style={{ color }}>
+                    {BAND_EMOJI[band]} {band}
                   </div>
+                  <div className="fc-pilgrims">
+                    <MdPeople size={14} /> ~{(f.predicted_pilgrims || 0).toLocaleString("en-IN")}
+                  </div>
+                  <div className="fc-conf">{(f.confidence * 100).toFixed(0)}% confidence</div>
+                  {f.reason && (
+                    <div className="fc-reason">{f.reason.split(" | ")[0]}</div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
           </div>
         )}
 
