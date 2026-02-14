@@ -257,16 +257,17 @@ img { max-width: 100%; }
 
 .stat-card {
   text-align: center;
-  padding: 18px 12px;
+  padding: 20px 14px;
   border-radius: var(--radius-md);
   background: var(--off-white);
   border: 1px solid var(--border);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(128, 0, 32, .06);
 }
 
 .stat-icon {
@@ -465,28 +466,29 @@ img { max-width: 100%; }
 .forecast-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
+  gap: 16px;
   margin: 24px 0;
 }
 
 .forecast-card {
   background: var(--card);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 16px 18px;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .forecast-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(128, 0, 32, .08);
+  border-color: rgba(197, 160, 40, .25);
 }
 
 .forecast-today {
-  background: rgba(197, 160, 40, 0.06);
+  background: rgba(197, 160, 40, 0.05);
   border-color: var(--gold);
-  box-shadow: 0 0 0 2px rgba(197, 160, 40, 0.15);
+  box-shadow: 0 0 0 2px rgba(197, 160, 40, 0.12), var(--shadow-sm);
 }
 
 .fc-date-row {
@@ -1498,48 +1500,82 @@ img { max-width: 100%; }
 }
 
 /* ============================================
-   CALENDAR
+   CALENDAR  (hc-* classes — HinduCalendar.jsx)
    ============================================ */
-.calendar-section { margin: 24px 0; }
 
-.calendar-header {
+/* --- wrapper --- */
+.hc-wrapper {
+  overflow: visible;
+  margin-bottom: 24px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --- header --- */
+.hc-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 12px 16px;
   background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
   color: var(--gold-light);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-.calendar-header h3 {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-}
-
-.cal-nav-btn {
+.hc-nav-btn {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   color: var(--gold-light);
-  padding: 4px 12px;
+  padding: 6px 10px;
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 0.9rem;
   transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.hc-nav-btn:hover { background: rgba(255,255,255,0.22); }
+
+.hc-today-btn {
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  border-radius: 20px;
 }
 
-.cal-nav-btn:hover { background: rgba(255,255,255,0.2); }
+.hc-title {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+.hc-month {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.hc-hindu-month {
+  font-size: 0.78rem;
+  opacity: 0.85;
+  margin-top: 2px;
+}
 
-.calendar-grid {
+/* --- grid --- */
+.hc-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  border: 1px solid var(--border);
-  border-top: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+}
+.hc-grid:last-of-type {
+  border-bottom: 1px solid var(--border);
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   overflow: hidden;
 }
 
-.cal-weekday {
+/* --- weekday headers --- */
+.hc-weekday {
   padding: 8px 4px;
   text-align: center;
   font-size: 0.75rem;
@@ -1547,133 +1583,279 @@ img { max-width: 100%; }
   color: var(--maroon);
   background: var(--cream-dark);
   border-bottom: 1px solid var(--border);
-}
-
-.cal-day {
-  min-height: 56px;
-  padding: 4px;
   border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  font-size: 0.8rem;
+}
+.hc-weekday:last-child { border-right: none; }
+.hc-weekend-hdr { color: var(--maroon-deep); font-weight: 700; }
+
+/* --- loading --- */
+.hc-loading {
+  text-align: center;
+  padding: 48px 16px;
+  font-size: 1rem;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+/* --- cells --- */
+.hc-cell {
+  min-height: 74px;
+  padding: 5px 6px 4px;
   position: relative;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
   cursor: default;
-  transition: background 0.15s;
+  transition: box-shadow 0.15s, transform 0.12s;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hc-cell:nth-child(7n) { border-right: none; }
+.hc-cell:hover {
+  box-shadow: inset 0 0 0 2px var(--gold);
+  z-index: 2;
 }
 
-.cal-day:nth-child(7n) { border-right: none; }
+.hc-blank {
+  visibility: hidden;
+}
 
-.cal-day:hover { background: rgba(232,212,139,0.15); }
+.hc-today {
+  z-index: 3;
+  box-shadow: inset 0 0 0 2px var(--gold);
+}
 
-.cal-day.empty { background: var(--cream-dark); opacity: 0.3; }
+.hc-actual { }
 
-.cal-day-num {
-  font-weight: 600;
-  font-size: 0.82rem;
+/* --- cell content --- */
+.hc-cell-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.hc-day-num {
+  font-weight: 700;
+  font-size: 0.85rem;
   color: var(--text-dark);
+  line-height: 1;
 }
 
-.cal-band {
+.hc-day-today {
+  color: var(--gold-dark);
+  text-shadow: 0 0 4px rgba(197,160,40,.3);
+}
+
+.hc-event-icon {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.hc-actual-badge {
+  text-align: center;
   font-size: 0.65rem;
-  font-weight: 600;
-  padding: 1px 4px;
-  border-radius: 3px;
-  color: #fff;
-  display: inline-block;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-top: 1px;
+  letter-spacing: 0.03em;
+}
+
+.hc-band-badge {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 1px;
+  text-transform: uppercase;
+}
+
+.hc-event-name {
+  font-size: 0.58rem;
+  color: var(--maroon);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.hc-impact-dot {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+/* --- tooltip (fixed position) --- */
+.hc-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: #fff;
+  color: var(--text-dark);
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  pointer-events: none;
+  min-width: 220px;
+  max-width: 300px;
+  border: 1px solid var(--border);
+}
+
+.hc-tooltip-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--maroon);
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+
+.hc-tooltip-actual { }
+.hc-tooltip-val {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #2E7D32;
+}
+.hc-tooltip-src {
+  font-size: 0.72rem;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 
-.cal-events { margin-top: 2px; }
-
-.cal-event-badge {
-  font-size: 0.6rem;
-  padding: 1px 3px;
-  border-radius: 2px;
-  background: var(--gold-light);
-  color: var(--text-dark);
-  display: inline-block;
-  margin-top: 1px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.cal-tooltip {
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--maroon-deep);
-  color: var(--gold-light);
-  padding: 8px 12px;
+.hc-tooltip-pred {
+  padding: 8px 10px;
   border-radius: var(--radius-sm);
-  font-size: 0.78rem;
-  white-space: nowrap;
-  z-index: 10;
-  box-shadow: var(--shadow-md);
-  pointer-events: none;
+  margin-bottom: 6px;
+}
+.hc-tooltip-conf {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
-.cal-tooltip::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 5px solid transparent;
-  border-top-color: var(--maroon-deep);
+.hc-tooltip-events {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid var(--border);
+  padding-top: 6px;
 }
 
-.cal-legend {
+.hc-tooltip-event {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+}
+
+.hc-tooltip-impact {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  text-transform: capitalize;
+}
+
+/* --- legend --- */
+.hc-legend {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.hc-legend-bands {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 16px;
-  margin-top: 8px;
+  gap: 6px;
   justify-content: center;
 }
 
-.cal-legend-item {
+.hc-legend-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.hc-legend-info {
   display: flex;
-  align-items: center;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
   font-size: 0.72rem;
   color: var(--text-muted);
 }
 
-.cal-legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
+.hc-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.cal-festivals {
-  margin-top: 12px;
-  padding: 12px;
-  background: var(--off-white);
-  border-radius: var(--radius-sm);
+.hc-legend-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
 }
 
-.cal-festivals h4 {
+.hc-legend-actual {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.hc-legend-pred {
+  background: #E3F2FD;
+  color: #1565C0;
+}
+
+/* --- festivals --- */
+.hc-festivals {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.hc-festivals-title {
   font-family: var(--font-heading);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
+  font-weight: 700;
   color: var(--maroon);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-.cal-festival-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.cal-festival-tag {
-  background: var(--gold-light);
+.hc-festival-item {
+  font-size: 0.82rem;
+  padding: 4px 0;
   color: var(--text-dark);
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
+  border-bottom: 1px dashed var(--border);
 }
+.hc-festival-item:last-child { border-bottom: none; }
+
+.hc-festival-impact {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  text-transform: capitalize;
+}
+
+/* (festivals styling now in hc-festivals above) */
 
 /* ============================================
    LOADER
@@ -1885,11 +2067,18 @@ img { max-width: 100%; }
   .data-table th, .data-table td { padding: 8px 10px; }
 
   /* --- Calendar --- */
-  .cal-day { min-height: 44px; }
-  .cal-day-num { font-size: 0.75rem; }
-  .cal-band { font-size: 0.55rem; padding: 1px 3px; }
-  .cal-event-badge { font-size: 0.5rem; }
-  .calendar-header h3 { font-size: 0.95rem; }
+  .hc-cell { min-height: 52px; padding: 4px 5px 3px; }
+  .hc-day-num { font-size: 0.78rem; }
+  .hc-band-badge { font-size: 0.52rem; padding: 1px 4px; }
+  .hc-actual-badge { font-size: 0.58rem; }
+  .hc-event-name { font-size: 0.5rem; }
+  .hc-month { font-size: 0.95rem; }
+  .hc-legend { padding: 10px 12px; }
+  .hc-legend-pill { font-size: 0.6rem; padding: 2px 8px; }
+  .hc-legend-info { font-size: 0.65rem; gap: 8px; }
+  .hc-tooltip { min-width: 180px; max-width: 260px; padding: 10px 12px; }
+  .hc-festivals-title { font-size: 0.85rem; }
+  .hc-festival-item { font-size: 0.78rem; }
 
   /* --- Chatbot --- */
   .chatbot-container {
@@ -2016,20 +2205,30 @@ img { max-width: 100%; }
   .crowd-badge { font-size: 0.65rem; padding: 2px 6px; }
 
   /* --- Calendar --- */
-  .cal-day { min-height: 36px; padding: 2px; }
-  .cal-day-num { font-size: 0.7rem; }
-  .cal-band { font-size: 0.5rem; }
-  .cal-event-badge { display: none; }
-  .cal-weekday { padding: 4px 2px; font-size: 0.65rem; }
-  .cal-legend { gap: 6px; padding: 8px 10px; }
-  .cal-legend-item { font-size: 0.65rem; }
-  .cal-legend-dot { width: 8px; height: 8px; }
-  .calendar-header { padding: 10px 12px; }
-  .calendar-header h3 { font-size: 0.85rem; }
-  .cal-nav-btn { padding: 3px 8px; font-size: 0.8rem; }
-  .cal-tooltip { font-size: 0.7rem; padding: 6px 8px; }
-  .cal-festivals h4 { font-size: 0.82rem; }
-  .cal-festival-tag { font-size: 0.68rem; padding: 2px 6px; }
+  .hc-cell { min-height: 40px; padding: 3px 4px 2px; }
+  .hc-day-num { font-size: 0.72rem; }
+  .hc-band-badge { font-size: 0.45rem; padding: 1px 3px; }
+  .hc-actual-badge { font-size: 0.52rem; padding: 1px 3px; }
+  .hc-event-name { display: none; }
+  .hc-event-icon { font-size: 0.65rem; }
+  .hc-impact-dot { width: 5px; height: 5px; }
+  .hc-weekday { padding: 4px 2px; font-size: 0.65rem; }
+  .hc-header { padding: 10px 12px; gap: 4px; }
+  .hc-month { font-size: 0.88rem; }
+  .hc-hindu-month { font-size: 0.68rem; }
+  .hc-nav-btn { padding: 4px 8px; font-size: 0.8rem; }
+  .hc-today-btn { font-size: 0.68rem; padding: 3px 8px; }
+  .hc-legend { padding: 8px 10px; gap: 6px; }
+  .hc-legend-bands { gap: 4px; }
+  .hc-legend-pill { font-size: 0.55rem; padding: 2px 6px; }
+  .hc-legend-info { font-size: 0.6rem; gap: 6px; }
+  .hc-tooltip { min-width: 160px; max-width: 230px; padding: 8px 10px; font-size: 0.78rem; }
+  .hc-tooltip-title { font-size: 0.82rem; }
+  .hc-tooltip-val { font-size: 0.9rem; }
+  .hc-festivals { padding: 10px 12px; }
+  .hc-festivals-title { font-size: 0.82rem; }
+  .hc-festival-item { font-size: 0.75rem; }
+  .hc-festival-impact { font-size: 0.55rem; padding: 1px 5px; }
 
   /* --- Chatbot --- */
   .chat-sidebar { max-height: 160px; }
@@ -2098,6 +2297,17 @@ img { max-width: 100%; }
   .card-header { font-size: 0.82rem; }
   .forecast-grid { gap: 6px; }
   .chat-sidebar { max-height: 120px; }
+
+  /* --- Calendar --- */
+  .hc-cell { min-height: 34px; padding: 2px 3px; }
+  .hc-day-num { font-size: 0.65rem; }
+  .hc-band-badge { font-size: 0.42rem; padding: 1px 2px; letter-spacing: 0; }
+  .hc-actual-badge { font-size: 0.48rem; }
+  .hc-weekday { font-size: 0.58rem; padding: 3px 1px; }
+  .hc-month { font-size: 0.82rem; }
+  .hc-legend-bands { gap: 3px; }
+  .hc-legend-pill { font-size: 0.5rem; padding: 1px 5px; }
+  .hc-legend-info { font-size: 0.55rem; }
 }
 
 /* ── Ensure touch targets are large enough ── */
@@ -2106,7 +2316,7 @@ img { max-width: 100%; }
   .mode-btn { min-height: 44px; }
   .btn { min-height: 44px; }
   .quick-q-btn { min-height: 40px; }
-  .cal-nav-btn { min-height: 36px; }
+  .hc-nav-btn { min-height: 36px; }
   .interest-pill { min-height: 40px; }
   .budget-btn { min-height: 40px; }
 }

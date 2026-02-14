@@ -4,14 +4,45 @@ import { useLang } from "../i18n/LangContext";
 
 const API_BASE = import.meta.env.DEV ? "http://localhost:5000/api" : "/api";
 
+/* 6 distinct crowd-level colors — synced with backend BAND_COLORS */
 function crowdColor(band) {
-  const map = { QUIET: "#388E3C", LIGHT: "#388E3C", MODERATE: "#C5A028", BUSY: "#C5A028", HEAVY: "#E65100", EXTREME: "#D32F2F" };
+  const map = {
+    QUIET:    "#2196F3",
+    LIGHT:    "#4CAF50",
+    MODERATE: "#8BC34A",
+    BUSY:     "#FFC107",
+    HEAVY:    "#FF5722",
+    EXTREME:  "#B71C1C",
+  };
+  return map[band] || "#888";
+}
+
+function crowdTextColor(band) {
+  const map = {
+    QUIET:    "#1565C0",
+    LIGHT:    "#2E7D32",
+    MODERATE: "#558B2F",
+    BUSY:     "#F57F17",
+    HEAVY:    "#BF360C",
+    EXTREME:  "#B71C1C",
+  };
   return map[band] || "#888";
 }
 
 function crowdBg(band) {
-  const map = { QUIET: "#E8F5E9", LIGHT: "#E8F5E9", MODERATE: "#FFF8E1", BUSY: "#FFF3E0", HEAVY: "#FBE9E7", EXTREME: "#FFEBEE" };
+  const map = {
+    QUIET:    "#E3F2FD",
+    LIGHT:    "#E8F5E9",
+    MODERATE: "#F1F8E9",
+    BUSY:     "#FFF8E1",
+    HEAVY:    "#FBE9E7",
+    EXTREME:  "#FFEBEE",
+  };
   return map[band] || "#F5F5F5";
+}
+
+function badgeTextColor(band) {
+  return (band === "BUSY" || band === "MODERATE") ? "#333" : "#fff";
 }
 
 const IMPACT_STYLE = {
@@ -58,50 +89,30 @@ export default function HinduCalendar() {
   const days = data?.days || [];
   const offset = data?.first_weekday ?? 0;
   const blanks = Array.from({ length: offset }, (_, i) => (
-    <div key={`b${i}`} style={{ ...cellStyle, visibility: "hidden" }} />
+    <div key={`b${i}`} className="hc-cell hc-blank" />
   ));
 
-  const gridStyle = { display: "grid", gridTemplateColumns: "repeat(7, 1fr)", padding: "0 2px" };
-  const navBtn = {
-    background: "rgba(255,255,255,.15)", border: "1px solid rgba(255,255,255,.3)",
-    borderRadius: 6, color: "#FFF", cursor: "pointer", display: "flex", alignItems: "center",
-    padding: "4px 8px", fontSize: "1rem", transition: "all .2s",
-  };
-
   return (
-    <div className="card" style={{ marginBottom: "2rem", overflow: "visible" }}>
+    <div className="card hc-wrapper">
       {/* Header */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "1rem 1.25rem", background: "var(--maroon)",
-        borderRadius: "var(--radius-md) var(--radius-md) 0 0",
-        color: "#FFF", flexWrap: "wrap", gap: ".5rem",
-      }}>
-        <button onClick={prevMonth} style={navBtn}><MdChevronLeft size={22} /></button>
-        <div style={{ textAlign: "center", flex: 1 }}>
-          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.25rem", fontWeight: 700 }}>
-            {data?.month_name || ""} {year}
-          </div>
+      <div className="hc-header">
+        <button className="hc-nav-btn" onClick={prevMonth}><MdChevronLeft size={22} /></button>
+        <div className="hc-title">
+          <div className="hc-month">{data?.month_name || ""} {year}</div>
           {data?.hindu_month?.name_te && (
-            <div style={{ fontSize: ".8rem", opacity: .85, marginTop: 2 }}>
-              📿 {data.hindu_month.name_te}
-            </div>
+            <div className="hc-hindu-month">📿 {data.hindu_month.name_te}</div>
           )}
         </div>
-        <button onClick={goToday} style={{ ...navBtn, fontSize: ".7rem", padding: "4px 10px", borderRadius: 20 }}>
+        <button className="hc-nav-btn hc-today-btn" onClick={goToday}>
           {t.calToday || "Today"}
         </button>
-        <button onClick={nextMonth} style={navBtn}><MdChevronRight size={22} /></button>
+        <button className="hc-nav-btn" onClick={nextMonth}><MdChevronRight size={22} /></button>
       </div>
 
       {/* Weekday headers */}
-      <div style={gridStyle}>
+      <div className="hc-grid">
         {WEEKDAYS.map((d) => (
-          <div key={d} style={{
-            textAlign: "center", fontWeight: 600, fontSize: ".75rem",
-            color: d === "Sun" || d === "Sat" ? "var(--maroon)" : "var(--text-muted)",
-            padding: "8px 0", borderBottom: "2px solid var(--cream-dark)",
-          }}>
+          <div key={d} className={`hc-weekday ${d === "Sun" || d === "Sat" ? "hc-weekend-hdr" : ""}`}>
             {d}
           </div>
         ))}
@@ -109,73 +120,56 @@ export default function HinduCalendar() {
 
       {/* Day grid */}
       {loading ? (
-        <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-muted)" }}>
-          🙏 {t.loading || "Loading..."}
-        </div>
+        <div className="hc-loading">🙏 {t.loading || "Loading..."}</div>
       ) : (
-        <div style={gridStyle} onMouseLeave={() => setTooltip(null)}>
+        <div className="hc-grid" onMouseLeave={() => setTooltip(null)}>
           {blanks}
           {days.map((d) => {
             const hasEvents = d.events && d.events.length > 0;
             const topEvent = hasEvents ? d.events[0] : null;
             const impactStyle = topEvent ? IMPACT_STYLE[topEvent.impact] : null;
             const isActual = d.is_actual;
+            const cellClass = `hc-cell ${d.is_today ? "hc-today" : ""} ${isActual ? "hc-actual" : ""}`;
             return (
-              <div key={d.day} style={{
-                ...cellStyle,
-                background: d.is_today ? "rgba(197,160,40,.08)" : crowdBg(d.band_name),
-                borderLeft: d.is_today ? "3px solid var(--gold)" : "none",
-                borderBottom: isActual
-                  ? "2px solid #388E3C"
-                  : "1px solid var(--cream-dark)",
-              }}
+              <div key={d.day} className={cellClass}
+                style={{
+                  background: d.is_today
+                    ? "rgba(197,160,40,.10)"
+                    : crowdBg(d.band_name),
+                  borderLeft: d.is_today
+                    ? "3px solid var(--gold)"
+                    : `3px solid ${crowdColor(d.band_name)}`,
+                }}
                 onMouseEnter={(e) => setTooltip({ day: d, x: e.clientX, y: e.clientY })}
+                onClick={() => setTooltip(tooltip?.day?.day === d.day ? null : { day: d, x: 0, y: 0 })}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <span style={{
-                    fontWeight: 700, fontSize: ".85rem",
-                    color: d.is_today ? "var(--gold-dark)" : "var(--text-dark)",
-                  }}>
-                    {d.day}
-                  </span>
-                  <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    {isActual ? (
-                      <span title="Actual data" style={{ fontSize: ".6rem", color: "#388E3C" }}>✓</span>
-                    ) : (
-                      <span title="ML prediction" style={{ fontSize: ".55rem", color: "#999" }}>🔮</span>
-                    )}
-                    {topEvent && <span style={{ fontSize: ".7rem" }} title={topEvent.name}>{topEvent.emoji || "📌"}</span>}
-                  </div>
+                {/* Row 1: Day number + event icon */}
+                <div className="hc-cell-top">
+                  <span className={`hc-day-num ${d.is_today ? "hc-day-today" : ""}`}>{d.day}</span>
+                  {topEvent && <span className="hc-event-icon" title={topEvent.name}>{topEvent.emoji || "📌"}</span>}
                 </div>
+
+                {/* Row 2: Band badge (+ actual count if available) */}
                 {isActual && d.total_pilgrims > 0 ? (
-                  <div style={{
-                    fontSize: ".6rem", fontWeight: 700, textAlign: "center",
-                    color: "#388E3C", marginTop: 2,
-                  }}>
-                    {(d.total_pilgrims / 1000).toFixed(0)}K
+                  <div className="hc-actual-badge"
+                    style={{ background: crowdColor(d.band_name), color: badgeTextColor(d.band_name) }}>
+                    {(d.total_pilgrims / 1000).toFixed(0)}K ✓
                   </div>
                 ) : (
-                  <div style={{
-                    fontSize: ".65rem", fontWeight: 600, textAlign: "center",
-                    color: crowdColor(d.band_name), marginTop: 2,
-                  }}>
+                  <div className="hc-band-badge"
+                    style={{ background: crowdColor(d.band_name), color: badgeTextColor(d.band_name) }}>
                     {d.band_name}
                   </div>
                 )}
+
+                {/* Row 3: Event name */}
                 {topEvent && topEvent.type !== "school_holiday" && topEvent.type !== "lunar" && (
-                  <div style={{
-                    fontSize: ".55rem", lineHeight: 1.2, marginTop: 2,
-                    color: "var(--maroon)", fontWeight: 500,
-                    overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-                  }}>
-                    {topEvent.name}
-                  </div>
+                  <div className="hc-event-name">{topEvent.name}</div>
                 )}
+
+                {/* Impact dot */}
                 {impactStyle && d.events?.[0]?.impact !== "low" && (
-                  <div style={{
-                    position: "absolute", bottom: 3, right: 3, width: 6, height: 6,
-                    borderRadius: "50%", background: impactStyle.bg,
-                  }} />
+                  <div className="hc-impact-dot" style={{ background: impactStyle.bg }} />
                 )}
               </div>
             );
@@ -185,39 +179,37 @@ export default function HinduCalendar() {
 
       {/* Tooltip */}
       {tooltip && (
-        <div style={{
-          position: "fixed", left: Math.min(tooltip.x + 10, window.innerWidth - 260),
-          top: tooltip.y + 10, background: "#FFF", border: "1px solid var(--cream-dark)",
-          borderRadius: 8, padding: ".75rem", boxShadow: "0 4px 12px rgba(0,0,0,.15)",
-          zIndex: 1000, minWidth: 200, fontSize: ".82rem", pointerEvents: "none",
+        <div className="hc-tooltip" style={{
+          left: Math.min(tooltip.x + 10, window.innerWidth - 280),
+          top: Math.min(tooltip.y + 10, window.innerHeight - 200),
         }}>
-          <div style={{ fontWeight: 700, color: "var(--maroon)", marginBottom: 4 }}>
-            {data?.month_name} {tooltip.day.day}, {year}
-          </div>
+          <div className="hc-tooltip-title">{data?.month_name} {tooltip.day.day}, {year}</div>
           {tooltip.day.is_actual ? (
-            <div style={{ color: "#388E3C", fontWeight: 600 }}>
-              ✓ Actual: {(tooltip.day.total_pilgrims || 0).toLocaleString("en-IN")} pilgrims
+            <div className="hc-tooltip-actual">
+              <div className="hc-tooltip-val">{(tooltip.day.total_pilgrims || 0).toLocaleString("en-IN")} pilgrims</div>
+              <div className="hc-tooltip-src">✓ Recorded data from TTD</div>
             </div>
           ) : (
-            <div style={{ color: crowdColor(tooltip.day.band_name), fontWeight: 600 }}>
-              🔮 {tooltip.day.band_name} ({(tooltip.day.confidence * 100).toFixed(0)}%)
+            <div className="hc-tooltip-pred" style={{
+              borderLeft: `3px solid ${crowdColor(tooltip.day.band_name)}`,
+              background: crowdBg(tooltip.day.band_name),
+            }}>
+              <div style={{ color: crowdTextColor(tooltip.day.band_name), fontWeight: 700, fontSize: ".9rem" }}>
+                {tooltip.day.band_name}
+              </div>
+              <div className="hc-tooltip-conf">
+                {(tooltip.day.confidence * 100).toFixed(0)}% confidence · ML prediction
+              </div>
             </div>
           )}
-          <div style={{
-            fontSize: ".7rem", color: tooltip.day.is_actual ? "#388E3C" : "#999",
-            marginTop: 2, fontStyle: "italic",
-          }}>
-            {tooltip.day.is_actual ? "Recorded data from TTD" : "ML prediction"}
-          </div>
           {tooltip.day.events?.length > 0 && (
-            <div style={{ borderTop: "1px solid var(--cream-dark)", paddingTop: 4, marginTop: 4 }}>
+            <div className="hc-tooltip-events">
               {tooltip.day.events.map((e, i) => (
-                <div key={i} style={{ display: "flex", gap: 4, alignItems: "center", marginBottom: 2 }}>
+                <div key={i} className="hc-tooltip-event">
                   <span>{e.emoji || "📌"}</span>
                   <span style={{ fontWeight: 500 }}>{e.name}</span>
                   {e.impact && (
-                    <span style={{
-                      fontSize: ".6rem", padding: "1px 5px", borderRadius: 10,
+                    <span className="hc-tooltip-impact" style={{
                       background: (IMPACT_STYLE[e.impact] || {}).bg || "#EEE",
                       color: (IMPACT_STYLE[e.impact] || {}).color || "#555",
                     }}>{e.impact}</span>
@@ -230,46 +222,46 @@ export default function HinduCalendar() {
       )}
 
       {/* Legend */}
-      <div style={{
-        display: "flex", flexWrap: "wrap", gap: ".6rem", padding: ".75rem 1rem",
-        fontSize: ".7rem", color: "var(--text-muted)", justifyContent: "center",
-        borderTop: "1px solid var(--cream-dark)",
-      }}>
-        <span>🛕 {t.calFestival || "Festival"}</span>
-        <span>🔱 {t.calBrahmotsavam || "Brahmotsavam"}</span>
-        <span>🌕 {t.calPurnima || "Purnima"}</span>
-        <span>🌑 {t.calAmavasya || "Amavasya"}</span>
-        <span>📿 {t.calEkadashi || "Ekadashi"}</span>
-        <span>🏛️ {t.calHoliday || "Holiday"}</span>
-        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-          <span style={{ color: "#388E3C", fontWeight: 700, fontSize: ".75rem" }}>✓</span> Actual
-        </span>
-        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-          <span style={{ fontSize: ".65rem" }}>🔮</span> Predicted
-        </span>
-        {[
-          { label: "Quiet", bg: "#388E3C" }, { label: "Moderate", bg: "#C5A028" },
-          { label: "Heavy", bg: "#E65100" }, { label: "Extreme", bg: "#D32F2F" },
-        ].map(({ label, bg }) => (
-          <span key={label} style={{ display: "flex", alignItems: "center", gap: 3 }}>
-            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: bg }} />
-            {label}
+      <div className="hc-legend">
+        <div className="hc-legend-bands">
+          {[
+            { label: "Quiet",    color: "#2196F3",  text: "#fff" },
+            { label: "Light",    color: "#4CAF50",  text: "#fff" },
+            { label: "Moderate", color: "#8BC34A",  text: "#333" },
+            { label: "Busy",     color: "#FFC107",  text: "#333" },
+            { label: "Heavy",    color: "#FF5722",  text: "#fff" },
+            { label: "Extreme",  color: "#B71C1C",  text: "#fff" },
+          ].map(({ label, color, text }) => (
+            <span key={label} className="hc-legend-pill" style={{ background: color, color: text }}>
+              {label}
+            </span>
+          ))}
+        </div>
+        <div className="hc-legend-info">
+          <span className="hc-legend-item">
+            <span className="hc-legend-swatch hc-legend-actual">✓</span>
+            Actual data
           </span>
-        ))}
+          <span className="hc-legend-item">
+            <span className="hc-legend-swatch hc-legend-pred">BAND</span>
+            ML prediction
+          </span>
+          <span>🛕 {t.calFestival || "Festival"}</span>
+          <span>🌕 {t.calPurnima || "Purnima"}</span>
+          <span>🌑 {t.calAmavasya || "Amavasya"}</span>
+          <span>📿 {t.calEkadashi || "Ekadashi"}</span>
+        </div>
       </div>
 
       {/* Festivals */}
       {data?.festivals?.length > 0 && (
-        <div style={{ padding: ".75rem 1rem", borderTop: "1px solid var(--cream-dark)", background: "var(--off-white)" }}>
-          <div style={{ fontWeight: 600, fontSize: ".85rem", color: "var(--maroon)", marginBottom: ".5rem" }}>
-            🎉 Festivals this month
-          </div>
+        <div className="hc-festivals">
+          <div className="hc-festivals-title">🎉 Festivals this month</div>
           {data.festivals.map((f, i) => (
-            <div key={i} style={{ fontSize: ".8rem", margin: "2px 0" }}>
+            <div key={i} className="hc-festival-item">
               <strong>{f.day}</strong> — {f.name} {f.name_te && `(${f.name_te})`}
               {f.impact && (
-                <span style={{
-                  marginLeft: 6, padding: "1px 6px", borderRadius: 10, fontSize: ".65rem",
+                <span className="hc-festival-impact" style={{
                   background: (IMPACT_STYLE[f.impact] || {}).bg || "#EEE",
                   color: (IMPACT_STYLE[f.impact] || {}).color || "#555",
                 }}>{f.impact}</span>
@@ -281,8 +273,3 @@ export default function HinduCalendar() {
     </div>
   );
 }
-
-const cellStyle = {
-  minHeight: 72, padding: "4px 5px", position: "relative",
-  borderBottom: "1px solid var(--cream-dark)", borderRight: "1px solid rgba(0,0,0,.03)",
-};

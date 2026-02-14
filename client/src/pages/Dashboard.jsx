@@ -116,8 +116,7 @@ export default function Dashboard() {
 
       <div className="gold-strip" />
 
-      <div className="main-content">
-        {/* Today's prediction — FULL CARD */}
+      {/* Today's prediction — FULL CARD */}
         {todayPred && (
           <div className="card today-prediction-card" style={{ borderLeft: `5px solid ${todayPred.color || "#FFC107"}` }}>
             <div className="card-header">
@@ -285,7 +284,6 @@ export default function Dashboard() {
             {t.slogan}
           </span>
         </div>
-      </div>
     </div>
   );
 }
