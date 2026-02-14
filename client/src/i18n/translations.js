@@ -2,7 +2,7 @@ const translations = {
   te: {
     lang: "తెలుగు", flag: "🇮🇳",
     brand: "శ్రీవారి సేవ", brandSub: "తిరుమల దర్శన సమాచారం",
-    navHome: "హోమ్", navPredict: "దర్శన అంచనా", navHistory: "గత డేటా", navChatbot: "చాట్‌బాట్", navTrip: "ట్రిప్ ప్లానర్",
+    navHome: "హోమ్", navPredict: "దర్శన అంచనా", navHistory: "గత డేటా", navChatbot: "చాట్‌బాట్", navExplore: "ప్రదేశాలు",
     omText: "🙏 ఓం నమో వేంకటేశాయ", heroTitle: "శ్రీవారి దర్శన సమాచారం",
     heroSub: "శ్రీ వేంకటేశ్వర స్వామి దర్శనం — రద్దీ అంచనా", heroPlan: "బుద్ధిమంతమైన రద్దీ అంచనాలతో మీ యాత్ర ప్లాన్ చేసుకోండి",
     btnPickDate: "తేదీ ఎంచుకోండి", todayPredTitle: "నేటి దర్శన అంచనా",
@@ -40,7 +40,7 @@ const translations = {
   en: {
     lang: "English", flag: "🇬🇧",
     brand: "Srivari Seva", brandSub: "Tirumala Darshan Information",
-    navHome: "Home", navPredict: "Predict", navHistory: "History", navChatbot: "Chatbot", navTrip: "Trip Planner",
+    navHome: "Home", navPredict: "Predict", navHistory: "History", navChatbot: "Chatbot", navExplore: "Explore",
     omText: "🙏 Om Namo Venkatesaya", heroTitle: "Tirumala Darshan Information",
     heroSub: "Sri Venkateswara Swamy Darshan — Crowd Prediction", heroPlan: "Plan your sacred pilgrimage with intelligent crowd predictions",
     btnPickDate: "Pick a Date", todayPredTitle: "Today's Darshan Prediction",
@@ -79,7 +79,7 @@ const translations = {
   hi: {
     lang: "हिन्दी", flag: "🇮🇳",
     brand: "श्रीवारी सेवा", brandSub: "तिरुमला दर्शन जानकारी",
-    navHome: "होम", navPredict: "दर्शन अनुमान", navHistory: "पिछला डेटा", navChatbot: "चैटबॉट", navTrip: "ट्रिप प्लानर",
+    navHome: "होम", navPredict: "दर्शन अनुमान", navHistory: "पिछला डेटा", navChatbot: "चैटबॉट", navExplore: "स्थल",
     omText: "🙏 ॐ नमो वेंकटेशाय", heroTitle: "श्रीवारी दर्शन जानकारी",
     heroSub: "तिरुमला श्री वेंकटेश्वर स्वामी दर्शन — भीड़ अनुमान", heroPlan: "बुद्धिमान भविष्यवाणी के साथ अपनी यात्रा की योजना बनाएं",
     btnPickDate: "तारीख चुनें", todayPredTitle: "आज का दर्शन अनुमान",

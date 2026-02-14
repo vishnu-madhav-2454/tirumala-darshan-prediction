@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import Predict from "./pages/Predict";
 import History from "./pages/History";
 import Chatbot from "./pages/Chatbot";
-import TripPlanner from "./pages/TripPlanner";
+import Explore from "./pages/Explore";
 
 export default function App() {
   return (
@@ -21,7 +21,7 @@ export default function App() {
               <Route path="/predict" element={<Predict />} />
               <Route path="/history" element={<History />} />
               <Route path="/chatbot" element={<Chatbot />} />
-              <Route path="/trip-planner" element={<TripPlanner />} />
+              <Route path="/explore" element={<Explore />} />
             </Routes>
           </div>
           <Footer />

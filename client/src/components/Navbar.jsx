@@ -5,8 +5,8 @@ import { MdDashboard, MdCalendarMonth, MdStorage, MdLanguage, MdMenu, MdClose, M
 import { useLang } from "../i18n/LangContext";
 
 const ICONS = [MdDashboard, MdCalendarMonth, MdStorage, MdSmartToy, MdExplore];
-const PATHS = ["/", "/predict", "/history", "/chatbot", "/trip-planner"];
-const KEYS = ["navHome", "navPredict", "navHistory", "navChatbot", "navTrip"];
+const PATHS = ["/", "/predict", "/history", "/chatbot", "/explore"];
+const KEYS = ["navHome", "navPredict", "navHistory", "navChatbot", "navExplore"];
 
 export default function Navbar() {
   const { t, lang, setLang, SUPPORTED, translations } = useLang();
