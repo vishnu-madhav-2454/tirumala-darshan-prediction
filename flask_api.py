@@ -79,9 +79,7 @@ _pipeline_status = {
 
 # Knowledge bases
 KB_PATH   = pathlib.Path("ttd_knowledge_base.json")
-TRIP_PATH = pathlib.Path("tirumala_trip_data.json")
 KB        = json.load(open(KB_PATH, encoding="utf-8"))   if KB_PATH.exists()   else {"categories": []}
-TRIP_DATA = json.load(open(TRIP_PATH, encoding="utf-8"))  if TRIP_PATH.exists() else {}
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  COLOURS & LABELS

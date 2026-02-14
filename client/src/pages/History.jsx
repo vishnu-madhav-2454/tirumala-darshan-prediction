@@ -129,7 +129,7 @@ export default function History() {
         <h2>{t.historyTitle || "Historical Crowd Data"}</h2>
         <p className="page-subtitle">
           <MdHistory style={{ verticalAlign: "middle", marginRight: 4 }} />
-          {t.historySubtitle || "Daily pilgrim footfall records from TTD (2022 — 2026)"}
+          {t.historySubtitle || `Daily pilgrim footfall records from TTD${summary ? ` (${summary.date_start?.slice(0,4)} — ${summary.date_end?.slice(0,4)})` : ""}`}
         </p>
       </div>
 
@@ -166,12 +166,12 @@ export default function History() {
           <div className="filter-group">
             <label>From</label>
             <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)}
-                   min="2022-02-01" max="2026-02-12" />
+                   min={summary?.date_start || "2022-02-01"} max={summary?.date_end || ""} />
           </div>
           <div className="filter-group">
             <label>To</label>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)}
-                   min="2022-02-01" max="2026-02-12" />
+                   min={summary?.date_start || "2022-02-01"} max={summary?.date_end || ""} />
           </div>
           <div className="filter-group">
             <label>Crowd Level</label>

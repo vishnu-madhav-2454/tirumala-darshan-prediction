@@ -12,7 +12,7 @@ app_port: 7860
 
 AI-powered crowd prediction & trip planning for **Tirumala Sri Venkateswara Temple**.
 
-🔗 **Live Demo**: [Hugging Face Spaces](https://huggingface.co/spaces/)
+🔗 **Live Demo**: [Hugging Face Spaces](https://huggingface.co/spaces/madhav456789123/tirumala-darshan-prediction)
 
 ---
 
@@ -23,7 +23,7 @@ AI-powered crowd prediction & trip planning for **Tirumala Sri Venkateswara Temp
 | 📊 **Crowd Prediction** | 6-band ML forecast (QUIET → EXTREME) using LightGBM + XGBoost ensemble |
 | 📅 **Hindu Calendar** | Monthly crowd heatmap with festival indicators |
 | 🤖 **AI Chatbot** | RAG-powered Q&A about TTD darshan, travel, sevas (Llama-3.3-70B) |
-| 🗺️ **Trip Planner** | AI-generated itineraries with budget estimates (Qwen2.5-72B) |
+| 🗺️ **Explore Places** | 20 famous landmarks around Tirumala & Tirupati with photos, timings & maps |
 | 📈 **History** | Browse 1,400+ days of actual pilgrim data with filters & charts |
 | 🌐 **Multilingual** | English, Telugu (తెలుగు), Hindi (हिंदी) |
 | 📱 **Responsive** | Mobile-friendly design for all screen sizes |
@@ -60,7 +60,6 @@ python flask_api.py
 docker build -t srivari-seva .
 docker run -p 7860:7860 \
   -e HF_TOKEN_CHAT=hf_your_token \
-  -e HF_TOKEN_TRIP=hf_your_token \
   srivari-seva
 ```
 
@@ -72,7 +71,6 @@ docker run -p 7860:7860 \
 2. Push this repo to the Space
 3. Add **Secrets** in Space Settings:
    - `HF_TOKEN_CHAT` — HuggingFace token for chatbot LLM
-   - `HF_TOKEN_TRIP` — HuggingFace token for trip planner LLM
 4. The Space will auto-build and deploy
 
 ---
@@ -86,12 +84,11 @@ tirumala/
 ├── festival_calendar.py      # Hindu festival calendar
 ├── hindu_calendar.py         # Panchang calculations
 ├── build_vectordb.py         # ChromaDB vector store builder
-├── tirumala_trip_data.json    # Trip planner knowledge base
 ├── ttd_corpus.txt            # RAG corpus for chatbot
 ├── artefacts/advisory_v5/    # Trained ML models (LGB + XGB)
 ├── vectordb/                 # ChromaDB vector store
 ├── client/                   # React frontend (Vite)
-│   ├── src/pages/            # Dashboard, Predict, History, Chatbot, TripPlanner
+│   ├── src/pages/            # Dashboard, Predict, History, Chatbot, Explore
 │   ├── src/components/       # Navbar, Footer, Calendar, Loader
 │   └── build/                # Production build (served by Flask)
 ├── Dockerfile                # HF Spaces deployment
