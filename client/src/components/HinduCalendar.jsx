@@ -119,11 +119,15 @@ export default function HinduCalendar() {
             const hasEvents = d.events && d.events.length > 0;
             const topEvent = hasEvents ? d.events[0] : null;
             const impactStyle = topEvent ? IMPACT_STYLE[topEvent.impact] : null;
+            const isActual = d.is_actual;
             return (
               <div key={d.day} style={{
                 ...cellStyle,
                 background: d.is_today ? "rgba(197,160,40,.08)" : crowdBg(d.band_name),
                 borderLeft: d.is_today ? "3px solid var(--gold)" : "none",
+                borderBottom: isActual
+                  ? "2px solid #388E3C"
+                  : "1px solid var(--cream-dark)",
               }}
                 onMouseEnter={(e) => setTooltip({ day: d, x: e.clientX, y: e.clientY })}
               >
@@ -134,14 +138,30 @@ export default function HinduCalendar() {
                   }}>
                     {d.day}
                   </span>
-                  {topEvent && <span style={{ fontSize: ".7rem" }} title={topEvent.name}>{topEvent.emoji || "📌"}</span>}
+                  <div style={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    {isActual ? (
+                      <span title="Actual data" style={{ fontSize: ".6rem", color: "#388E3C" }}>✓</span>
+                    ) : (
+                      <span title="ML prediction" style={{ fontSize: ".55rem", color: "#999" }}>🔮</span>
+                    )}
+                    {topEvent && <span style={{ fontSize: ".7rem" }} title={topEvent.name}>{topEvent.emoji || "📌"}</span>}
+                  </div>
                 </div>
-                <div style={{
-                  fontSize: ".65rem", fontWeight: 600, textAlign: "center",
-                  color: crowdColor(d.band_name), marginTop: 2,
-                }}>
-                  {d.band_name}
-                </div>
+                {isActual && d.total_pilgrims > 0 ? (
+                  <div style={{
+                    fontSize: ".6rem", fontWeight: 700, textAlign: "center",
+                    color: "#388E3C", marginTop: 2,
+                  }}>
+                    {(d.total_pilgrims / 1000).toFixed(0)}K
+                  </div>
+                ) : (
+                  <div style={{
+                    fontSize: ".65rem", fontWeight: 600, textAlign: "center",
+                    color: crowdColor(d.band_name), marginTop: 2,
+                  }}>
+                    {d.band_name}
+                  </div>
+                )}
                 {topEvent && topEvent.type !== "school_holiday" && topEvent.type !== "lunar" && (
                   <div style={{
                     fontSize: ".55rem", lineHeight: 1.2, marginTop: 2,
@@ -174,8 +194,20 @@ export default function HinduCalendar() {
           <div style={{ fontWeight: 700, color: "var(--maroon)", marginBottom: 4 }}>
             {data?.month_name} {tooltip.day.day}, {year}
           </div>
-          <div style={{ color: crowdColor(tooltip.day.band_name), fontWeight: 600 }}>
-            {tooltip.day.band_name} ({(tooltip.day.confidence * 100).toFixed(0)}%)
+          {tooltip.day.is_actual ? (
+            <div style={{ color: "#388E3C", fontWeight: 600 }}>
+              ✓ Actual: {(tooltip.day.total_pilgrims || 0).toLocaleString("en-IN")} pilgrims
+            </div>
+          ) : (
+            <div style={{ color: crowdColor(tooltip.day.band_name), fontWeight: 600 }}>
+              🔮 {tooltip.day.band_name} ({(tooltip.day.confidence * 100).toFixed(0)}%)
+            </div>
+          )}
+          <div style={{
+            fontSize: ".7rem", color: tooltip.day.is_actual ? "#388E3C" : "#999",
+            marginTop: 2, fontStyle: "italic",
+          }}>
+            {tooltip.day.is_actual ? "Recorded data from TTD" : "ML prediction"}
           </div>
           {tooltip.day.events?.length > 0 && (
             <div style={{ borderTop: "1px solid var(--cream-dark)", paddingTop: 4, marginTop: 4 }}>
@@ -209,6 +241,12 @@ export default function HinduCalendar() {
         <span>🌑 {t.calAmavasya || "Amavasya"}</span>
         <span>📿 {t.calEkadashi || "Ekadashi"}</span>
         <span>🏛️ {t.calHoliday || "Holiday"}</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <span style={{ color: "#388E3C", fontWeight: 700, fontSize: ".75rem" }}>✓</span> Actual
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
+          <span style={{ fontSize: ".65rem" }}>🔮</span> Predicted
+        </span>
         {[
           { label: "Quiet", bg: "#388E3C" }, { label: "Moderate", bg: "#C5A028" },
           { label: "Heavy", bg: "#E65100" }, { label: "Extreme", bg: "#D32F2F" },

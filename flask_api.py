@@ -14,7 +14,7 @@ Run:
   python flask_api.py
 """
 
-import json, os, pathlib, calendar, functools, re, logging, textwrap
+import json, os, pathlib, calendar, functools, re, logging, textwrap, threading
 import json as _json
 import random as _random
 import re as _re
@@ -38,6 +38,7 @@ from hindu_calendar import (
 )
 
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__name__)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  LOAD ARTEFACTS
@@ -64,6 +65,18 @@ BEST_ALPHA    = HYPER.get("best_alpha", 0.5)
 
 df_full = pd.read_csv(DATA_FILE, parse_dates=["date"])
 df_full = df_full[df_full.date >= META["post_covid"]].sort_values("date").reset_index(drop=True)
+
+# ── Daily pipeline state ──
+_pipeline_lock = threading.Lock()
+_pipeline_status = {
+    "last_scrape": None,
+    "last_retrain": None,
+    "records_added": 0,
+    "data_end": df_full.date.max().strftime("%Y-%m-%d"),
+    "total_records": len(df_full),
+    "status": "idle",
+    "error": None,
+}
 
 # Knowledge bases
 KB_PATH   = pathlib.Path("ttd_knowledge_base.json")
@@ -217,18 +230,39 @@ def predict_one(fdate, history_vals, dow_means):
 # ── prediction cache ────────────────────────────────────────────────
 _prediction_cache = {}
 
+# ── Lookup index for fast actual-data retrieval ─────────────────────
+_actual_data = {}   # date-string → total_pilgrims
+
+def _rebuild_actual_lookup():
+    """Rebuild the actual-data lookup from df_full."""
+    global _actual_data
+    _actual_data = {
+        r.date.strftime("%Y-%m-%d"): int(r.total_pilgrims)
+        for _, r in df_full.iterrows()
+    }
+
+_rebuild_actual_lookup()
+
 
 def predict_date_range(start_date, end_date):
+    """Return predictions for a date range.
+    - Past dates with actual data → use real pilgrim counts (is_actual=True)
+    - Today and future dates → use ML prediction (is_actual=False)
+    """
     history = list(df_full.total_pilgrims.values)
     dow_means = df_full.groupby(df_full.date.dt.dayofweek)["total_pilgrims"].mean().to_dict()
     last_date = df_full.date.max().to_pydatetime()
+    today_str = date.today().strftime("%Y-%m-%d")
 
+    # Fill gap between data end and start_date (if needed for lag features)
     if start_date > last_date:
         gap_days = (start_date - last_date).days
         for i in range(1, gap_days):
             d = last_date + timedelta(days=i)
             ck = d.strftime("%Y-%m-%d")
-            if ck in _prediction_cache:
+            if ck in _actual_data:
+                history.append(_actual_data[ck])
+            elif ck in _prediction_cache:
                 history.append(_prediction_cache[ck]["mid"])
             else:
                 b, c, r = predict_one(d, history, dow_means)
@@ -241,19 +275,254 @@ def predict_date_range(start_date, end_date):
     for i in range(total_days):
         fdate = start_date + timedelta(days=i)
         ck = fdate.strftime("%Y-%m-%d")
-        if ck in _prediction_cache:
+
+        # If actual data exists for this date → use it
+        if ck in _actual_data:
+            actual_val = _actual_data[ck]
+            actual_band = pilgrims_to_band(actual_val)
+            results.append({
+                "date": fdate, "band": actual_band,
+                "conf": 1.0, "reason": "Actual data",
+                "pilgrims": actual_val, "is_actual": True,
+            })
+            history.append(actual_val)
+        elif ck in _prediction_cache:
             cached = _prediction_cache[ck]
-            results.append({"date": fdate, "band": cached["band"],
-                            "conf": cached["conf"], "reason": cached["reason"],
-                            "pilgrims": cached["mid"]})
+            results.append({
+                "date": fdate, "band": cached["band"],
+                "conf": cached["conf"], "reason": cached["reason"],
+                "pilgrims": cached["mid"], "is_actual": False,
+            })
             history.append(cached["mid"])
         else:
             b, c, r = predict_one(fdate, history, dow_means)
             mid = (BANDS[b]["lo"] + min(BANDS[b]["hi"], 95000)) / 2
             _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid}
-            results.append({"date": fdate, "band": b, "conf": c, "reason": r, "pilgrims": mid})
+            results.append({
+                "date": fdate, "band": b, "conf": c, "reason": r,
+                "pilgrims": mid, "is_actual": False,
+            })
             history.append(mid)
     return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  DAILY PIPELINE — Scrape → Retrain → Reload (runs on schedule)
+# ═══════════════════════════════════════════════════════════════════════════════
+def _daily_pipeline_job():
+    """Scrape new data, warm-start retrain, and hot-reload models.
+    Called by APScheduler daily at 6:00 AM IST (00:30 UTC)."""
+    global df_full, lgb_model, xgb_model, X_bg, explainer
+    global _prediction_cache, _actual_data
+
+    with _pipeline_lock:
+        _pipeline_status["status"] = "running"
+        _pipeline_status["error"] = None
+        log.info("=" * 50)
+        log.info("DAILY PIPELINE STARTED")
+        log.info("=" * 50)
+
+        try:
+            # ── Step 1: Scrape ──
+            log.info("[Pipeline] Step 1: Scraping latest data ...")
+            from app.scraper import scrape_incremental
+            added = scrape_incremental(max_pages=5)
+            _pipeline_status["last_scrape"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            _pipeline_status["records_added"] = added
+            log.info(f"[Pipeline]   -> {added} new records added")
+
+            # ── Step 2: Reload data ──
+            log.info("[Pipeline] Step 2: Reloading data ...")
+            df_new = pd.read_csv(DATA_FILE, parse_dates=["date"])
+            df_new = df_new[df_new.date >= META["post_covid"]].sort_values("date").reset_index(drop=True)
+            df_full = df_new
+            _rebuild_actual_lookup()
+            _pipeline_status["data_end"] = df_full.date.max().strftime("%Y-%m-%d")
+            _pipeline_status["total_records"] = len(df_full)
+            log.info(f"[Pipeline]   Data: {len(df_full)} days up to {df_full.date.max().date()}")
+
+            # Clear prediction cache (stale after new data)
+            _prediction_cache.clear()
+            log.info("[Pipeline]   Prediction cache cleared")
+
+            # ── Step 3: Online retrain (warm-start) ──
+            if added > 0:
+                log.info("[Pipeline] Step 3: Online retrain (warm-start) ...")
+                _online_retrain()
+                _pipeline_status["last_retrain"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                log.info("[Pipeline]   Retrain complete")
+            else:
+                log.info("[Pipeline] Step 3: No new data — skipping retrain")
+
+            _pipeline_status["status"] = "idle"
+            log.info("=" * 50)
+            log.info("DAILY PIPELINE COMPLETE")
+            log.info("=" * 50)
+
+        except Exception as e:
+            _pipeline_status["status"] = "error"
+            _pipeline_status["error"] = str(e)
+            log.error(f"[Pipeline] ERROR: {e}", exc_info=True)
+
+
+def _online_retrain():
+    """Warm-start retrain LGB+XGB on updated data and hot-reload."""
+    global lgb_model, xgb_model, X_bg, explainer
+
+    import lightgbm as lgb_lib
+    import xgboost as xgb_lib
+    from festival_calendar import get_festival_features_series as gffs
+    from crowd_advisory_v5 import pilgrims_to_band_vec
+
+    d = df_full.copy()
+    y_col = "total_pilgrims"
+
+    # Build features (mirrors daily_pipeline.py step2)
+    d["dow"]        = d.date.dt.dayofweek
+    d["month"]      = d.date.dt.month
+    d["is_weekend"] = (d.dow >= 5).astype(int)
+    doy = d.date.dt.dayofyear
+    d["sin_doy"] = np.sin(2 * np.pi * doy / 365.25)
+    d["cos_doy"] = np.cos(2 * np.pi * doy / 365.25)
+
+    for lag in [1, 2, 7, 14, 21, 28]:
+        d[f"L{lag}"] = d[y_col].shift(lag)
+    past = d[y_col].shift(1)
+    for w in [7, 14, 30]:
+        d[f"rm{w}"] = past.rolling(w).mean()
+    d["rstd7"]  = past.rolling(7).std()
+    d["rstd14"] = past.rolling(14).std()
+    d["dow_expanding_mean"] = d.groupby("dow")[y_col].transform(
+        lambda s: s.shift(1).expanding().mean()
+    )
+    d["log_L1"]   = np.log1p(d["L1"])
+    d["log_L7"]   = np.log1p(d["L7"])
+    d["log_rm7"]  = np.log1p(d["rm7"])
+    d["log_rm30"] = np.log1p(d["rm30"])
+    d["momentum_7"] = d["L1"] - d["L7"]
+    d["dow_dev"]    = d["L1"] - d["dow_expanding_mean"]
+    d["month_dow"]    = d["month"] * 10 + d["dow"]
+    d["ewm7"]         = past.ewm(span=7).mean()
+    d["ewm14"]        = past.ewm(span=14).mean()
+    d["trend_7_14"]   = d["rm7"] - d["rm14"]
+    d["trend_7_30"]   = d["rm7"] - d["rm30"]
+    d["week_of_year"] = d.date.dt.isocalendar().week.astype(int)
+    d["L365"]         = d[y_col].shift(365)
+    d["log_L365"]     = np.log1p(d["L365"])
+
+    band_series = pilgrims_to_band_vec(d[y_col].shift(1).fillna(0).values)
+    band_s = pd.Series(band_series)
+    d["heavy_extreme_count7"] = (band_s >= 4).astype(int).rolling(7, min_periods=1).sum().values
+    d["light_quiet_count7"]   = (band_s <= 1).astype(int).rolling(7, min_periods=1).sum().values
+
+    fest = gffs(d.date)
+    keep_fest = [
+        "is_festival", "fest_impact", "is_brahmotsavam", "is_sankranti",
+        "is_summer_holiday", "is_dasara_holiday", "is_national_holiday",
+        "days_to_fest", "days_from_fest", "fest_window_7",
+        "is_vaikuntha_ekadashi", "is_dussehra_period", "is_diwali",
+        "is_navaratri", "is_janmashtami", "is_ugadi", "is_rathasapthami",
+        "is_ramanavami", "is_shivaratri", "is_winter_holiday",
+        "fest_window_3",
+    ]
+    for c in keep_fest:
+        if c in fest.columns:
+            d[c] = fest[c].values
+
+    d["band"] = np.array([pilgrims_to_band(v) for v in d[y_col].values])
+    d = d.dropna().reset_index(drop=True)
+
+    X = d[FEATURE_COLS].values
+    y = d["band"].values
+
+    # LGB warm-start
+    lgb_params = HYPER["lgb"].copy()
+    lgb_params["n_estimators"] = min(lgb_params.get("n_estimators", 200), 100)
+    new_lgb = lgb_lib.LGBMClassifier(
+        **lgb_params, objective="multiclass",
+        num_class=N_BANDS, verbosity=-1, random_state=42
+    )
+    new_lgb.fit(X, y, init_model=lgb_model)
+
+    # XGB warm-start
+    xgb_params = HYPER["xgb"].copy()
+    xgb_params["n_estimators"] = min(xgb_params.get("n_estimators", 200), 100)
+    new_xgb = xgb_lib.XGBClassifier(
+        **xgb_params, objective="multi:softprob",
+        num_class=N_BANDS, verbosity=0, random_state=42,
+        use_label_encoder=False
+    )
+    new_xgb.fit(X, y, xgb_model=xgb_model.get_booster())
+
+    # Quick validation on last 30 days
+    from sklearn.metrics import accuracy_score
+    X_val, y_val = X[-30:], y[-30:]
+    vote = (BEST_ALPHA * new_lgb.predict_proba(X_val) +
+            (1 - BEST_ALPHA) * new_xgb.predict_proba(X_val)).argmax(1)
+    exact = accuracy_score(y_val, vote)
+    adj = np.mean(np.abs(vote - y_val) <= 1)
+    log.info(f"[Pipeline]   Validation (last 30): exact={exact*100:.1f}%  adj={adj*100:.1f}%")
+
+    # Save models to disk
+    joblib.dump(new_lgb, ART_DIR / "lgb_model.pkl")
+    joblib.dump(new_xgb, ART_DIR / "xgb_model.pkl")
+
+    # New SHAP background
+    bg_size = min(200, len(X))
+    bg_idx = np.random.choice(len(X), bg_size, replace=False)
+    new_bg = X[bg_idx]
+    np.save(ART_DIR / "shap_background.npy", new_bg)
+
+    # Update meta
+    with open(ART_DIR / "model_meta.json") as f:
+        meta = json.load(f)
+    meta["last_retrain"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    meta["data_end"] = df_full.date.max().strftime("%Y-%m-%d")
+    meta["n_samples"] = len(d)
+    with open(ART_DIR / "model_meta.json", "w") as f:
+        json.dump(meta, f, indent=2)
+
+    # Hot-reload into globals
+    lgb_model = new_lgb
+    xgb_model = new_xgb
+    X_bg = new_bg
+    explainer = shap.TreeExplainer(lgb_model, X_bg)
+    log.info("[Pipeline]   Models hot-reloaded into memory")
+
+
+def _start_scheduler():
+    """Start APScheduler to run daily pipeline at 6:00 AM IST (00:30 UTC)."""
+    try:
+        from apscheduler.schedulers.background import BackgroundScheduler
+        from apscheduler.triggers.cron import CronTrigger
+
+        scheduler = BackgroundScheduler(daemon=True)
+        # TTD publishes yesterday's data around 10-11 AM IST next day.
+        # Run at 12:30 PM IST (07:00 UTC) to ensure data is available.
+        scheduler.add_job(
+            _daily_pipeline_job,
+            CronTrigger(hour=7, minute=0),   # 07:00 UTC = 12:30 PM IST
+            id="daily_pipeline",
+            name="Daily Scrape + Retrain",
+            replace_existing=True,
+            misfire_grace_time=3600,
+        )
+        scheduler.start()
+        log.info("Scheduler started: daily pipeline at 12:30 PM IST (07:00 UTC)")
+
+        # Also run once at startup if data might be stale
+        data_end = df_full.date.max().date()
+        yesterday = date.today() - timedelta(days=1)
+        if data_end < yesterday:
+            log.info(f"Data ends at {data_end}, yesterday was {yesterday} — running pipeline now")
+            threading.Thread(target=_daily_pipeline_job, daemon=True).start()
+
+    except ImportError:
+        log.warning("APScheduler not installed — daily automation disabled. "
+                     "Install with: pip install apscheduler")
+    except Exception as e:
+        log.error(f"Scheduler failed to start: {e}")
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -1283,7 +1552,24 @@ CORS(app)
 # ── API: Health ─────────────────────────────────────────────────────
 @app.route("/api/health")
 def api_health():
-    return jsonify({"status": "ok", "data_rows": len(df_full)})
+    return jsonify({"status": "ok", "data_rows": len(df_full),
+                    "data_end": df_full.date.max().strftime("%Y-%m-%d")})
+
+
+# ── API: Pipeline Status ───────────────────────────────────────────
+@app.route("/api/pipeline/status")
+def api_pipeline_status():
+    """Return the current state of the daily scrape + retrain pipeline."""
+    return jsonify(_pipeline_status)
+
+
+@app.route("/api/pipeline/trigger", methods=["POST"])
+def api_pipeline_trigger():
+    """Manually trigger the daily pipeline (scrape + retrain)."""
+    if _pipeline_status["status"] == "running":
+        return jsonify({"error": "Pipeline already running"}), 409
+    threading.Thread(target=_daily_pipeline_job, daemon=True).start()
+    return jsonify({"message": "Pipeline triggered", "status": "running"})
 
 
 # ── API: Predict Today ─────────────────────────────────────────────
@@ -1305,6 +1591,7 @@ def api_predict_today():
         "advice": BANDS[p["band"]].get("advice", ""),
         "color": BAND_COLORS[bn],
         "events": ev_list,
+        "is_actual": p.get("is_actual", False),
     })
 
 
@@ -1331,6 +1618,7 @@ def api_predict():
                 "color": BAND_COLORS[bn],
                 "bg": BAND_BG[bn],
                 "is_weekend": p["date"].weekday() >= 5,
+                "is_actual": p.get("is_actual", False),
             })
         return jsonify({"forecast": forecast, "total": len(forecast)})
 
@@ -1366,6 +1654,7 @@ def api_predict():
             "color": BAND_COLORS[bn],
             "bg": BAND_BG[bn],
             "is_weekend": p["date"].weekday() >= 5,
+            "is_actual": p.get("is_actual", False),
         })
 
     from collections import Counter
@@ -1455,6 +1744,8 @@ def api_calendar(year, month):
             "bg": BAND_BG[bn],
             "events": ev_list,
             "is_today": (year == today_d.year and month == today_d.month and day_num == today_d.day),
+            "is_actual": p.get("is_actual", False),
+            "total_pilgrims": round(p.get("pilgrims", 0)),
         })
 
     # Festivals this month
@@ -1665,6 +1956,9 @@ def not_found(e):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# Start scheduler (works for both gunicorn and direct run)
+_start_scheduler()
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print("=" * 60)
@@ -1672,5 +1966,6 @@ if __name__ == "__main__":
     print(f"  Data: {len(df_full)} days  ({df_full.date.min().date()} to {df_full.date.max().date()})")
     print(f"  Features: {len(FEATURE_COLS)}  |  Bands: {N_BANDS}")
     print(f"  Alpha: {BEST_ALPHA}  (LGB={BEST_ALPHA:.0%}, XGB={1-BEST_ALPHA:.0%})")
+    print(f"  Daily automation: scrape + retrain at 12:30 PM IST")
     print("=" * 60)
     app.run(host="0.0.0.0", port=port, debug=False)

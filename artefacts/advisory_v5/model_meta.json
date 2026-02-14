@@ -172,7 +172,7 @@
   },
   "post_covid": "2022-02-01",
   "data_file": "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv",
-  "last_retrain": "2026-02-13 22:10:20",
-  "data_end": "2026-02-12",
-  "n_samples": 1096
+  "last_retrain": "2026-02-14 18:29:20",
+  "data_end": "2026-02-13",
+  "n_samples": 1097
 }

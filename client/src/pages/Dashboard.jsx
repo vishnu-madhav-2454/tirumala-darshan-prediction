@@ -68,6 +68,7 @@ export default function Dashboard() {
     color: f.color || "#8BC34A",
     confidence: f.confidence,
     isToday: f.date === todayStr,
+    isActual: f.is_actual || false,
   }));
   const avgPilgrims = stats?.mean || 0;
 
@@ -79,11 +80,14 @@ export default function Dashboard() {
         <div className="dash-tooltip-date">{d.date}</div>
         <div className="dash-tooltip-val" style={{ color: d.color }}>
           {BAND_EMOJI[d.band]} {d.band}
+          {d.isActual && <span style={{ marginLeft: 6, fontSize: ".7rem", color: "#388E3C" }}>✓ actual</span>}
         </div>
         <div className="dash-tooltip-pilgrims">
           <MdPeople size={14} /> ~{d.pilgrims.toLocaleString("en-IN")} pilgrims
         </div>
-        <div className="dash-tooltip-conf">{(d.confidence * 100).toFixed(0)}% confidence</div>
+        {!d.isActual && (
+          <div className="dash-tooltip-conf">{(d.confidence * 100).toFixed(0)}% confidence</div>
+        )}
       </div>
     );
   };
@@ -130,6 +134,9 @@ export default function Dashboard() {
                     border: `2px solid ${todayPred.color || "#FFC107"}`,
                   }}>
                     {BAND_EMOJI[todayPred.predicted_band]} {todayPred.predicted_band}
+                    {todayPred.is_actual && (
+                      <span style={{ marginLeft: 8, fontSize: ".7rem", color: "#388E3C", fontWeight: 700 }}>✓ actual</span>
+                    )}
                   </div>
                   <div className="today-pilgrims">
                     <MdPeople size={20} />
@@ -234,9 +241,10 @@ export default function Dashboard() {
               const band = f.predicted_band || f.band_name || "MODERATE";
               const color = f.color || "#8BC34A";
               const isToday = f.date === todayStr;
+              const isActual = f.is_actual || false;
               return (
                 <div key={f.date} className={`forecast-card ${isToday ? "forecast-today" : ""}`}
-                     style={{ borderLeft: `4px solid ${color}` }}>
+                     style={{ borderLeft: `4px solid ${isActual ? "#388E3C" : color}` }}>
                   <div className="fc-date-row">
                     <div>
                       <div className="fc-date">{format(new Date(f.date + "T00:00:00"), "MMM d, yyyy")}</div>
@@ -244,7 +252,14 @@ export default function Dashboard() {
                         {f.day} {f.is_weekend ? "🗓️" : ""}
                       </div>
                     </div>
-                    {isToday && <span className="fc-today-badge">TODAY</span>}
+                    <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                      {isToday && <span className="fc-today-badge">TODAY</span>}
+                      {isActual ? (
+                        <span style={{ fontSize: ".65rem", color: "#388E3C", fontWeight: 700, background: "#E8F5E9", padding: "1px 6px", borderRadius: 10 }}>✓ actual</span>
+                      ) : (
+                        <span style={{ fontSize: ".6rem", color: "#999", background: "#F5F5F5", padding: "1px 6px", borderRadius: 10 }}>🔮 predicted</span>
+                      )}
+                    </div>
                   </div>
                   <div className="fc-band" style={{ color }}>
                     {BAND_EMOJI[band]} {band}
@@ -252,7 +267,9 @@ export default function Dashboard() {
                   <div className="fc-pilgrims">
                     <MdPeople size={14} /> ~{(f.predicted_pilgrims || 0).toLocaleString("en-IN")}
                   </div>
-                  <div className="fc-conf">{(f.confidence * 100).toFixed(0)}% confidence</div>
+                  {!isActual && (
+                    <div className="fc-conf">{(f.confidence * 100).toFixed(0)}% confidence</div>
+                  )}
                   {f.reason && (
                     <div className="fc-reason">{f.reason.split(" | ")[0]}</div>
                   )}

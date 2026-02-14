@@ -84,6 +84,7 @@ export default function Predict() {
       confidence: f.confidence,
       isToday: f.date === todayStr,
       isWeekend: f.is_weekend,
+      isActual: f.is_actual || false,
     };
   }), [forecast, todayStr]);
 
@@ -106,11 +107,14 @@ export default function Predict() {
         <div className="dash-tooltip-date">{d.fullDate}</div>
         <div className="dash-tooltip-val" style={{ color: d.color }}>
           {BAND_EMOJI[d.band]} {d.band}
+          {d.isActual && <span style={{ marginLeft: 6, fontSize: ".7rem", color: "#388E3C" }}>✓ actual</span>}
         </div>
         <div className="dash-tooltip-pilgrims">
           <MdPeople size={14} /> ~{d.pilgrims.toLocaleString("en-IN")} pilgrims
         </div>
-        <div className="dash-tooltip-conf">{(d.confidence * 100).toFixed(0)}% confidence</div>
+        {!d.isActual && (
+          <div className="dash-tooltip-conf">{(d.confidence * 100).toFixed(0)}% confidence</div>
+        )}
       </div>
     );
   };
@@ -245,9 +249,10 @@ export default function Predict() {
             const band = f.predicted_band || f.band_name || "MODERATE";
             const color = f.color || "#8BC34A";
             const isToday = f.date === todayStr;
+            const isActual = f.is_actual || false;
             return (
               <div key={i} className={`forecast-card ${isToday ? "forecast-today" : ""}`}
-                   style={{ borderLeft: `4px solid ${color}` }}>
+                   style={{ borderLeft: `4px solid ${isActual ? "#388E3C" : color}` }}>
                 <div className="fc-date-row">
                   <div>
                     <div className="forecast-date">
@@ -255,7 +260,14 @@ export default function Predict() {
                     </div>
                     {f.is_weekend && <span className="fc-weekend-tag">Weekend</span>}
                   </div>
-                  {isToday && <span className="fc-today-badge">TODAY</span>}
+                  <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                    {isToday && <span className="fc-today-badge">TODAY</span>}
+                    {isActual ? (
+                      <span style={{ fontSize: ".65rem", color: "#388E3C", fontWeight: 700, background: "#E8F5E9", padding: "1px 6px", borderRadius: 10 }}>✓ actual</span>
+                    ) : (
+                      <span style={{ fontSize: ".6rem", color: "#999", background: "#F5F5F5", padding: "1px 6px", borderRadius: 10 }}>🔮 predicted</span>
+                    )}
+                  </div>
                 </div>
                 <div className="forecast-band" style={{ color }}>
                   {BAND_EMOJI[band]} {band}
@@ -263,7 +275,7 @@ export default function Predict() {
                 <div className="forecast-pilgrims">
                   <MdPeople /> ~{(f.predicted_pilgrims || 0).toLocaleString("en-IN")}
                 </div>
-                {f.confidence && (
+                {!isActual && f.confidence && (
                   <div className="forecast-confidence">{Math.round(f.confidence * 100)}% confidence</div>
                 )}
                 {f.advice && (

@@ -32,3 +32,4 @@ lxml
 
 # Utilities
 urllib3
+apscheduler>=3.10

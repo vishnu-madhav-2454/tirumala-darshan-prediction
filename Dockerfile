@@ -31,4 +31,4 @@ RUN python build_vectordb.py || echo "VectorDB build skipped (will rebuild on fi
 EXPOSE 7860
 
 # Run with gunicorn — increased timeout for LLM calls
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "2", "--timeout", "180", "flask_api:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "180", "flask_api:app"]
