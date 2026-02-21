@@ -47,9 +47,9 @@ gb_model  = joblib.load(ART_DIR / "gb_model.pkl")
 lgb_model = joblib.load(ART_DIR / "lgb_model.pkl")
 xgb_model = joblib.load(ART_DIR / "xgb_model.pkl")
 
-with open(ART_DIR / "model_meta.json") as f:
+with open(ART_DIR / "model_meta.json", encoding="utf-8") as f:
     META = json.load(f)
-with open(ART_DIR / "hyperparams.json") as f:
+with open(ART_DIR / "hyperparams.json", encoding="utf-8") as f:
     HYPER = json.load(f)
 
 FEATURE_COLS  = META["feature_cols"]
@@ -541,13 +541,13 @@ def _online_retrain():
     joblib.dump(new_xgb, ART_DIR / "xgb_model.pkl")
 
     # Update meta
-    with open(ART_DIR / "model_meta.json") as f:
+    with open(ART_DIR / "model_meta.json", encoding="utf-8") as f:
         meta = json.load(f)
     meta["last_retrain"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     meta["data_end"] = df_full.date.max().strftime("%Y-%m-%d")
     meta["n_samples"] = len(d)
-    with open(ART_DIR / "model_meta.json", "w") as f:
-        json.dump(meta, f, indent=2)
+    with open(ART_DIR / "model_meta.json", "w", encoding="utf-8") as f:
+        json.dump(meta, f, indent=2, ensure_ascii=False)
 
     # Hot-reload into globals
     gb_model  = new_gb

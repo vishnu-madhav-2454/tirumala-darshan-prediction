@@ -1,31 +1,31 @@
-date,day,predicted_band,confidence,festival,advice,reason,month,band_id
-2026-02-14,Sat,BUSY,69%,,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | Deviation from weekday norm ↓ | 14-day volatility ↓,2,3
-2026-02-15,Sun,BUSY,70%,Maha Shivaratri,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | Same day last week ↑ | Last week same day (log) ↑,2,3
-2026-02-16,Mon,BUSY,55%,,Above average — expect moderate crowds & longer waits,Same day 3 weeks ago ↑ | Same day last week ↑ | Last week same day (log) ↑,2,3
-2026-02-17,Tue,MODERATE,51%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | 14-day volatility ↓ | Day of week ↓,2,2
-2026-02-18,Wed,MODERATE,85%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | 14-day volatility ↓ | Same day 3 weeks ago ↑,2,2
-2026-02-19,Thu,MODERATE,86%,,"Normal day — standard crowd, comfortable visit",Historic avg for this weekday ↓ | Same day last week ↓ | Last week same day (log) ↓,2,2
-2026-02-20,Fri,MODERATE,78%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | Same day 3 weeks ago ↓ | Same day 2 weeks ago ↓,2,2
-2026-02-21,Sat,BUSY,45%,,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | 7-day volatility ↓ | Deviation from weekday norm ↓,2,3
-2026-02-22,Sun,HEAVY,52%,,Busy day — try to avoid unless necessary,Historic avg for this weekday ↑ | 7-day volatility ↓ | Same day 2 weeks ago ↑,2,4
-2026-02-23,Mon,MODERATE,47%,,"Normal day — standard crowd, comfortable visit",Same day 2 weeks ago ↑ | Yesterday's crowd ↑ | Day of week ↓,2,2
-2026-02-24,Tue,MODERATE,96%,,"Normal day — standard crowd, comfortable visit",2 days ago crowd ↑ | 14-day volatility ↓ | Same day last week ↓,2,2
-2026-02-25,Wed,MODERATE,73%,,"Normal day — standard crowd, comfortable visit",14-day volatility ↓ | Same day last week ↓ | Last week same day (log) ↓,2,2
-2026-02-26,Thu,MODERATE,65%,,"Normal day — standard crowd, comfortable visit",Historic avg for this weekday ↓ | Same day 2 weeks ago ↓ | 14-day volatility ↓,2,2
-2026-02-27,Fri,MODERATE,67%,,"Normal day — standard crowd, comfortable visit",Same day 3 weeks ago ↓ | 14-day volatility ↓ | Historic avg for this weekday ↓,2,2
-2026-02-28,Sat,HEAVY,47%,,Busy day — try to avoid unless necessary,Historic avg for this weekday ↑ | Deviation from weekday norm ↓ | 14-day volatility ↓,2,4
-2026-03-01,Sun,HEAVY,52%,,Busy day — try to avoid unless necessary,Historic avg for this weekday ↑ | Same day last week ↑ | Last week same day (log) ↑,3,4
-2026-03-02,Mon,BUSY,59%,,Above average — expect moderate crowds & longer waits,Same day 3 weeks ago ↑ | 2 days ago crowd ↑ | Yesterday's crowd ↑,3,3
-2026-03-03,Tue,BUSY,55%,,Above average — expect moderate crowds & longer waits,2 days ago crowd ↑ | Same day last week ↓ | Day of week ↓,3,3
-2026-03-04,Wed,BUSY,84%,Holi,Above average — expect moderate crowds & longer waits,Same day last week ↓ | 7-day weighted avg ↑ | 7-day trend (log) ↑,3,3
-2026-03-05,Thu,MODERATE,97%,,"Normal day — standard crowd, comfortable visit",Historic avg for this weekday ↓ | Same day 3 weeks ago ↓ | 7-day trend (log) ↑,3,2
-2026-03-06,Fri,MODERATE,81%,,"Normal day — standard crowd, comfortable visit",7-day trend (log) ↑ | Historic avg for this weekday ↓ | Same day last week ↓,3,2
-2026-03-07,Sat,BUSY,81%,,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | Same day last week ↑ | Last week same day (log) ↑,3,3
-2026-03-08,Sun,BUSY,61%,,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | Same day last week ↑ | Last week same day (log) ↑,3,3
-2026-03-09,Mon,MODERATE,52%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | Day of week ↓ | Same day 4 weeks ago ↑,3,2
-2026-03-10,Tue,MODERATE,92%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | Day of week ↓ | Same day 3 weeks ago ↓,3,2
-2026-03-11,Wed,MODERATE,65%,,"Normal day — standard crowd, comfortable visit",7-day volatility ↓ | Same day 3 weeks ago ↓ | Same day 2 weeks ago ↓,3,2
-2026-03-12,Thu,LIGHT,73%,,"Good day — low crowd, visit freely with short waits",Historic avg for this weekday ↓ | 7-day volatility ↓ | Same day last week ↓,3,1
-2026-03-13,Fri,MODERATE,69%,,"Normal day — standard crowd, comfortable visit",Yesterday (log) ↓ | Yesterday's crowd ↓ | 7-day weighted avg ↓,3,2
-2026-03-14,Sat,BUSY,60%,,Above average — expect moderate crowds & longer waits,Historic avg for this weekday ↑ | Same day 2 weeks ago ↑ | 2 days ago crowd ↓,3,3
-2026-03-15,Sun,HEAVY,44%,,Busy day — try to avoid unless necessary,Historic avg for this weekday ↑ | Same day 3 weeks ago ↑ | Same day 2 weeks ago ↑,3,4
+date,day,predicted_band,confidence,festival,advice,reason,month,band_id
+2026-02-14,Sat,BUSY,69%,,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | Deviation from weekday norm â†“ | 14-day volatility â†“,2,3
+2026-02-15,Sun,BUSY,70%,Maha Shivaratri,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | Same day last week â†‘ | Last week same day (log) â†‘,2,3
+2026-02-16,Mon,BUSY,55%,,Above average â€” expect moderate crowds & longer waits,Same day 3 weeks ago â†‘ | Same day last week â†‘ | Last week same day (log) â†‘,2,3
+2026-02-17,Tue,MODERATE,51%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | 14-day volatility â†“ | Day of week â†“,2,2
+2026-02-18,Wed,MODERATE,85%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | 14-day volatility â†“ | Same day 3 weeks ago â†‘,2,2
+2026-02-19,Thu,MODERATE,86%,,"Normal day â€” standard crowd, comfortable visit",Historic avg for this weekday â†“ | Same day last week â†“ | Last week same day (log) â†“,2,2
+2026-02-20,Fri,MODERATE,78%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | Same day 3 weeks ago â†“ | Same day 2 weeks ago â†“,2,2
+2026-02-21,Sat,BUSY,45%,,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | 7-day volatility â†“ | Deviation from weekday norm â†“,2,3
+2026-02-22,Sun,HEAVY,52%,,Busy day â€” try to avoid unless necessary,Historic avg for this weekday â†‘ | 7-day volatility â†“ | Same day 2 weeks ago â†‘,2,4
+2026-02-23,Mon,MODERATE,47%,,"Normal day â€” standard crowd, comfortable visit",Same day 2 weeks ago â†‘ | Yesterday's crowd â†‘ | Day of week â†“,2,2
+2026-02-24,Tue,MODERATE,96%,,"Normal day â€” standard crowd, comfortable visit",2 days ago crowd â†‘ | 14-day volatility â†“ | Same day last week â†“,2,2
+2026-02-25,Wed,MODERATE,73%,,"Normal day â€” standard crowd, comfortable visit",14-day volatility â†“ | Same day last week â†“ | Last week same day (log) â†“,2,2
+2026-02-26,Thu,MODERATE,65%,,"Normal day â€” standard crowd, comfortable visit",Historic avg for this weekday â†“ | Same day 2 weeks ago â†“ | 14-day volatility â†“,2,2
+2026-02-27,Fri,MODERATE,67%,,"Normal day â€” standard crowd, comfortable visit",Same day 3 weeks ago â†“ | 14-day volatility â†“ | Historic avg for this weekday â†“,2,2
+2026-02-28,Sat,HEAVY,47%,,Busy day â€” try to avoid unless necessary,Historic avg for this weekday â†‘ | Deviation from weekday norm â†“ | 14-day volatility â†“,2,4
+2026-03-01,Sun,HEAVY,52%,,Busy day â€” try to avoid unless necessary,Historic avg for this weekday â†‘ | Same day last week â†‘ | Last week same day (log) â†‘,3,4
+2026-03-02,Mon,BUSY,59%,,Above average â€” expect moderate crowds & longer waits,Same day 3 weeks ago â†‘ | 2 days ago crowd â†‘ | Yesterday's crowd â†‘,3,3
+2026-03-03,Tue,BUSY,55%,,Above average â€” expect moderate crowds & longer waits,2 days ago crowd â†‘ | Same day last week â†“ | Day of week â†“,3,3
+2026-03-04,Wed,BUSY,84%,Holi,Above average â€” expect moderate crowds & longer waits,Same day last week â†“ | 7-day weighted avg â†‘ | 7-day trend (log) â†‘,3,3
+2026-03-05,Thu,MODERATE,97%,,"Normal day â€” standard crowd, comfortable visit",Historic avg for this weekday â†“ | Same day 3 weeks ago â†“ | 7-day trend (log) â†‘,3,2
+2026-03-06,Fri,MODERATE,81%,,"Normal day â€” standard crowd, comfortable visit",7-day trend (log) â†‘ | Historic avg for this weekday â†“ | Same day last week â†“,3,2
+2026-03-07,Sat,BUSY,81%,,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | Same day last week â†‘ | Last week same day (log) â†‘,3,3
+2026-03-08,Sun,BUSY,61%,,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | Same day last week â†‘ | Last week same day (log) â†‘,3,3
+2026-03-09,Mon,MODERATE,52%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | Day of week â†“ | Same day 4 weeks ago â†‘,3,2
+2026-03-10,Tue,MODERATE,92%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | Day of week â†“ | Same day 3 weeks ago â†“,3,2
+2026-03-11,Wed,MODERATE,65%,,"Normal day â€” standard crowd, comfortable visit",7-day volatility â†“ | Same day 3 weeks ago â†“ | Same day 2 weeks ago â†“,3,2
+2026-03-12,Thu,LIGHT,73%,,"Good day â€” low crowd, visit freely with short waits",Historic avg for this weekday â†“ | 7-day volatility â†“ | Same day last week â†“,3,1
+2026-03-13,Fri,MODERATE,69%,,"Normal day â€” standard crowd, comfortable visit",Yesterday (log) â†“ | Yesterday's crowd â†“ | 7-day weighted avg â†“,3,2
+2026-03-14,Sat,BUSY,60%,,Above average â€” expect moderate crowds & longer waits,Historic avg for this weekday â†‘ | Same day 2 weeks ago â†‘ | 2 days ago crowd â†“,3,3
+2026-03-15,Sun,HEAVY,44%,,Busy day â€” try to avoid unless necessary,Historic avg for this weekday â†‘ | Same day 3 weeks ago â†‘ | Same day 2 weeks ago â†‘,3,4

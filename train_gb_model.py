@@ -1206,7 +1206,7 @@ def train_gb_model(d: pd.DataFrame | None = None,
         },
     }
     (ART_DIR / "hyperparams.json").write_text(
-        json.dumps(hyperparams, indent=2, default=str))
+        json.dumps(hyperparams, indent=2, default=str), encoding="utf-8")
 
     meta = {
         "model_type":  "GradientBoosting",
@@ -1244,7 +1244,7 @@ def train_gb_model(d: pd.DataFrame | None = None,
             "ratio_improvement": f"{len(d)/len(feature_cols):.1f}:1 (was {len(d)/n_feat_original:.1f}:1)",
         },
     }
-    (ART_DIR / "model_meta.json").write_text(json.dumps(meta, indent=2))
+    (ART_DIR / "model_meta.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     config = {
         "version":  "v5-improved",
@@ -1258,7 +1258,7 @@ def train_gb_model(d: pd.DataFrame | None = None,
         "bands":    BANDS,
         "ensemble_weights": hyperparams["ensemble_weights"],
     }
-    (ART_DIR / "config.json").write_text(json.dumps(config, indent=2))
+    (ART_DIR / "config.json").write_text(json.dumps(config, indent=2, ensure_ascii=False), encoding="utf-8")
 
     tail = d.tail(30)[["date", "total_pilgrims", "dow"]].copy()
     tail["date"] = tail.date.dt.strftime("%Y-%m-%d")

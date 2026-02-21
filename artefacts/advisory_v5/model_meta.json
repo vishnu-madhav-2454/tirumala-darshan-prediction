@@ -1,117 +1,117 @@
-{
-    "model_type":  "GradientBoosting",
-    "feature_cols":  [
-                         "dow",
-                         "cos_doy",
-                         "L14",
-                         "L21",
-                         "L28",
-                         "rm14",
-                         "rstd7",
-                         "dow_expanding_mean",
-                         "month_dow_mean",
-                         "log_L1",
-                         "log_L7",
-                         "log_rm7",
-                         "log_rm30",
-                         "ewm7",
-                         "month_weekend",
-                         "heavy_extreme_count7"
-                     ],
-    "bands":  [
-                  {
-                      "id":  0,
-                      "name":  "QUIET",
-                      "lo":  0,
-                      "hi":  50000,
-                      "color":  "#2196F3",
-                      "advice":  "Best day to visit � very few pilgrims, quick darshan"
-                  },
-                  {
-                      "id":  1,
-                      "name":  "LIGHT",
-                      "lo":  50000,
-                      "hi":  60000,
-                      "color":  "#4CAF50",
-                      "advice":  "Good day � low crowd, visit freely with short waits"
-                  },
-                  {
-                      "id":  2,
-                      "name":  "MODERATE",
-                      "lo":  60000,
-                      "hi":  70000,
-                      "color":  "#8BC34A",
-                      "advice":  "Normal day � standard crowd, comfortable visit"
-                  },
-                  {
-                      "id":  3,
-                      "name":  "BUSY",
-                      "lo":  70000,
-                      "hi":  80000,
-                      "color":  "#FFC107",
-                      "advice":  "Above average � expect moderate crowds \u0026 longer waits"
-                  },
-                  {
-                      "id":  4,
-                      "name":  "HEAVY",
-                      "lo":  80000,
-                      "hi":  90000,
-                      "color":  "#FF5722",
-                      "advice":  "Busy day � consider visiting on alternative days"
-                  },
-                  {
-                      "id":  5,
-                      "name":  "EXTREME",
-                      "lo":  90000,
-                      "hi":  999999,
-                      "color":  "#B71C1C",
-                      "advice":  "Extreme rush � strongly avoid unless essential"
-                  }
-              ],
-    "band_names":  [
-                       "QUIET",
-                       "LIGHT",
-                       "MODERATE",
-                       "BUSY",
-                       "HEAVY",
-                       "EXTREME"
-                   ],
-    "n_bands":  6,
-    "feature_labels":  {
-                           "dow":  "Day of week (0=Mon ... 6=Sun)",
-                           "cos_doy":  "Annual cycle � cos component",
-                           "L14":  "Same day 2 weeks ago",
-                           "L21":  "Same day 3 weeks ago",
-                           "L28":  "Same day 4 weeks ago",
-                           "rm14":  "14-day rolling average",
-                           "rstd7":  "7-day rolling std (local volatility)",
-                           "dow_expanding_mean":  "Historic weekday average (expanding)",
-                           "month_dow_mean":  "Seasonal weekday average (month � DOW, expanding)",
-                           "log_L1":  "Yesterday\u0027s count (log scale)",
-                           "log_L7":  "Last-week same day (log)",
-                           "log_rm7":  "7-day trend (log)",
-                           "log_rm30":  "30-day trend (log)",
-                           "ewm7":  "7-day exponential weighted average",
-                           "month_weekend":  "Month � weekend (captures summer/winter weekend effects)",
-                           "heavy_extreme_count7":  "HEAVY/EXTREME days in last 7 days (crowd regime)"
-                       },
-    "post_covid":  "2022-02-01",
-    "data_file":  "data/tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv",
-    "last_retrain":  "2026-02-21 16:50:16",
-    "data_end":  "2026-02-20",
-    "n_samples":  1104,
-    "split_strategy":  {
-                           "type":  "stratified",
-                           "train_size":  794,
-                           "cal_size":  89,
-                           "test_size":  221,
-                           "rationale":  "Stratified split (StratifiedShuffleSplit) ensures all 6 classes are proportionally represented in train, cal, and test sets. This is critical because EXTREME (1.3%) and QUIET (0.7%) are too rare for a temporal split to allocate enough to both subsets. Features are computed in strict temporal order with .shift(N) before splitting.  Walk-forward evaluation runs separately for a pure temporal out-of-sample metric."
-                       },
-    "feature_selection":  {
-                              "method":  "10-method consensus (MI, ANOVA, Chi2, GB, RF, ExtraTrees, Permutation, L1-Lasso, Spearman, RFE)",
-                              "vote_threshold":  "6/10 methods must agree",
-                              "original_features":  57,
-                              "selected_features":  16,
-                              "ratio_improvement":  "69.0:1 (was 19.4:1)"
-                          }
-}
+{
+    "model_type":  "GradientBoosting",
+    "feature_cols":  [
+                         "dow",
+                         "cos_doy",
+                         "L14",
+                         "L21",
+                         "L28",
+                         "rm14",
+                         "rstd7",
+                         "dow_expanding_mean",
+                         "month_dow_mean",
+                         "log_L1",
+                         "log_L7",
+                         "log_rm7",
+                         "log_rm30",
+                         "ewm7",
+                         "month_weekend",
+                         "heavy_extreme_count7"
+                     ],
+    "bands":  [
+                  {
+                      "id":  0,
+                      "name":  "QUIET",
+                      "lo":  0,
+                      "hi":  50000,
+                      "color":  "#2196F3",
+                      "advice":  "Best day to visit â€” very few pilgrims, quick darshan"
+                  },
+                  {
+                      "id":  1,
+                      "name":  "LIGHT",
+                      "lo":  50000,
+                      "hi":  60000,
+                      "color":  "#4CAF50",
+                      "advice":  "Good day â€” low crowd, visit freely with short waits"
+                  },
+                  {
+                      "id":  2,
+                      "name":  "MODERATE",
+                      "lo":  60000,
+                      "hi":  70000,
+                      "color":  "#8BC34A",
+                      "advice":  "Normal day â€” standard crowd, comfortable visit"
+                  },
+                  {
+                      "id":  3,
+                      "name":  "BUSY",
+                      "lo":  70000,
+                      "hi":  80000,
+                      "color":  "#FFC107",
+                      "advice":  "Above average â€” expect moderate crowds \u0026 longer waits"
+                  },
+                  {
+                      "id":  4,
+                      "name":  "HEAVY",
+                      "lo":  80000,
+                      "hi":  90000,
+                      "color":  "#FF5722",
+                      "advice":  "Busy day â€” consider visiting on alternative days"
+                  },
+                  {
+                      "id":  5,
+                      "name":  "EXTREME",
+                      "lo":  90000,
+                      "hi":  999999,
+                      "color":  "#B71C1C",
+                      "advice":  "Extreme rush â€” strongly avoid unless essential"
+                  }
+              ],
+    "band_names":  [
+                       "QUIET",
+                       "LIGHT",
+                       "MODERATE",
+                       "BUSY",
+                       "HEAVY",
+                       "EXTREME"
+                   ],
+    "n_bands":  6,
+    "feature_labels":  {
+                           "dow":  "Day of week (0=Mon ... 6=Sun)",
+                           "cos_doy":  "Annual cycle â€” cos component",
+                           "L14":  "Same day 2 weeks ago",
+                           "L21":  "Same day 3 weeks ago",
+                           "L28":  "Same day 4 weeks ago",
+                           "rm14":  "14-day rolling average",
+                           "rstd7":  "7-day rolling std (local volatility)",
+                           "dow_expanding_mean":  "Historic weekday average (expanding)",
+                           "month_dow_mean":  "Seasonal weekday average (month Ã— DOW, expanding)",
+                           "log_L1":  "Yesterday\u0027s count (log scale)",
+                           "log_L7":  "Last-week same day (log)",
+                           "log_rm7":  "7-day trend (log)",
+                           "log_rm30":  "30-day trend (log)",
+                           "ewm7":  "7-day exponential weighted average",
+                           "month_weekend":  "Month Ã— weekend (captures summer/winter weekend effects)",
+                           "heavy_extreme_count7":  "HEAVY/EXTREME days in last 7 days (crowd regime)"
+                       },
+    "post_covid":  "2022-02-01",
+    "data_file":  "data/tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv",
+    "last_retrain":  "2026-02-21 16:50:16",
+    "data_end":  "2026-02-20",
+    "n_samples":  1104,
+    "split_strategy":  {
+                           "type":  "stratified",
+                           "train_size":  794,
+                           "cal_size":  89,
+                           "test_size":  221,
+                           "rationale":  "Stratified split (StratifiedShuffleSplit) ensures all 6 classes are proportionally represented in train, cal, and test sets. This is critical because EXTREME (1.3%) and QUIET (0.7%) are too rare for a temporal split to allocate enough to both subsets. Features are computed in strict temporal order with .shift(N) before splitting.  Walk-forward evaluation runs separately for a pure temporal out-of-sample metric."
+                       },
+    "feature_selection":  {
+                              "method":  "10-method consensus (MI, ANOVA, Chi2, GB, RF, ExtraTrees, Permutation, L1-Lasso, Spearman, RFE)",
+                              "vote_threshold":  "6/10 methods must agree",
+                              "original_features":  57,
+                              "selected_features":  16,
+                              "ratio_improvement":  "69.0:1 (was 19.4:1)"
+                          }
+}
