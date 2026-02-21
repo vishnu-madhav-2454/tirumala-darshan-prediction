@@ -8,9 +8,9 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("build_vectordb")
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-CORPUS   = os.path.join(BASE, "ttd_corpus.txt")
-KB_JSON  = os.path.join(BASE, "ttd_knowledge_base.json")
-TRIP_JSON = os.path.join(BASE, "tirumala_trip_data.json")
+CORPUS   = os.path.join(BASE, "data", "ttd_corpus.txt")
+KB_JSON  = os.path.join(BASE, "data", "ttd_knowledge_base.json")
+TRIP_JSON = os.path.join(BASE, "data", "tirumala_trip_data.json")
 DB_DIR   = os.path.join(BASE, "vectordb")
 
 

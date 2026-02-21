@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback } from "react";
 import translations from "./translations";
 
 const LangContext = createContext();
-const SUPPORTED = ["te", "en", "hi"];
+const SUPPORTED = ["te", "en", "hi", "ta", "ml", "kn"];
 const STORAGE_KEY = "srivari_lang";
 
 function getSavedLang() {

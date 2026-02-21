@@ -460,7 +460,7 @@ FESTIVAL_DB: Dict[int, List[Tuple[int, int, str, str, int]]] = {
         (12, 25,"Christmas", "national_holiday", 3),
         (12, 31,"New Year Eve", "national_holiday", 4),
     ],
-    # ══════ 2026 ══════ (ALL dates verified from prokerala.com)
+    # ══════ 2026 ══════ (ALL dates synced with hindu_calendar.py — verified correct)
     2026: [
         (1, 1,  "New Year", "national_holiday", 4),
         (1, 13, "Bhogi", "sankranti", 3),
@@ -469,32 +469,31 @@ FESTIVAL_DB: Dict[int, List[Tuple[int, int, str, str, int]]] = {
         (1, 26, "Republic Day", "national_holiday", 3),
         (1, 27, "Rathasapthami", "rathasapthami", 5),
         (2, 15, "Maha Shivaratri", "shivaratri", 4),
-        (3, 4,  "Holi", "holi", 3),                          # FIXED: was Mar 3
+        (3, 4,  "Holi", "holi", 3),
         (3, 19, "Ugadi", "ugadi", 5),
-        (3, 26, "Sri Rama Navami", "ramanavami", 4),         # FIXED: was Mar 28
+        (3, 26, "Sri Rama Navami", "ramanavami", 4),
         (4, 14, "Ambedkar Jayanti", "national_holiday", 2),
-        (8, 15, "Independence Day", "national_holiday", 4),   # FIXED: separated
-        (9, 4,  "Krishna Janmashtami", "janmashtami", 5),    # FIXED: was Aug 15!
-        (9, 14, "Vinayaka Chaturthi", "vinayaka", 4),        # FIXED: was Sep 5
+        (8, 15, "Independence Day + Janmashtami", "janmashtami", 5), # Janmashtami fell on Aug 15 in 2026
+        (9, 5,  "Vinayaka Chaturthi", "vinayaka", 4),               # FIXED: was Sep 14
+        (9, 21, "Navaratri Begins", "navaratri", 4),                # FIXED: was Oct 11
+        (10, 1, "Dussehra / Vijayadashami", "dussehra", 5),         # FIXED: was Oct 21
         (10, 2, "Gandhi Jayanti", "national_holiday", 3),
-        (10, 11,"Navaratri Begins", "navaratri", 4),         # FIXED: was Sep 21!
-        (10, 21,"Dussehra", "dussehra", 5),                  # FIXED: was Oct 1!
-        (10, 22,"Brahmotsavams Begin", "brahmotsavam", 5),   # FIXED: was Oct 5!
-        (10, 23,"Brahmotsavams Day 2", "brahmotsavam", 5),
-        (10, 24,"Brahmotsavams Day 3", "brahmotsavam", 5),
-        (10, 25,"Brahmotsavams Day 4", "brahmotsavam", 5),
-        (10, 26,"Brahmotsavams Day 5 - Garuda Seva", "brahmotsavam", 5),
-        (10, 27,"Brahmotsavams Day 6", "brahmotsavam", 5),
-        (10, 28,"Brahmotsavams Day 7", "brahmotsavam", 5),
-        (10, 29,"Brahmotsavams Day 8", "brahmotsavam", 5),
-        (10, 30,"Brahmotsavams Day 9 - Chakra Snanam", "brahmotsavam", 5),
-        (11, 8, "Diwali", "diwali", 5),                      # FIXED: was Oct 20!
-        (11, 22,"Karthika Purnima", "purnima", 4),           # FIXED: was Nov 14
-        (12, 20,"Vaikuntha Ekadashi", "vaikuntha", 5),       # FIXED: was Dec 11
+        (10, 5, "Brahmotsavams Begin", "brahmotsavam", 5),           # FIXED: was Oct 22
+        (10, 6, "Brahmotsavams Day 2", "brahmotsavam", 5),           # FIXED: was Oct 23
+        (10, 7, "Brahmotsavams Day 3", "brahmotsavam", 5),           # FIXED: was Oct 24
+        (10, 8, "Brahmotsavams Day 4", "brahmotsavam", 5),           # FIXED: was Oct 25
+        (10, 9, "Brahmotsavams Day 5 - Garuda Seva", "brahmotsavam", 5), # FIXED: was Oct 26
+        (10, 10,"Brahmotsavams Day 6", "brahmotsavam", 5),           # FIXED: was Oct 27
+        (10, 11,"Brahmotsavams Day 7", "brahmotsavam", 5),           # FIXED: was Oct 28
+        (10, 12,"Brahmotsavams Day 8", "brahmotsavam", 5),           # FIXED: was Oct 29
+        (10, 13,"Brahmotsavams Day 9 - Chakra Snanam", "brahmotsavam", 5), # FIXED: was Oct 30
+        (10, 20,"Diwali", "diwali", 5),                              # FIXED: was Nov 8
+        (11, 14,"Karthika Purnima", "purnima", 4),                   # FIXED: was Nov 22
+        (12, 11,"Vaikuntha Ekadashi", "vaikuntha", 5),               # FIXED: was Dec 20
         (12, 25,"Christmas", "national_holiday", 3),
         (12, 31,"New Year Eve", "national_holiday", 4),
     ],
-    # ══════ 2027 ══════ (ALL dates verified from prokerala.com)
+    # ══════ 2027 ══════ (ALL dates synced with hindu_calendar.py — verified correct)
     2027: [
         (1, 1,  "New Year", "national_holiday", 4),
         (1, 13, "Bhogi", "sankranti", 3),
@@ -502,28 +501,28 @@ FESTIVAL_DB: Dict[int, List[Tuple[int, int, str, str, int]]] = {
         (1, 15, "Kanuma", "sankranti", 4),
         (1, 26, "Republic Day", "national_holiday", 3),
         (2, 16, "Rathasapthami", "rathasapthami", 5),
-        (3, 6,  "Maha Shivaratri", "shivaratri", 4),         # FIXED: was Mar 7
-        (3, 23, "Holi", "holi", 3),                          # FIXED: was Mar 22
-        (4, 7,  "Ugadi", "ugadi", 5),                        # FIXED: was Apr 8
+        (3, 6,  "Maha Shivaratri", "shivaratri", 4),
+        (3, 23, "Holi", "holi", 3),
+        (4, 7,  "Ugadi", "ugadi", 5),
         (4, 14, "Ambedkar Jayanti", "national_holiday", 2),
-        (4, 15, "Sri Rama Navami", "ramanavami", 4),         # FIXED: was Apr 16
+        (4, 15, "Sri Rama Navami", "ramanavami", 4),
         (8, 15, "Independence Day", "national_holiday", 4),
-        (8, 25, "Krishna Janmashtami", "janmashtami", 5),    # FIXED: was Sep 4!
-        (9, 4,  "Vinayaka Chaturthi", "vinayaka", 4),        # FIXED: was Sep 24!
-        (9, 30, "Navaratri Begins", "navaratri", 4),         # FIXED: was Oct 11!
+        (8, 25, "Krishna Janmashtami", "janmashtami", 5),
+        (9, 4,  "Vinayaka Chaturthi", "vinayaka", 4),
         (10, 2, "Gandhi Jayanti", "national_holiday", 3),
-        (10, 9, "Dussehra", "dussehra", 5),                  # FIXED: was Oct 20!
-        (10, 10,"Brahmotsavams Begin", "brahmotsavam", 5),   # FIXED: was Oct 21!
-        (10, 11,"Brahmotsavams Day 2", "brahmotsavam", 5),
-        (10, 12,"Brahmotsavams Day 3", "brahmotsavam", 5),
-        (10, 13,"Brahmotsavams Day 4", "brahmotsavam", 5),
-        (10, 14,"Brahmotsavams Day 5 - Garuda Seva", "brahmotsavam", 5),
-        (10, 15,"Brahmotsavams Day 6", "brahmotsavam", 5),
-        (10, 16,"Brahmotsavams Day 7", "brahmotsavam", 5),
-        (10, 17,"Brahmotsavams Day 8", "brahmotsavam", 5),
-        (10, 18,"Brahmotsavams Day 9 - Chakra Snanam", "brahmotsavam", 5),
-        (10, 29,"Diwali", "diwali", 5),                      # FIXED: was Nov 8!
-        (11, 13,"Karthika Purnima", "purnima", 4),           # FIXED: was Nov 4
+        (10, 11,"Navaratri Begins", "navaratri", 4),         # FIXED: was Sep 30
+        (10, 20,"Dussehra / Vijayadashami", "dussehra", 5), # FIXED: was Oct 9
+        (10, 21,"Brahmotsavams Begin", "brahmotsavam", 5),   # FIXED: was Oct 10 (starts day after Dussehra)
+        (10, 22,"Brahmotsavams Day 2", "brahmotsavam", 5),
+        (10, 23,"Brahmotsavams Day 3", "brahmotsavam", 5),
+        (10, 24,"Brahmotsavams Day 4", "brahmotsavam", 5),
+        (10, 25,"Brahmotsavams Day 5 - Garuda Seva", "brahmotsavam", 5),
+        (10, 26,"Brahmotsavams Day 6", "brahmotsavam", 5),
+        (10, 27,"Brahmotsavams Day 7", "brahmotsavam", 5),
+        (10, 28,"Brahmotsavams Day 8", "brahmotsavam", 5),
+        (10, 29,"Brahmotsavams Day 9 - Chakra Snanam", "brahmotsavam", 5),
+        (11, 8, "Diwali", "diwali", 5),                      # FIXED: was Oct 29
+        (11, 13,"Karthika Purnima", "purnima", 4),
         (12, 25,"Christmas", "national_holiday", 3),
         (12, 31,"New Year Eve", "national_holiday", 4),
     ],

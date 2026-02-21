@@ -1,9 +1,10 @@
 /* ============================================
-   🛕 Srivari Seva — Temple Theme CSS
-   Maroon + Gold + Cream palette
+   🛕 Srivari Seva — Tirumala Temple Theme CSS
+   Sacred Temple Palette: Maroon + Gold + Saffron + Cream
+   Inspired by traditional South Indian temple architecture
    ============================================ */
 
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+Devanagari:wght@400;600;700&display=swap");
 
 :root {
   --maroon: #800020;
@@ -13,10 +14,13 @@
   --gold-dark: #A68523;
   --gold-light: #E8D48B;
   --gold-glow: #DAA520;
+  --saffron: #FF6F00;
+  --saffron-light: #FFB74D;
   --cream: #FFF8F0;
   --cream-dark: #F5EDDA;
   --off-white: #FDF8EF;
   --card: #FFFFFF;
+  --card-bg: #FFFFFF;
   --text-dark: #2D1B0E;
   --text-muted: #6B5B4E;
   --text-light: #9B8E82;
@@ -31,6 +35,8 @@
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.14);
   --font-heading: "Playfair Display", serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-sacred: "Noto Serif Devanagari", "Playfair Display", serif;
+  --temple-pattern: url("data:image/svg+xml,%3Csvg width='40' height='12' viewBox='0 0 40 12' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0 Q25 12 30 0 Q35 12 40 0' fill='none' stroke='%23C5A028' stroke-width='1.5' opacity='0.3'/%3E%3Cpath d='M0 0 Q5 12 10 0 Q15 12 20 0' fill='none' stroke='%23C5A028' stroke-width='1.5' opacity='0.3'/%3E%3C/svg%3E");
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,6 +46,9 @@ html { scroll-behavior: smooth; }
 body {
   font-family: var(--font-body);
   background: var(--cream);
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(197,160,40,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(128,0,32,0.03) 0%, transparent 50%);
   color: var(--text-dark);
   line-height: 1.6;
   min-height: 100vh;
@@ -50,25 +59,72 @@ a:hover { text-decoration: underline; }
 
 img { max-width: 100%; }
 
-/* --- Gold Strip Decoration --- */
+/* --- Gold Strip Decoration (Temple Motif) --- */
 .gold-strip {
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light), var(--gold-dark));
-  border-radius: 2px;
+  width: 100px;
+  height: 6px;
+  background: linear-gradient(90deg, transparent, var(--gold-dark), var(--gold-light), var(--gold), var(--gold-dark), transparent);
+  border-radius: 3px;
   margin: 16px auto;
+  position: relative;
+}
+.gold-strip::before,
+.gold-strip::after {
+  content: "✦";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.5rem;
+  color: var(--gold-dark);
+}
+.gold-strip::before { left: -12px; }
+.gold-strip::after { right: -12px; }
+
+/* --- Temple Ornamental Border --- */
+.temple-border-top {
+  position: relative;
+}
+.temple-border-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold-dark) 0px,
+    var(--gold-light) 4px,
+    var(--gold-dark) 8px,
+    transparent 8px,
+    transparent 12px
+  );
 }
 
 /* ============================================
-   NAVBAR
+   NAVBAR — Temple Header
    ============================================ */
 .navbar {
-  background: linear-gradient(135deg, var(--maroon-deep), var(--maroon));
+  background: linear-gradient(135deg, var(--maroon-deep), var(--maroon), var(--maroon-deep));
   color: #fff;
   position: sticky;
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(92,0,21,0.3);
+}
+
+/* Ornamental bottom border (temple scallop pattern) */
+.navbar::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: 
+    radial-gradient(circle at 10px 0, transparent 8px, var(--gold) 8px, var(--gold) 9px, transparent 9px) repeat-x;
+  background-size: 20px 10px;
+  z-index: 999;
 }
 
 .navbar-inner {
@@ -183,7 +239,7 @@ img { max-width: 100%; }
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 20px 60px;
+  padding: 32px 20px 60px;
   min-height: calc(100vh - 64px - 120px);
 }
 
@@ -191,6 +247,16 @@ img { max-width: 100%; }
 .page-header {
   text-align: center;
   margin-bottom: 32px;
+  position: relative;
+}
+
+.page-header::after {
+  content: "⟡ ⟡ ⟡";
+  display: block;
+  font-size: 0.65rem;
+  color: var(--gold);
+  margin-top: 8px;
+  letter-spacing: 8px;
 }
 
 .page-header h2 {
@@ -220,7 +286,7 @@ img { max-width: 100%; }
   margin-bottom: 20px;
 }
 
-/* --- Cards --- */
+/* --- Cards (Temple-styled with ornamental top) --- */
 .card {
   background: var(--card);
   border-radius: var(--radius-lg);
@@ -228,6 +294,17 @@ img { max-width: 100%; }
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   margin-bottom: 24px;
+  position: relative;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--maroon), var(--gold), var(--saffron, #FF6F00), var(--gold), var(--maroon));
 }
 
 .card-header {
@@ -263,11 +340,23 @@ img { max-width: 100%; }
   border: 1px solid var(--border);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--maroon), var(--gold));
 }
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(128, 0, 32, .06);
+  box-shadow: 0 6px 18px rgba(128, 0, 32, .08);
 }
 
 .stat-icon {
@@ -331,6 +420,17 @@ img { max-width: 100%; }
 
 .btn-sm { padding: 6px 14px; font-size: 0.85rem; }
 
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+  color: var(--maroon-deep);
+  font-weight: 600;
+  border: none;
+}
+.btn-gold:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow: 0 2px 8px rgba(197,160,40,0.3);
+}
+
 /* --- Forms --- */
 .form-group { margin-bottom: 16px; }
 
@@ -375,10 +475,14 @@ img { max-width: 100%; }
 }
 
 /* ============================================
-   HERO SECTION (Dashboard)
+   HERO SECTION (Dashboard) — Temple-inspired
    ============================================ */
 .hero {
-  background: linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 60%, var(--maroon-light) 100%);
+  background: 
+    radial-gradient(ellipse at 50% 120%, rgba(197,160,40,0.15) 0%, transparent 60%),
+    radial-gradient(circle at 15% 30%, rgba(232,212,139,0.08) 0%, transparent 40%),
+    radial-gradient(circle at 85% 40%, rgba(232,212,139,0.08) 0%, transparent 40%),
+    linear-gradient(135deg, var(--maroon-deep) 0%, var(--maroon) 50%, var(--maroon-light) 100%);
   color: #fff;
   text-align: center;
   padding: 48px 20px 36px;
@@ -388,6 +492,25 @@ img { max-width: 100%; }
   overflow: hidden;
 }
 
+/* Ornamental top arch pattern */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--gold) 0px,
+    var(--gold-light) 3px,
+    var(--gold) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+}
+
+/* Bottom gold border */
 .hero::after {
   content: "";
   position: absolute;
@@ -402,6 +525,13 @@ img { max-width: 100%; }
   font-size: 2.5rem;
   color: var(--gold);
   margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(197,160,40,0.4);
+  animation: omGlow 3s ease-in-out infinite;
+}
+
+@keyframes omGlow {
+  0%, 100% { text-shadow: 0 0 20px rgba(197,160,40,0.3); }
+  50% { text-shadow: 0 0 30px rgba(197,160,40,0.6), 0 0 60px rgba(197,160,40,0.2); }
 }
 
 .hero-title {
@@ -2148,7 +2278,7 @@ img { max-width: 100%; }
 }
 
 /* ============================================
-   LOADER
+   LOADER — Sacred Spinner
    ============================================ */
 .loader-container {
   display: flex;
@@ -2156,16 +2286,18 @@ img { max-width: 100%; }
   align-items: center;
   justify-content: center;
   padding: 48px 20px;
-  gap: 16px;
+  gap: 14px;
 }
 
 .loader-spinner {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border: 4px solid var(--cream-dark);
   border-top: 4px solid var(--gold);
+  border-right: 4px solid var(--maroon);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  box-shadow: 0 0 12px rgba(197,160,40,0.2);
 }
 
 @keyframes spin {
@@ -2179,23 +2311,37 @@ img { max-width: 100%; }
 }
 
 /* ============================================
-   FOOTER
+   FOOTER — Temple Base
    ============================================ */
 .footer {
   background: linear-gradient(135deg, var(--maroon-deep), var(--maroon));
   color: rgba(255,255,255,0.8);
   text-align: center;
-  padding: 28px 20px;
+  padding: 32px 20px 24px;
   position: relative;
 }
 
+/* Ornamental scallop top border */
 .footer::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: 
+    radial-gradient(circle at 10px 8px, transparent 8px, var(--gold) 8px, var(--gold) 9px, transparent 9px) repeat-x;
+  background-size: 20px 10px;
+}
+
+/* Inner gold line */
+.footer::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
+  height: 2px;
   background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
 }
 
@@ -2205,19 +2351,27 @@ img { max-width: 100%; }
   justify-content: center;
   gap: 8px;
   font-family: var(--font-heading);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--gold-light);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-.footer-brand svg { font-size: 1.3rem; color: var(--gold); }
+.footer-brand svg { font-size: 1.4rem; color: var(--gold); filter: drop-shadow(0 0 4px rgba(197,160,40,0.4)); }
 
 .footer-slogan {
   font-family: var(--font-heading);
   font-style: italic;
   color: var(--gold-light);
   font-size: 0.95rem;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.footer-ornament {
+  font-size: 0.6rem;
+  color: var(--gold);
+  letter-spacing: 6px;
+  margin-bottom: 8px;
+  opacity: 0.7;
 }
 
 .footer-desc {
@@ -2229,6 +2383,35 @@ img { max-width: 100%; }
 .footer-copy {
   font-size: 0.75rem;
   opacity: 0.5;
+}
+
+/* ============================================
+   SCROLL-TO-TOP BUTTON
+   ============================================ */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: linear-gradient(135deg, var(--maroon), var(--maroon-deep));
+  color: var(--gold-light);
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 900;
+  box-shadow: 0 4px 16px rgba(128,0,32,0.35);
+  transition: all 0.25s ease;
+  animation: fadeIn 0.3s ease;
+}
+.scroll-top-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(128,0,32,0.45);
+  background: linear-gradient(135deg, var(--maroon-light), var(--maroon));
 }
 
 /* ============================================

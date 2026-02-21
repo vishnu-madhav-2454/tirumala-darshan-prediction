@@ -1,146 +1,107 @@
 {
-  "version": "v5-log-shap",
+  "version": "v5-improved",
   "features": {
-    "count": 54,
+    "count": 16,
     "list": [
       "dow",
-      "month",
-      "is_weekend",
-      "sin_doy",
       "cos_doy",
-      "L1",
-      "L2",
-      "L7",
       "L14",
       "L21",
       "L28",
-      "rm7",
       "rm14",
-      "rm30",
       "rstd7",
-      "rstd14",
       "dow_expanding_mean",
+      "month_dow_mean",
       "log_L1",
       "log_L7",
       "log_rm7",
       "log_rm30",
-      "momentum_7",
-      "dow_dev",
-      "month_dow",
       "ewm7",
-      "ewm14",
-      "trend_7_14",
-      "trend_7_30",
-      "week_of_year",
-      "L365",
-      "log_L365",
-      "heavy_extreme_count7",
-      "light_quiet_count7",
-      "is_festival",
-      "fest_impact",
-      "is_brahmotsavam",
-      "is_sankranti",
-      "is_summer_holiday",
-      "is_dasara_holiday",
-      "is_national_holiday",
-      "days_to_fest",
-      "days_from_fest",
-      "fest_window_7",
-      "is_vaikuntha_ekadashi",
-      "is_dussehra_period",
-      "is_diwali",
-      "is_navaratri",
-      "is_janmashtami",
-      "is_ugadi",
-      "is_rathasapthami",
-      "is_ramanavami",
-      "is_shivaratri",
-      "is_winter_holiday",
-      "fest_window_3"
+      "month_weekend",
+      "heavy_extreme_count7"
     ],
-    "ratio": 20.2
+    "sample_to_feature_ratio": 69.0
   },
-  "anomaly_f1": 0.942148759816679,
   "test": {
+    "GB": {
+      "exact_acc": 0.5973,
+      "adjacent_acc": 0.9683,
+      "macro_f1": 0.378,
+      "band_mae": 0.4344,
+      "heavy_extreme_adj": 0.9444,
+      "safety": 1.0,
+      "danger_count": 0
+    },
     "LGB": {
-      "exact_acc": 0.5556,
-      "adjacent_acc": 0.9333,
-      "band_mae": 0.5167,
-      "extreme_recall": 0.0,
-      "safety": 1.0
+      "exact_acc": 0.543,
+      "adjacent_acc": 0.9774,
+      "macro_f1": 0.315,
+      "band_mae": 0.4796,
+      "heavy_extreme_adj": 0.9444,
+      "safety": 1.0,
+      "danger_count": 0
     },
     "XGB": {
-      "exact_acc": 0.5944,
-      "adjacent_acc": 0.9444,
-      "band_mae": 0.4667,
-      "extreme_recall": 0.0,
-      "safety": 1.0
+      "exact_acc": 0.5656,
+      "adjacent_acc": 0.9502,
+      "macro_f1": 0.3584,
+      "band_mae": 0.4842,
+      "heavy_extreme_adj": 0.9444,
+      "safety": 1.0,
+      "danger_count": 0
     },
-    "VOTE": {
-      "exact_acc": 0.5889,
-      "adjacent_acc": 0.9444,
-      "band_mae": 0.4722,
-      "extreme_recall": 0.0,
-      "safety": 1.0
+    "ENS": {
+      "exact_acc": 0.5701,
+      "adjacent_acc": 0.9729,
+      "macro_f1": 0.3449,
+      "band_mae": 0.457,
+      "heavy_extreme_adj": 0.9444,
+      "safety": 1.0,
+      "danger_count": 0
     }
   },
-  "champion": "XGB",
-  "walkforward": {
-    "exact_acc": 0.5889,
-    "adjacent_acc": 0.975,
-    "band_mae": 0.4361,
-    "safety": 1.0,
-    "danger_count": 0,
-    "n_days": 360
-  },
+  "champion": "LGB",
   "bands": [
     {
       "id": 0,
       "name": "QUIET",
       "lo": 0,
-      "hi": 50000,
-      "color": "#2196F3",
-      "advice": "Best day to visit \u2014 very few pilgrims, quick darshan"
+      "hi": 50000
     },
     {
       "id": 1,
       "name": "LIGHT",
       "lo": 50000,
-      "hi": 60000,
-      "color": "#4CAF50",
-      "advice": "Good day \u2014 low crowd, visit freely with short waits"
+      "hi": 60000
     },
     {
       "id": 2,
       "name": "MODERATE",
       "lo": 60000,
-      "hi": 70000,
-      "color": "#8BC34A",
-      "advice": "Normal day \u2014 standard crowd, comfortable visit"
+      "hi": 70000
     },
     {
       "id": 3,
       "name": "BUSY",
       "lo": 70000,
-      "hi": 80000,
-      "color": "#FFC107",
-      "advice": "Above average \u2014 expect moderate crowds & longer waits"
+      "hi": 80000
     },
     {
       "id": 4,
       "name": "HEAVY",
       "lo": 80000,
-      "hi": 90000,
-      "color": "#FF5722",
-      "advice": "Busy day \u2014 try to avoid unless necessary"
+      "hi": 90000
     },
     {
       "id": 5,
       "name": "EXTREME",
       "lo": 90000,
-      "hi": 999999,
-      "color": "#B71C1C",
-      "advice": "Extreme rush \u2014 strongly avoid, very long waits"
+      "hi": 999999
     }
-  ]
+  ],
+  "ensemble_weights": {
+    "gb": 0.1,
+    "lgb": 0.5,
+    "xgb": 0.4
+  }
 }

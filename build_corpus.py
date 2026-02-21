@@ -7,8 +7,8 @@ import re
 import os
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-INPUT  = os.path.join(BASE, "ttd_scraped_data.txt")
-OUTPUT = os.path.join(BASE, "ttd_corpus.txt")
+INPUT  = os.path.join(BASE, "data", "ttd_scraped_data.txt")
+OUTPUT = os.path.join(BASE, "data", "ttd_corpus.txt")
 
 # Navigation / boilerplate phrases to strip out entirely
 JUNK_PATTERNS = [

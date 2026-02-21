@@ -6,7 +6,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # ── Data ──
-DATA_CSV = os.path.join(BASE_DIR, "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv")
+DATA_CSV = os.path.join(BASE_DIR, "data", "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv")
 
 # ── Model artefacts directory ──
 ARTEFACTS_DIR = os.path.join(BASE_DIR, "artefacts")

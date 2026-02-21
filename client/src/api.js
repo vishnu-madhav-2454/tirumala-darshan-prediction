@@ -21,7 +21,7 @@ export const getHistory = (page = 1, perPage = 50, startDate, endDate) => {
   return API.get(`/history?${params}`);
 };
 
-export const sendChatMessage = (message) => API.post("/chat", { message });
+export const sendChatMessage = (message, lang = "en") => API.post("/chat", { message, lang });
 export const getCalendar = (year, month) => API.get(`/calendar/${year}/${month}`);
 
 export default API;

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5C0015"/>
+      <stop offset="100%" stop-color="#800020"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8D48B"/>
+      <stop offset="100%" stop-color="#C5A028"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
+  <!-- Temple Gopuram -->
+  <g fill="url(#gold)">
+    <!-- Base platform -->
+    <rect x="10" y="52" width="44" height="6" rx="1"/>
+    <!-- First tier -->
+    <rect x="14" y="42" width="36" height="10" rx="1"/>
+    <!-- Second tier -->
+    <rect x="18" y="33" width="28" height="9" rx="1"/>
+    <!-- Third tier -->
+    <rect x="22" y="25" width="20" height="8" rx="1"/>
+    <!-- Tower -->
+    <rect x="27" y="16" width="10" height="9" rx="1"/>
+    <!-- Kalasam (sacred pot) -->
+    <ellipse cx="32" cy="14" rx="5" ry="4"/>
+    <rect x="31" y="7" width="2" height="5"/>
+    <circle cx="32" cy="6" r="2.5" fill="#E8D48B"/>
+  </g>
+  <!-- Door -->
+  <rect x="28" y="45" width="8" height="7" rx="4" fill="#5C0015" opacity="0.6"/>
+</svg>

@@ -99,15 +99,15 @@ export default function Dashboard() {
         <div className="hero-content">
           <p className="om-text">{t.omText}</p>
           <h1>{t.heroTitle}</h1>
-          <p style={{ fontSize: "1.05rem", marginBottom: ".25rem" }}>{t.heroSub}</p>
-          <p style={{ opacity: 0.7, fontSize: ".9rem" }}>{t.heroPlan}</p>
+          <p style={{ fontSize: "1.05rem", marginBottom: ".25rem", opacity: 0.9 }}>{t.heroSub}</p>
+          <p style={{ opacity: 0.65, fontSize: ".85rem", fontStyle: "italic" }}>{t.heroPlan}</p>
           <div style={{ marginTop: "1.25rem", display: "inline-block", background: "rgba(197,160,40,.15)", padding: ".5rem 1.25rem", borderRadius: "9999px", border: "1px solid rgba(197,160,40,.3)" }}>
             <span style={{ color: "var(--gold-light)", fontWeight: 600, fontSize: ".95rem" }}>
               📅 {format(todayDate, "EEEE, MMMM d, yyyy")}
             </span>
           </div>
-          <div className="quick-predict">
-            <button className="btn btn-primary" onClick={() => navigate("/predict")}>
+          <div className="quick-predict" style={{ marginTop: "1rem" }}>
+            <button className="btn btn-primary btn-lg" onClick={() => navigate("/predict")} style={{ boxShadow: "0 3px 12px rgba(197,160,40,0.3)" }}>
               <MdCalendarToday /> {t.btnPickDate}
             </button>
           </div>

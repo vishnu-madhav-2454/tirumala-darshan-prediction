@@ -1,1459 +1,1098 @@
-date,pilgrims,band,advice,reason
-2022-02-01,29496,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2022-02-02,29026,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-03,31167,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-04,28410,QUIET,"Best day to visit — very few pilgrims, quick darshan",Friday (typically busy)
-2022-02-05,34632,QUIET,"Best day to visit — very few pilgrims, quick darshan",Saturday (typically busy)
-2022-02-06,33737,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-07,35516,QUIET,"Best day to visit — very few pilgrims, quick darshan",Rathasapthami + Monday (typically quieter)
-2022-02-08,30172,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2022-02-09,32092,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-10,32894,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-11,32894,QUIET,"Best day to visit — very few pilgrims, quick darshan",Friday (typically busy)
-2022-02-12,36333,QUIET,"Best day to visit — very few pilgrims, quick darshan",Saturday (typically busy)
-2022-02-13,34562,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-14,33356,QUIET,"Best day to visit — very few pilgrims, quick darshan",Monday (typically quieter)
-2022-02-15,31794,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2022-02-16,39691,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-17,39335,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-18,35584,QUIET,"Best day to visit — very few pilgrims, quick darshan",Friday (typically busy)
-2022-02-19,41463,QUIET,"Best day to visit — very few pilgrims, quick darshan",Saturday (typically busy)
-2022-02-20,41390,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-21,39619,QUIET,"Best day to visit — very few pilgrims, quick darshan",Monday (typically quieter)
-2022-02-22,38000,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2022-02-23,37216,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-02-24,53740,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-02-25,56559,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-02-26,65704,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2022-02-27,68095,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-02-28,55532,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2022-03-01,53163,LIGHT,"Good day — low crowd, visit freely with short waits",Maha Shivaratri + Tuesday (typically quieter)
-2022-03-02,46172,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2022-03-03,50511,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-03-04,56686,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-03-05,67750,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2022-03-06,61052,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-07,57904,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2022-03-08,58561,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2022-03-09,59086,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-03-10,61620,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-11,65192,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-03-12,75775,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-03-13,74167,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-03-14,65155,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-15,61982,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-16,64368,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-17,66577,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-18,66763,MODERATE,"Normal day — standard crowd, comfortable visit",Holi + Friday (typically busy)
-2022-03-19,80429,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-03-20,72265,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-03-21,70408,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-03-22,69711,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-23,64986,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-24,63042,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-25,65418,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-03-26,69897,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2022-03-27,71167,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-03-28,62956,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-29,54396,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2022-03-30,61224,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-03-31,54273,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-04-01,56958,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-04-02,62925,MODERATE,"Normal day — standard crowd, comfortable visit",Ugadi + Saturday (typically busy)
-2022-04-03,71034,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-04-04,66112,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-04-05,66381,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-04-06,68009,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-04-07,65840,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-04-08,60790,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-04-09,70727,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-04-10,66593,MODERATE,"Normal day — standard crowd, comfortable visit",Sri Rama Navami
-2022-04-11,63223,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-04-12,72567,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-04-13,88748,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-04-14,82722,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-04-15,75110,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2022-04-16,76746,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-04-17,68299,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-18,64157,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-19,67858,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-20,66745,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-21,61278,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-22,63084,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2022-04-23,75438,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-04-24,75438,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-04-25,65763,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-26,67681,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-27,75078,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-04-28,64380,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-04-29,65725,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2022-04-30,75010,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-05-01,72904,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-02,65756,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-03,67577,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-04,69603,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-05,59528,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2022-05-06,63265,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2022-05-07,76324,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-05-08,75876,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-09,69154,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-10,61090,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-11,61863,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-12,61087,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-13,62001,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2022-05-14,81107,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-05-15,81720,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2022-05-16,72567,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-17,75400,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-18,74389,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-19,67625,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-05-20,71119,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2022-05-21,83739,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-05-22,89665,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2022-05-23,75324,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-24,75759,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-25,75759,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-26,72758,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-27,73358,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2022-05-28,89318,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-05-29,90885,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation
-2022-05-30,74823,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-05-31,69848,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-06-01,71914,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-02,66001,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2022-06-03,71196,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2022-06-04,90165,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation + Saturday (typically busy)
-2022-06-05,78188,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-06,76921,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-07,76425,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-08,75345,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-09,70019,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2022-06-10,67949,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2022-06-11,87698,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-06-12,93400,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2022-06-13,78602,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-14,79103,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-15,77326,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-16,73371,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-17,76407,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-06-18,84982,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-06-19,90471,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2022-06-20,76597,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-21,74906,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-22,75472,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-23,68873,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-06-24,71589,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-06-25,94411,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2022-06-26,88613,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-06-27,74288,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-28,77154,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-29,70134,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-06-30,65898,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-07-01,64628,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-07-02,88026,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-07-03,88682,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-07-04,77907,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-05,73439,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-06,76418,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-07,75407,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-08,73016,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-07-09,87478,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-07-10,89013,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-07-11,62141,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-07-12,74212,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-13,71289,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-14,74304,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-15,72195,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-07-16,84885,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-07-17,73387,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-18,77273,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-19,74503,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-20,76821,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-21,71437,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-22,71395,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-07-23,78479,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-07-24,80815,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-07-25,72873,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-26,68982,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-07-27,73375,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-07-28,67364,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-07-29,58747,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-07-30,77541,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-07-31,81287,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-08-01,71450,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-02,72067,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-03,69628,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-04,62351,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-05,65939,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-08-06,79525,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-08-07,81903,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-08-08,74830,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-09,77277,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-10,74497,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-11,63754,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-12,64079,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-08-13,83422,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-08-14,92328,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2022-08-15,87692,HEAVY,Busy day — try to avoid unless necessary,Independence Day
-2022-08-16,72851,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-17,83880,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-08-18,70674,BUSY,Above average — expect moderate crowds & longer waits,Krishna Janmashtami
-2022-08-19,64438,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-08-20,79836,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-08-21,81523,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-08-22,72804,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-23,68467,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-24,74748,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-25,68128,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-26,69012,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-08-27,80312,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-08-28,74297,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-08-29,67950,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-30,64336,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-08-31,66086,MODERATE,"Normal day — standard crowd, comfortable visit",Vinayaka Chaturthi
-2022-09-01,63332,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-02,67525,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-09-03,79833,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-09-04,71158,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-05,67843,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-06,70328,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-07,69115,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-08,65470,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-09,64292,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-09-10,80741,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-09-11,86793,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-09-12,74231,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-13,75175,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-14,72540,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-15,65634,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-16,67425,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-09-17,82392,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-09-18,88924,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-09-19,67276,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-20,73186,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-21,74817,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-09-22,65187,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-23,65158,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-09-24,77855,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-09-25,69650,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-26,52682,LIGHT,"Good day — low crowd, visit freely with short waits",Navaratri Begins + Monday (typically quieter)
-2022-09-27,51308,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2022-09-28,64823,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-29,61879,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-09-30,75382,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2022-10-01,81318,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays + Saturday (typically busy)
-2022-10-02,82463,HEAVY,Busy day — try to avoid unless necessary,Gandhi Jayanti + Dasara Holiday + Dasara holidays
-2022-10-03,82815,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2022-10-04,68539,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2022-10-05,63579,MODERATE,"Normal day — standard crowd, comfortable visit",Dussehra + Dasara Holiday + Dasara holidays
-2022-10-06,72195,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Begin + Dasara Holiday + Dasara holidays
-2022-10-07,70007,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 2 + Dasara Holiday + Dasara holidays
-2022-10-08,81034,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 3 + Dasara Holiday + Dasara holidays
-2022-10-09,86188,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 4 + Dasara Holiday + Dasara holidays
-2022-10-10,83223,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 5 - Garuda Seva + Dasara Holiday + Dasara holidays
-2022-10-11,77956,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 6 + Dasara Holiday + Dasara holidays
-2022-10-12,79370,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 7 + Dasara Holiday + Dasara holidays
-2022-10-13,72216,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 8 + Dasara Holiday + Dasara holidays
-2022-10-14,68675,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 9 - Chakra Snanam + Dasara Holiday + Dasara holidays
-2022-10-15,81535,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays + Saturday (typically busy)
-2022-10-16,84794,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-10-17,70067,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-10-18,73420,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-10-19,72243,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-10-20,62725,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-10-21,62203,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-10-22,78299,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-10-23,80565,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-10-24,69278,MODERATE,"Normal day — standard crowd, comfortable visit",Diwali
-2022-10-25,25549,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2022-10-26,71689,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-10-27,67439,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-10-28,63512,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-10-29,84878,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-10-30,85131,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-10-31,70560,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-01,72176,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-02,68995,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-03,70263,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-04,63670,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-11-05,82604,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2022-11-06,84211,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-11-07,74094,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-08,22423,QUIET,"Best day to visit — very few pilgrims, quick darshan",Karthika Purnima + Tuesday (typically quieter)
-2022-11-09,66946,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-10,61304,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-11,57104,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-11-12,73323,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-11-13,81130,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-11-14,69814,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-15,71461,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-16,74412,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-17,65062,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-18,60861,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-11-19,79471,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-11-20,80294,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-11-21,70163,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-22,69587,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-23,74354,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-24,66072,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-25,60157,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-11-26,76681,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2022-11-27,73831,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-11-28,67468,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-29,69211,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-11-30,69640,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-01,65568,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-02,64586,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2022-12-03,63931,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi + Saturday (typically busy)
-2022-12-04,80001,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2022-12-05,66020,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-06,64162,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-07,51376,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-12-08,54609,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-12-09,57581,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2022-12-10,69383,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2022-12-11,72466,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-12-12,65466,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-13,63214,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-14,59752,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2022-12-15,63549,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-16,48928,QUIET,"Best day to visit — very few pilgrims, quick darshan",Friday (typically busy)
-2022-12-17,64107,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2022-12-18,75611,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2022-12-19,63759,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2022-12-20,63366,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2022-12-21,68469,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2022-12-22,63145,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2022-12-23,62055,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break + Friday (typically busy)
-2022-12-24,71528,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Saturday (typically busy)
-2022-12-25,70373,BUSY,Above average — expect moderate crowds & longer waits,Christmas + Winter Holiday + Winter break
-2022-12-26,62152,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2022-12-27,70496,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2022-12-28,71299,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2022-12-29,67156,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2022-12-30,63253,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break + Friday (typically busy)
-2022-12-31,78460,BUSY,Above average — expect moderate crowds & longer waits,New Year Eve + Winter Holiday + Winter break
-2023-01-01,78460,BUSY,Above average — expect moderate crowds & longer waits,New Year + Winter Holiday + Winter break
-2023-01-02,69414,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi (Mukkoti) + Winter Holiday + Winter break
-2023-01-03,71924,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2023-01-04,61116,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2023-01-05,47781,QUIET,"Best day to visit — very few pilgrims, quick darshan",Winter Holiday + Winter break
-2023-01-06,45887,QUIET,"Best day to visit — very few pilgrims, quick darshan",Friday (typically busy)
-2023-01-07,62856,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-01-08,67169,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-09,56003,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2023-01-10,58184,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-01-11,68855,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-12,68354,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-13,68354,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-01-14,73394,BUSY,Above average — expect moderate crowds & longer waits,Sankranti + Saturday (typically busy)
-2023-01-15,76307,BUSY,Above average — expect moderate crowds & longer waits,Kanuma
-2023-01-16,69804,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-17,74236,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-01-18,76229,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-01-19,67511,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-21,78158,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-01-22,72998,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-01-23,70413,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-01-24,69221,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-25,67493,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-01-26,58379,LIGHT,"Good day — low crowd, visit freely with short waits",Republic Day
-2023-01-27,59695,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-01-28,80094,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-01-29,78639,BUSY,Above average — expect moderate crowds & longer waits,Rathasapthami
-2023-01-30,74242,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-01-31,60939,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-01,61368,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-02,60609,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-03,57147,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-02-04,72226,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-02-05,78340,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-06,71496,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-07,65297,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-08,63315,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-09,59090,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-02-10,57702,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-02-11,75728,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-02-12,80969,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-02-13,71434,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-14,70789,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-15,66033,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-16,54469,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-02-17,65633,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-02-18,71350,BUSY,Above average — expect moderate crowds & longer waits,Maha Shivaratri + Saturday (typically busy)
-2023-02-19,79555,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-20,61374,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-21,53755,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-02-22,62101,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-02-23,57737,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-02-24,61265,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-02-25,76736,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-02-26,81170,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-02-27,71387,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-02-28,59392,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-03-01,60931,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-02,60682,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-03,58137,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-03-04,77522,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-03-05,74994,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-03-06,65613,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-07,59751,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-03-08,61921,MODERATE,"Normal day — standard crowd, comfortable visit",Holi
-2023-03-09,58494,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-03-10,63443,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-03-11,79561,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-03-12,81458,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-03-13,68365,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-14,63285,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-15,63535,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-16,59776,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-03-17,62938,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-03-18,75452,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-03-19,81700,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-03-20,62824,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-21,57559,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-03-22,53146,LIGHT,"Good day — low crowd, visit freely with short waits",Ugadi
-2023-03-23,58955,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-03-24,63507,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-03-25,77856,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-03-26,79415,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-03-27,67886,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-28,70605,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-03-29,64754,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-03-30,60699,MODERATE,"Normal day — standard crowd, comfortable visit",Sri Rama Navami
-2023-03-31,61425,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-04-01,75510,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-04-02,82398,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-04-03,70086,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-04-04,70497,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-04-05,73208,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-04-06,60101,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-04-07,71782,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-04-08,85450,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-04-09,86129,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-04-10,69781,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-04-11,65314,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-04-12,63244,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-04-13,67687,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-04-14,66310,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-04-15,81305,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-04-16,76201,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-04-17,67828,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-18,66476,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-19,61050,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-20,56680,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2023-04-21,57354,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation + Friday (typically busy)
-2023-04-22,72631,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-04-23,74873,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-04-24,63870,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-25,62971,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-26,63382,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-27,65910,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-04-28,59071,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation + Friday (typically busy)
-2023-04-29,75652,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-04-30,82582,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-05-01,81183,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-05-02,75789,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-03,68953,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-04,64707,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-05,59849,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation + Friday (typically busy)
-2023-05-06,76392,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-05-07,74876,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-08,65904,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-09,65237,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-10,61510,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-11,67853,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-12,71763,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2023-05-13,87007,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-05-14,87022,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-05-15,70366,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-16,77436,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-17,79207,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-18,66820,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-05-19,81833,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Friday (typically busy)
-2023-05-20,85297,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-05-21,84539,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-05-22,78349,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-23,75875,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-24,74995,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-25,74583,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-26,79486,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2023-05-27,88604,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-05-28,88604,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-05-29,78126,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-30,75871,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-05-31,80284,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-06-01,62407,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2023-06-02,76963,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2023-06-03,85366,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-06-04,87434,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2023-06-05,79974,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-06-06,78030,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-06-07,75229,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-06-08,70160,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2023-06-09,74502,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2023-06-10,88626,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2023-06-11,92238,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2023-06-12,79087,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-13,75227,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-14,78487,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-16,72299,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-06-17,87762,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-06-18,86181,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-06-19,69879,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-06-20,71935,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-21,77120,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-22,67294,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-06-23,72304,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-06-24,83889,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-06-25,87407,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-06-26,73156,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-27,69143,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-06-28,71615,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-06-29,62005,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-06-30,73572,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-07-01,82999,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-07-02,82999,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-07-03,66077,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-04,76254,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-05,77299,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-06,66977,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-07,69483,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-07-08,86781,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-07-09,88836,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-07-10,64347,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-11,67271,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-12,72664,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-13,67300,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-14,71472,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-07-15,87171,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-07-16,86170,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-07-17,71894,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-18,64003,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-19,74024,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-20,63628,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-21,71721,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-07-22,84430,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-07-23,87792,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-07-24,73796,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-25,73137,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-26,74268,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-07-27,63932,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-07-28,69378,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-07-29,78115,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-07-30,85258,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-07-31,68601,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-01,67728,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-02,69365,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-03,59898,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-08-04,69270,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-08-05,81472,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-08-06,83856,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-08-07,69733,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-08,73879,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-09,75594,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-10,57443,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-08-11,72158,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-08-12,82265,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-08-13,84401,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-08-14,74617,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-15,78726,BUSY,Above average — expect moderate crowds & longer waits,Independence Day
-2023-08-16,75776,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-17,64695,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-18,61904,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-08-19,79242,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-08-20,79444,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-21,69909,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-22,72695,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-23,71122,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-24,67308,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-25,69529,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-08-26,71073,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-08-27,71073,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-28,68263,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-29,64214,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-08-30,71132,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-08-31,59808,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-09-01,67193,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-09-02,81655,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-09-03,81459,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-09-04,76555,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-05,71946,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-06,75804,BUSY,Above average — expect moderate crowds & longer waits,Krishna Janmashtami
-2023-09-07,58855,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-09-08,68201,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-09-09,78557,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-09-10,84449,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2023-09-11,66199,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-12,70055,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-13,75059,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-14,61296,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-15,62357,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-09-16,66590,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-09-17,77441,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-18,62745,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-19,67267,MODERATE,"Normal day — standard crowd, comfortable visit",Vinayaka Chaturthi
-2023-09-20,64277,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-21,66462,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-22,72650,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-09-23,74884,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-09-24,66598,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-25,72137,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-09-26,55747,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-09-27,66336,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-09-28,54620,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-09-29,66233,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-09-30,87081,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2023-10-01,88623,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2023-10-02,80551,HEAVY,Busy day — try to avoid unless necessary,Gandhi Jayanti + Dasara Holiday + Dasara holidays
-2023-10-03,79365,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2023-10-04,76526,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2023-10-05,68558,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2023-10-06,72104,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays + Friday (typically busy)
-2023-10-07,72309,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays + Saturday (typically busy)
-2023-10-08,70515,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2023-10-09,68828,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2023-10-10,71361,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2023-10-11,72230,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2023-10-12,65937,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2023-10-13,59304,LIGHT,"Good day — low crowd, visit freely with short waits",Dasara Holiday + Dasara holidays + Friday (typically busy)
-2023-10-14,67785,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays + Saturday (typically busy)
-2023-10-15,60659,MODERATE,"Normal day — standard crowd, comfortable visit",Navaratri Begins + Dasara Holiday + Dasara holidays
-2023-10-16,73859,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-10-17,72123,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-10-18,68763,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-10-19,66757,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-10-20,69821,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-10-21,65422,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-10-22,77187,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-10-23,79693,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-10-24,71037,BUSY,Above average — expect moderate crowds & longer waits,Dussehra
-2023-10-25,65422,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Begin
-2023-10-26,62055,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 2
-2023-10-27,63404,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 3 + Friday (typically busy)
-2023-10-28,47531,QUIET,"Best day to visit — very few pilgrims, quick darshan",Brahmotsavams Day 4 + Saturday (typically busy)
-2023-10-29,85497,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 5 - Garuda Seva
-2023-10-30,69654,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 6
-2023-10-31,62269,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 7
-2023-11-01,63710,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 8
-2023-11-02,59335,LIGHT,"Good day — low crowd, visit freely with short waits",Brahmotsavams Day 9 - Chakra Snanam
-2023-11-03,66048,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-11-04,70250,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-11-05,78389,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-11-06,66312,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-07,61640,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-08,58157,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-11-09,56723,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-11-10,56978,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-11-11,71490,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-11-12,74807,BUSY,Above average — expect moderate crowds & longer waits,Diwali
-2023-11-13,70902,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-11-14,69041,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-15,71123,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-11-16,62494,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-17,67140,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2023-11-18,70686,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2023-11-19,79800,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-11-20,67198,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-21,69981,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-22,65891,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-23,45503,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2023-11-24,74843,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-11-25,68179,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-11-26,70350,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-11-27,58176,LIGHT,"Good day — low crowd, visit freely with short waits",Karthika Purnima + Monday (typically quieter)
-2023-11-28,58874,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2023-11-29,61403,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-11-30,58278,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-12-01,56950,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-12-02,66162,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-12-03,70349,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-12-04,55909,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2023-12-05,44547,QUIET,"Best day to visit — very few pilgrims, quick darshan",Tuesday (typically quieter)
-2023-12-06,45275,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2023-12-07,56344,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-12-08,54323,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2023-12-09,68769,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2023-12-10,73091,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-12-11,64882,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-12-12,63021,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-12-13,60928,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-12-14,56049,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2023-12-15,71037,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2023-12-16,59734,LIGHT,"Good day — low crowd, visit freely with short waits",Saturday (typically busy)
-2023-12-17,74845,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2023-12-18,61499,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-12-19,64040,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2023-12-20,67043,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2023-12-21,59868,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break
-2023-12-22,40638,QUIET,"Best day to visit — very few pilgrims, quick darshan",Winter Holiday + Winter break + Friday (typically busy)
-2023-12-23,67906,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi + Winter Holiday + Winter break
-2023-12-24,63519,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2023-12-25,69294,MODERATE,"Normal day — standard crowd, comfortable visit",Christmas + Winter Holiday + Winter break
-2023-12-26,71488,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2023-12-27,65361,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2023-12-28,58415,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break
-2023-12-29,56200,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break + Friday (typically busy)
-2023-12-30,63728,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break + Saturday (typically busy)
-2023-12-31,64665,MODERATE,"Normal day — standard crowd, comfortable visit",New Year Eve + Winter Holiday + Winter break
-2024-01-01,63358,MODERATE,"Normal day — standard crowd, comfortable visit",New Year + Winter Holiday + Winter break
-2024-01-02,73712,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2024-01-03,65514,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2024-01-04,59522,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break
-2024-01-05,57411,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break + Friday (typically busy)
-2024-01-06,68793,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2024-01-07,76058,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-01-08,61511,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-09,65901,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-10,62499,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-11,53055,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-01-12,56588,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-01-13,65962,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2024-01-14,86107,HEAVY,Busy day — try to avoid unless necessary,Sankranti
-2024-01-15,80964,HEAVY,Busy day — try to avoid unless necessary,Kanuma
-2024-01-16,73016,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-01-17,72263,BUSY,Above average — expect moderate crowds & longer waits,Rathasapthami
-2024-01-18,62649,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-19,69874,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-01-20,76041,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-01-21,77334,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-01-22,67568,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-23,63665,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-24,65991,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-25,54105,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-01-26,71664,BUSY,Above average — expect moderate crowds & longer waits,Republic Day + Friday (typically busy)
-2024-01-27,76104,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-01-28,85142,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-01-29,71082,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-01-30,61135,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-01-31,64635,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-01,57223,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-02-02,58842,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-02-03,69232,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2024-02-04,70679,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-02-05,64512,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-07,65683,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-08,57357,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-02-09,62593,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-02-10,70158,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-02-11,72256,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-02-12,69314,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-13,68363,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-14,67275,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-15,45825,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2024-02-16,77483,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2024-02-17,71021,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-02-18,70338,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-02-19,64741,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-20,62304,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-21,69191,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-22,57973,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-02-23,62880,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-02-24,72175,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-02-25,76577,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-02-26,70077,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-02-27,63421,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-28,66915,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-02-29,57338,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-03-01,59646,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-03-02,70422,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-03-03,76876,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-03-04,70570,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-03-05,64552,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-06,65887,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-07,57880,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-03-08,63831,MODERATE,"Normal day — standard crowd, comfortable visit",Maha Shivaratri + Friday (typically busy)
-2024-03-09,68446,MODERATE,"Normal day — standard crowd, comfortable visit",Saturday (typically busy)
-2024-03-10,76213,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-03-11,64802,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-12,60110,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-13,67832,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-14,48444,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2024-03-15,66322,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-03-16,74351,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-03-17,83825,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-03-18,65051,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-19,63251,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-20,69072,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-21,60485,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-22,59236,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-03-23,72986,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-03-24,80532,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-03-25,78731,BUSY,Above average — expect moderate crowds & longer waits,Holi
-2024-03-26,68563,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-27,64097,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-28,65992,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-03-29,60958,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-03-30,79907,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-03-31,81224,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-04-01,62439,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-02,56228,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2024-04-03,61087,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-04,62549,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-05,59621,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-04-06,75414,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-04-07,73801,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-04-08,61920,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-09,55756,LIGHT,"Good day — low crowd, visit freely with short waits",Ugadi + Tuesday (typically quieter)
-2024-04-10,65750,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-11,62366,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-04-12,63163,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-04-13,82139,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-04-14,81057,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-04-15,77511,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-04-16,67294,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-04-17,58690,LIGHT,"Good day — low crowd, visit freely with short waits",Sri Rama Navami + Summer Holiday + Summer vacation
-2024-04-18,55537,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2024-04-19,60517,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-04-20,73051,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-04-21,77366,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-04-22,62894,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-04-23,60371,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-04-24,64080,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-04-25,61492,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-04-26,57909,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-04-27,81212,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-04-28,86241,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-04-29,77673,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-04-30,72310,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-01,72510,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-02,65313,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-03,62624,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-05-04,77848,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-05-05,81927,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-06,76748,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-07,65146,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-08,64766,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-09,65508,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-10,60545,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-05-11,76945,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-05-12,80001,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-13,70815,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-14,75783,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-15,81930,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-16,76369,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-17,71510,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2024-05-18,90721,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-05-19,86721,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-20,85825,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-21,80744,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-22,80048,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-23,65416,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-24,70668,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2024-05-25,83866,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-05-26,89161,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-27,81831,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-05-28,76381,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-29,73811,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-05-30,64115,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-05-31,67873,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-06-01,78686,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-06-02,83740,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-06-03,76362,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-06-04,76291,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-06-05,67320,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-06-06,62161,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2024-06-07,63830,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2024-06-08,79398,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2024-06-09,81744,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2024-06-10,78064,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2024-06-11,76665,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-12,75068,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-13,61499,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-06-14,66782,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-06-15,82886,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-06-16,69870,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-06-17,75872,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-18,75125,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-19,79584,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-20,62756,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-06-21,72294,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2024-06-22,74467,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-06-23,81455,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-06-24,77878,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-25,71824,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-26,77332,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-06-27,60782,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-06-28,66256,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-06-29,80404,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-06-30,81005,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-07-01,75449,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-02,67398,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-03,69632,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-04,63826,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-05,65775,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-07-06,77995,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-07-07,78912,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-08,63619,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-09,67245,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-10,73353,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-11,65392,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-12,63493,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-07-13,75916,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-07-14,84797,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-07-15,75054,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-16,71409,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-17,69029,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-18,67223,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-19,65134,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-07-20,83538,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-07-21,75963,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-22,71939,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-23,73332,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-24,73023,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-25,61699,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-26,65980,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-07-27,84173,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-07-28,79327,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-07-29,65874,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-30,69937,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-07-31,67916,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-01,61465,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-02,62540,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-08-03,75140,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-08-04,75356,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-05,63095,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-06,66235,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-07,75109,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-08,63535,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-09,65131,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-08-10,73313,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-08-11,86604,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-08-12,70728,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-13,73246,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-14,72967,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-15,76695,BUSY,Above average — expect moderate crowds & longer waits,Independence Day
-2024-08-16,62625,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-08-17,77807,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-08-18,77807,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-19,71595,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-20,73082,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-22,63202,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-23,69098,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-08-24,79521,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-08-25,84060,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-08-26,76910,BUSY,Above average — expect moderate crowds & longer waits,Krishna Janmashtami
-2024-08-27,71153,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-28,76772,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-08-29,62529,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-08-30,65080,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-08-31,81207,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-09-01,74498,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-09-02,63936,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-03,57817,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2024-09-04,57390,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-09-05,61142,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-06,58100,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-09-07,83960,HEAVY,Busy day — try to avoid unless necessary,Vinayaka Chaturthi + Saturday (typically busy)
-2024-09-08,81178,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-09-09,67030,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-10,62380,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-11,67668,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-12,63544,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-13,60694,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-09-14,80735,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-09-15,85626,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-09-16,76200,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-09-17,72072,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-09-18,78690,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-09-19,68835,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-20,73104,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2024-09-21,82406,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-09-22,82646,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-09-23,65604,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-24,67616,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-25,77939,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-09-26,61328,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-09-27,64158,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-09-28,71133,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-09-29,84066,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-09-30,66986,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-01,69300,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2024-10-02,80613,HEAVY,Busy day — try to avoid unless necessary,Gandhi Jayanti + Dasara Holiday + Dasara holidays
-2024-10-03,63376,MODERATE,"Normal day — standard crowd, comfortable visit",Navaratri Begins + Dasara Holiday + Dasara holidays
-2024-10-04,54866,LIGHT,"Good day — low crowd, visit freely with short waits",Dasara Holiday + Dasara holidays + Friday (typically busy)
-2024-10-05,75552,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays + Saturday (typically busy)
-2024-10-06,86859,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2024-10-07,81481,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2024-10-08,82043,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2024-10-09,79753,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2024-10-10,60775,MODERATE,"Normal day — standard crowd, comfortable visit",Dasara Holiday + Dasara holidays
-2024-10-11,71443,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays + Friday (typically busy)
-2024-10-12,73684,BUSY,Above average — expect moderate crowds & longer waits,Dussehra + Dasara Holiday + Dasara holidays
-2024-10-13,86900,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Begin + Dasara Holiday + Dasara holidays
-2024-10-14,75361,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 2 + Dasara Holiday + Dasara holidays
-2024-10-15,73891,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 3 + Dasara Holiday + Dasara holidays
-2024-10-16,75371,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 4
-2024-10-17,58637,LIGHT,"Good day — low crowd, visit freely with short waits",Brahmotsavams Day 5 - Garuda Seva
-2024-10-18,61576,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 6 + Friday (typically busy)
-2024-10-19,80741,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 7 + Saturday (typically busy)
-2024-10-20,73926,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 8
-2024-10-22,64359,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-23,64447,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-24,61004,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-25,56501,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2024-10-26,77844,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-10-27,69333,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-28,63729,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-10-29,59140,LIGHT,"Good day — low crowd, visit freely with short waits",Tuesday (typically quieter)
-2024-10-30,59140,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-10-31,63987,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-01,67785,MODERATE,"Normal day — standard crowd, comfortable visit",Diwali + Friday (typically busy)
-2024-11-02,88076,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2024-11-03,84489,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-11-04,74651,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-11-05,68146,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-07,52643,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-11-08,64983,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-11-09,73558,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-11-10,82558,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2024-11-11,73917,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-11-12,61446,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-13,66441,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-14,56711,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-11-15,61613,MODERATE,"Normal day — standard crowd, comfortable visit",Karthika Purnima + Friday (typically busy)
-2024-11-16,73179,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-11-17,71441,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-11-18,62085,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-19,62248,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-20,59231,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-11-21,60803,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-22,63731,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-11-23,75147,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-11-24,75737,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-11-25,63637,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-26,64525,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-27,67626,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-11-28,56952,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-11-29,62147,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-11-30,73169,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-12-01,67496,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-02,58607,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2024-12-03,60301,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-04,65265,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-06,75782,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2024-12-07,78569,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-12-08,73107,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-12-09,67124,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-10,67284,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-11,65887,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi
-2024-12-12,61178,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-13,63722,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2024-12-14,72962,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2024-12-15,66160,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-16,62112,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-17,63598,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2024-12-18,70457,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2024-12-19,58165,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2024-12-20,65299,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break + Friday (typically busy)
-2024-12-21,72411,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Saturday (typically busy)
-2024-12-22,77260,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2024-12-23,65656,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2024-12-24,67209,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2024-12-25,73301,BUSY,Above average — expect moderate crowds & longer waits,Christmas + Winter Holiday + Winter break
-2024-12-26,59584,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break
-2024-12-27,66715,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break + Friday (typically busy)
-2024-12-28,78414,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Saturday (typically busy)
-2024-12-29,84950,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break
-2024-12-30,68298,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2024-12-31,62495,MODERATE,"Normal day — standard crowd, comfortable visit",New Year Eve + Winter Holiday + Winter break
-2025-01-01,69630,MODERATE,"Normal day — standard crowd, comfortable visit",New Year + Winter Holiday + Winter break
-2025-01-02,62085,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2025-01-03,56550,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break + Friday (typically busy)
-2025-01-04,71990,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Saturday (typically busy)
-2025-01-05,66561,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2025-01-06,54180,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2025-01-07,62566,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-08,62903,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-09,40265,QUIET,"Best day to visit — very few pilgrims, quick darshan",No special event — naturally quieter day
-2025-01-10,60094,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi (Mukkoti) + Friday (typically busy)
-2025-01-11,53013,LIGHT,"Good day — low crowd, visit freely with short waits",Saturday (typically busy)
-2025-01-12,70966,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-01-13,74800,BUSY,Above average — expect moderate crowds & longer waits,Bhogi
-2025-01-14,74800,BUSY,Above average — expect moderate crowds & longer waits,Sankranti
-2025-01-15,71417,BUSY,Above average — expect moderate crowds & longer waits,Kanuma
-2025-01-16,67115,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-17,61142,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-01-18,75931,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-01-19,70826,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-01-20,83806,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-01-21,60581,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-22,62223,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-23,56225,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-01-24,57655,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2025-01-25,77651,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-01-26,74742,BUSY,Above average — expect moderate crowds & longer waits,Republic Day
-2025-01-27,65278,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-28,70610,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-01-29,62710,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-01-30,51349,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-01-31,51818,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2025-02-01,80871,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-02-02,75706,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-03,59784,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2025-02-04,73599,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-05,58600,LIGHT,"Good day — low crowd, visit freely with short waits",Rathasapthami
-2025-02-06,58908,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-02-07,62971,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-02-08,76598,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-02-09,84536,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-02-10,70169,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-11,67192,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-12,70270,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-13,60203,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-14,64527,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-02-15,78873,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-02-16,79705,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-17,60784,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-18,68427,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-19,72745,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-20,59776,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-02-21,65327,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-02-22,78110,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-02-23,78892,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-02-24,66764,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-25,65127,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-02-26,62323,MODERATE,"Normal day — standard crowd, comfortable visit",Maha Shivaratri
-2025-02-27,58627,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-02-28,52731,LIGHT,"Good day — low crowd, visit freely with short waits",Friday (typically busy)
-2025-03-01,71785,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-03-02,69592,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-03,65683,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-04,64861,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-05,63285,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-06,58548,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-03-07,67127,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-03-08,74646,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-03-09,79478,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-03-10,69746,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-11,66393,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-12,68509,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-13,51148,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-03-14,63987,MODERATE,"Normal day — standard crowd, comfortable visit",Holi + Friday (typically busy)
-2025-03-15,82580,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-03-16,82721,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-03-17,70824,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-03-18,65487,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-19,72388,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-03-20,58872,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-03-21,64170,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-03-22,75428,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-03-23,84198,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-03-24,58358,LIGHT,"Good day — low crowd, visit freely with short waits",Monday (typically quieter)
-2025-03-25,64252,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-26,75354,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-03-27,64279,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-03-28,65569,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-03-29,76005,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-03-30,62263,MODERATE,"Normal day — standard crowd, comfortable visit",Ugadi
-2025-03-31,62263,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-04-01,72981,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-04-02,72721,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-04-03,58864,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-04-04,66327,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-04-05,78496,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-04-06,72960,BUSY,Above average — expect moderate crowds & longer waits,Sri Rama Navami
-2025-04-07,66503,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-04-08,65201,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-04-09,62076,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-04-10,57462,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-04-11,70462,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-04-12,72923,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-04-13,79100,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-04-14,73078,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-04-15,73543,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-04-16,70372,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-04-17,56279,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2025-04-18,58519,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation + Friday (typically busy)
-2025-04-19,78821,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-04-20,82746,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-04-21,72937,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-04-22,61828,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-04-23,68705,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-04-24,58227,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2025-04-25,64536,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2025-04-26,82811,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-04-27,78177,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-04-28,65904,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-04-29,64263,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-04-30,66616,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-01,57863,LIGHT,"Good day — low crowd, visit freely with short waits",Summer Holiday + Summer vacation
-2025-05-02,74344,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2025-05-03,84113,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-05-04,83380,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-06,69214,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-07,71001,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-08,64850,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-09,68213,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2025-05-10,85078,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-05-11,80423,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-12,68760,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-13,74477,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-14,74020,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-15,63208,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-16,70970,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2025-05-17,87347,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-05-18,84571,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-19,79003,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-20,76000,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-21,80964,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-22,72579,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-05-23,74374,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2025-05-24,90211,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-05-25,91538,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation
-2025-05-26,83542,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-27,82597,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-28,83621,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-05-29,69019,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-05-30,71721,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation + Friday (typically busy)
-2025-05-31,95080,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-06-01,78031,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-06-02,84418,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-06-03,78631,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-06-04,78288,BUSY,Above average — expect moderate crowds & longer waits,Summer Holiday + Summer vacation
-2025-06-05,67284,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation
-2025-06-06,67284,MODERATE,"Normal day — standard crowd, comfortable visit",Summer Holiday + Summer vacation + Friday (typically busy)
-2025-06-07,88257,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation + Saturday (typically busy)
-2025-06-08,90802,EXTREME,"Extreme rush — strongly avoid, very long waits",Summer Holiday + Summer vacation
-2025-06-09,84258,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-06-10,80894,HEAVY,Busy day — try to avoid unless necessary,Summer Holiday + Summer vacation
-2025-06-11,79296,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-06-12,69609,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-06-13,75096,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-06-14,91720,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2025-06-15,90815,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2025-06-16,84681,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-17,81037,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-18,80440,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-19,70226,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-06-20,76181,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-06-21,90087,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2025-06-22,87254,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-23,84179,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-24,79466,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-06-25,75001,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-06-26,64879,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-06-27,68229,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-06-28,90051,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2025-06-29,88497,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-06-30,78730,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-01,76126,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-02,74510,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-03,64015,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-07-04,70011,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-07-05,87536,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-07-06,88938,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-07-07,80081,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-07-08,78320,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-09,76501,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-10,63473,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-07-11,70217,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-07-12,92221,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2025-07-13,80193,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-07-14,74149,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-15,73020,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-16,75104,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-17,63897,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-07-18,73093,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-07-19,90011,EXTREME,"Extreme rush — strongly avoid, very long waits",Saturday (typically busy)
-2025-07-20,90011,EXTREME,"Extreme rush — strongly avoid, very long waits",Historical pattern — above-average crowd
-2025-07-21,77481,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-22,79467,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-23,80130,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-07-24,68838,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-07-25,73576,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-07-26,85740,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-07-28,77044,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-29,75183,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-30,75303,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-07-31,66149,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-01,70353,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-08-02,82367,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-08-03,82628,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-08-04,69928,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-05,72951,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-06,71144,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-07,65234,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-08,70480,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-08-09,84404,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-08-10,82628,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-08-11,75740,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-12,77596,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-13,75859,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-14,66530,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-15,77043,BUSY,Above average — expect moderate crowds & longer waits,Independence Day + Janmashtami + Friday (typically busy)
-2025-08-16,87759,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-08-17,86364,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-08-18,80502,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-08-19,76033,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-20,75688,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-21,65112,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-22,72067,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-08-23,83858,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-08-24,72119,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-25,67767,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-26,77837,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-08-27,77185,BUSY,Above average — expect moderate crowds & longer waits,Vinayaka Chaturthi
-2025-08-28,63843,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-08-29,65717,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-08-30,77295,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-08-31,70310,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-01,65384,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-02,64925,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-03,70472,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-04,59834,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-09-05,69531,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-09-06,82118,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-09-07,69850,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-08,77117,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-09,70828,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-10,70086,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-11,66312,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-12,69842,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-09-13,82149,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-09-14,77893,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-15,65066,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-16,63607,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-17,68213,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-18,68095,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-19,71249,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-09-20,82042,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-09-21,67408,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-22,60681,MODERATE,"Normal day — standard crowd, comfortable visit",Navaratri Begins
-2025-09-23,63837,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-24,58628,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-09-25,67388,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-09-26,75358,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-09-27,75006,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-09-28,79496,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-09-29,81626,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-09-30,73275,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-10-01,72247,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2025-10-02,75188,BUSY,Above average — expect moderate crowds & longer waits,Dussehra + Gandhi Jayanti + Dasara Holiday
-2025-10-03,73581,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Begin + Dasara Holiday + Dasara holidays
-2025-10-04,83380,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 2 + Dasara Holiday + Dasara holidays
-2025-10-05,83412,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 3 + Dasara Holiday + Dasara holidays
-2025-10-06,76773,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 4 + Dasara Holiday + Dasara holidays
-2025-10-07,71634,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 5 - Garuda Seva + Dasara Holiday + Dasara holidays
-2025-10-08,74861,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 6 + Dasara Holiday + Dasara holidays
-2025-10-09,66883,MODERATE,"Normal day — standard crowd, comfortable visit",Brahmotsavams Day 7 + Dasara Holiday + Dasara holidays
-2025-10-10,74468,BUSY,Above average — expect moderate crowds & longer waits,Brahmotsavams Day 8 + Dasara Holiday + Dasara holidays
-2025-10-11,84571,HEAVY,Busy day — try to avoid unless necessary,Brahmotsavams Day 9 - Chakra Snanam + Dasara Holiday + Dasara holidays
-2025-10-12,84424,HEAVY,Busy day — try to avoid unless necessary,Dasara Holiday + Dasara holidays
-2025-10-13,78569,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2025-10-14,72473,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2025-10-15,75919,BUSY,Above average — expect moderate crowds & longer waits,Dasara Holiday + Dasara holidays
-2025-10-16,61521,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-10-17,66675,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-10-18,82136,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-10-19,84017,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-10-20,72026,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-10-21,76343,BUSY,Above average — expect moderate crowds & longer waits,Diwali
-2025-10-22,73853,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-10-23,60896,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-10-24,71110,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-10-25,82010,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-10-27,70842,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-10-28,64065,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-10-29,64048,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-10-30,56078,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-10-31,63539,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-11-01,72860,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-11-02,84442,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-11-03,66322,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-04,67091,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-05,63239,MODERATE,"Normal day — standard crowd, comfortable visit",Karthika Purnima
-2025-11-06,61718,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-07,68075,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-11-08,80560,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-11-09,78217,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-10,76096,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-11,67367,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-12,72283,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-13,62129,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-14,66709,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-11-15,73852,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-11-16,75004,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-17,71208,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-18,66966,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-19,67121,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-20,66839,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-21,60098,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-11-22,75082,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-11-23,78974,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-24,68615,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-11-25,73677,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-26,73670,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-11-27,59548,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-11-28,70044,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2025-11-29,79791,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2025-11-30,68187,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-01,70345,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-12-02,64684,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-03,63887,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-04,51082,LIGHT,"Good day — low crowd, visit freely with short waits",No special event — naturally quieter day
-2025-12-06,82007,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-12-07,75343,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-12-08,71142,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-12-09,70901,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-12-10,68165,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-11,64367,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-12,67202,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-12-13,80113,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2025-12-14,81348,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2025-12-15,70251,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2025-12-16,63738,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-17,66389,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-18,61582,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2025-12-19,64729,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2025-12-20,78466,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Saturday (typically busy)
-2025-12-21,76903,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2025-12-22,60764,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2025-12-23,61583,MODERATE,"Normal day — standard crowd, comfortable visit",Winter Holiday + Winter break
-2025-12-24,73524,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break
-2025-12-25,72355,BUSY,Above average — expect moderate crowds & longer waits,Christmas + Winter Holiday + Winter break
-2025-12-26,72487,BUSY,Above average — expect moderate crowds & longer waits,Winter Holiday + Winter break + Friday (typically busy)
-2025-12-27,91147,EXTREME,"Extreme rush — strongly avoid, very long waits",Winter Holiday + Winter break + Saturday (typically busy)
-2025-12-28,85823,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break
-2025-12-29,59631,LIGHT,"Good day — low crowd, visit freely with short waits",Winter Holiday + Winter break + Monday (typically quieter)
-2025-12-30,67053,MODERATE,"Normal day — standard crowd, comfortable visit",Vaikuntha Ekadashi + Winter Holiday + Winter break
-2025-12-31,70256,BUSY,Above average — expect moderate crowds & longer waits,New Year Eve + Winter Holiday + Winter break
-2026-01-01,65225,MODERATE,"Normal day — standard crowd, comfortable visit",New Year + Winter Holiday + Winter break
-2026-01-02,83032,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break + Friday (typically busy)
-2026-01-03,88662,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break + Saturday (typically busy)
-2026-01-04,85179,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break
-2026-01-05,82650,HEAVY,Busy day — try to avoid unless necessary,Winter Holiday + Winter break
-2026-01-06,82022,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2026-01-07,85752,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2026-01-08,73580,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-09,67678,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2026-01-10,76820,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2026-01-11,76447,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-12,68542,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-01-13,73014,BUSY,Above average — expect moderate crowds & longer waits,Bhogi
-2026-01-14,76289,BUSY,Above average — expect moderate crowds & longer waits,Sankranti
-2026-01-15,64064,MODERATE,"Normal day — standard crowd, comfortable visit",Kanuma
-2026-01-16,78733,BUSY,Above average — expect moderate crowds & longer waits,Friday (typically busy)
-2026-01-17,83576,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2026-01-18,84058,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2026-01-19,79098,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-20,73788,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-21,74056,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-22,64571,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-01-23,69726,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2026-01-24,76654,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2026-01-25,84014,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
-2026-01-26,75791,BUSY,Above average — expect moderate crowds & longer waits,Republic Day
-2026-01-27,77049,BUSY,Above average — expect moderate crowds & longer waits,Rathasapthami
-2026-01-28,72637,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-01-29,61315,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-01-30,69254,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2026-01-31,76935,BUSY,Above average — expect moderate crowds & longer waits,Saturday (typically busy)
-2026-02-01,74192,BUSY,Above average — expect moderate crowds & longer waits,Regular day
-2026-02-02,69262,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-02-03,69389,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-02-04,68586,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-02-05,61655,MODERATE,"Normal day — standard crowd, comfortable visit",Regular day
-2026-02-06,67085,MODERATE,"Normal day — standard crowd, comfortable visit",Friday (typically busy)
-2026-02-07,81777,HEAVY,Busy day — try to avoid unless necessary,Saturday (typically busy)
-2026-02-08,81894,HEAVY,Busy day — try to avoid unless necessary,Historical pattern — above-average crowd
+date,total_pilgrims,band,band_name
+2023-02-02,60609,2,MODERATE
+2023-02-03,57147,1,LIGHT
+2023-02-04,72226,3,BUSY
+2023-02-05,78340,3,BUSY
+2023-02-06,71496,3,BUSY
+2023-02-07,65297,2,MODERATE
+2023-02-08,63315,2,MODERATE
+2023-02-09,59090,1,LIGHT
+2023-02-10,57702,1,LIGHT
+2023-02-11,75728,3,BUSY
+2023-02-12,80969,4,HEAVY
+2023-02-13,71434,3,BUSY
+2023-02-14,70789,3,BUSY
+2023-02-15,66033,2,MODERATE
+2023-02-16,54469,1,LIGHT
+2023-02-17,65633,2,MODERATE
+2023-02-18,71350,3,BUSY
+2023-02-19,79555,3,BUSY
+2023-02-20,61374,2,MODERATE
+2023-02-21,53755,1,LIGHT
+2023-02-22,62101,2,MODERATE
+2023-02-23,57737,1,LIGHT
+2023-02-24,61265,2,MODERATE
+2023-02-25,76736,3,BUSY
+2023-02-26,81170,4,HEAVY
+2023-02-27,71387,3,BUSY
+2023-02-28,59392,1,LIGHT
+2023-03-01,60931,2,MODERATE
+2023-03-02,60682,2,MODERATE
+2023-03-03,58137,1,LIGHT
+2023-03-04,77522,3,BUSY
+2023-03-05,74994,3,BUSY
+2023-03-06,65613,2,MODERATE
+2023-03-07,59751,1,LIGHT
+2023-03-08,61921,2,MODERATE
+2023-03-09,58494,1,LIGHT
+2023-03-10,63443,2,MODERATE
+2023-03-11,79561,3,BUSY
+2023-03-12,81458,4,HEAVY
+2023-03-13,68365,2,MODERATE
+2023-03-14,63285,2,MODERATE
+2023-03-15,63535,2,MODERATE
+2023-03-16,59776,1,LIGHT
+2023-03-17,62938,2,MODERATE
+2023-03-18,75452,3,BUSY
+2023-03-19,81700,4,HEAVY
+2023-03-20,62824,2,MODERATE
+2023-03-21,57559,1,LIGHT
+2023-03-22,53146,1,LIGHT
+2023-03-23,58955,1,LIGHT
+2023-03-24,63507,2,MODERATE
+2023-03-25,77856,3,BUSY
+2023-03-26,79415,3,BUSY
+2023-03-27,67886,2,MODERATE
+2023-03-28,70605,3,BUSY
+2023-03-29,64754,2,MODERATE
+2023-03-30,60699,2,MODERATE
+2023-03-31,61425,2,MODERATE
+2023-04-01,75510,3,BUSY
+2023-04-02,82398,4,HEAVY
+2023-04-03,70086,3,BUSY
+2023-04-04,70497,3,BUSY
+2023-04-05,73208,3,BUSY
+2023-04-06,60101,2,MODERATE
+2023-04-07,71782,3,BUSY
+2023-04-08,85450,4,HEAVY
+2023-04-09,86129,4,HEAVY
+2023-04-10,69781,2,MODERATE
+2023-04-11,65314,2,MODERATE
+2023-04-12,63244,2,MODERATE
+2023-04-13,67687,2,MODERATE
+2023-04-14,66310,2,MODERATE
+2023-04-15,81305,4,HEAVY
+2023-04-16,76201,3,BUSY
+2023-04-17,67828,2,MODERATE
+2023-04-18,66476,2,MODERATE
+2023-04-19,61050,2,MODERATE
+2023-04-20,56680,1,LIGHT
+2023-04-21,57354,1,LIGHT
+2023-04-22,72631,3,BUSY
+2023-04-23,74873,3,BUSY
+2023-04-24,63870,2,MODERATE
+2023-04-25,62971,2,MODERATE
+2023-04-26,63382,2,MODERATE
+2023-04-27,65910,2,MODERATE
+2023-04-28,59071,1,LIGHT
+2023-04-29,75652,3,BUSY
+2023-04-30,82582,4,HEAVY
+2023-05-01,81183,4,HEAVY
+2023-05-02,75789,3,BUSY
+2023-05-03,68953,2,MODERATE
+2023-05-04,64707,2,MODERATE
+2023-05-05,59849,1,LIGHT
+2023-05-06,76392,3,BUSY
+2023-05-07,74876,3,BUSY
+2023-05-08,65904,2,MODERATE
+2023-05-09,65237,2,MODERATE
+2023-05-10,61510,2,MODERATE
+2023-05-11,67853,2,MODERATE
+2023-05-12,71763,3,BUSY
+2023-05-13,87007,4,HEAVY
+2023-05-14,87022,4,HEAVY
+2023-05-15,70366,3,BUSY
+2023-05-16,77436,3,BUSY
+2023-05-17,79207,3,BUSY
+2023-05-18,66820,2,MODERATE
+2023-05-19,81833,4,HEAVY
+2023-05-20,85297,4,HEAVY
+2023-05-21,84539,4,HEAVY
+2023-05-22,78349,3,BUSY
+2023-05-23,75875,3,BUSY
+2023-05-24,74995,3,BUSY
+2023-05-25,74583,3,BUSY
+2023-05-26,79486,3,BUSY
+2023-05-27,88604,4,HEAVY
+2023-05-28,88604,4,HEAVY
+2023-05-29,78126,3,BUSY
+2023-05-30,75871,3,BUSY
+2023-05-31,80284,4,HEAVY
+2023-06-01,62407,2,MODERATE
+2023-06-02,76963,3,BUSY
+2023-06-03,85366,4,HEAVY
+2023-06-04,87434,4,HEAVY
+2023-06-05,79974,3,BUSY
+2023-06-06,78030,3,BUSY
+2023-06-07,75229,3,BUSY
+2023-06-08,70160,3,BUSY
+2023-06-09,74502,3,BUSY
+2023-06-10,88626,4,HEAVY
+2023-06-11,92238,5,EXTREME
+2023-06-12,79087,3,BUSY
+2023-06-13,75227,3,BUSY
+2023-06-14,78487,3,BUSY
+2023-06-16,72299,3,BUSY
+2023-06-17,87762,4,HEAVY
+2023-06-18,86181,4,HEAVY
+2023-06-19,69879,2,MODERATE
+2023-06-20,71935,3,BUSY
+2023-06-21,77120,3,BUSY
+2023-06-22,67294,2,MODERATE
+2023-06-23,72304,3,BUSY
+2023-06-24,83889,4,HEAVY
+2023-06-25,87407,4,HEAVY
+2023-06-26,73156,3,BUSY
+2023-06-27,69143,2,MODERATE
+2023-06-28,71615,3,BUSY
+2023-06-29,62005,2,MODERATE
+2023-06-30,73572,3,BUSY
+2023-07-01,82999,4,HEAVY
+2023-07-02,82999,4,HEAVY
+2023-07-03,66077,2,MODERATE
+2023-07-04,76254,3,BUSY
+2023-07-05,77299,3,BUSY
+2023-07-06,66977,2,MODERATE
+2023-07-07,69483,2,MODERATE
+2023-07-08,86781,4,HEAVY
+2023-07-09,88836,4,HEAVY
+2023-07-10,64347,2,MODERATE
+2023-07-11,67271,2,MODERATE
+2023-07-12,72664,3,BUSY
+2023-07-13,67300,2,MODERATE
+2023-07-14,71472,3,BUSY
+2023-07-15,87171,4,HEAVY
+2023-07-16,86170,4,HEAVY
+2023-07-17,71894,3,BUSY
+2023-07-18,64003,2,MODERATE
+2023-07-19,74024,3,BUSY
+2023-07-20,63628,2,MODERATE
+2023-07-21,71721,3,BUSY
+2023-07-22,84430,4,HEAVY
+2023-07-23,87792,4,HEAVY
+2023-07-24,73796,3,BUSY
+2023-07-25,73137,3,BUSY
+2023-07-26,74268,3,BUSY
+2023-07-27,63932,2,MODERATE
+2023-07-28,69378,2,MODERATE
+2023-07-29,78115,3,BUSY
+2023-07-30,85258,4,HEAVY
+2023-07-31,68601,2,MODERATE
+2023-08-01,67728,2,MODERATE
+2023-08-02,69365,2,MODERATE
+2023-08-03,59898,1,LIGHT
+2023-08-04,69270,2,MODERATE
+2023-08-05,81472,4,HEAVY
+2023-08-06,83856,4,HEAVY
+2023-08-07,69733,2,MODERATE
+2023-08-08,73879,3,BUSY
+2023-08-09,75594,3,BUSY
+2023-08-10,57443,1,LIGHT
+2023-08-11,72158,3,BUSY
+2023-08-12,82265,4,HEAVY
+2023-08-13,84401,4,HEAVY
+2023-08-14,74617,3,BUSY
+2023-08-15,78726,3,BUSY
+2023-08-16,75776,3,BUSY
+2023-08-17,64695,2,MODERATE
+2023-08-18,61904,2,MODERATE
+2023-08-19,79242,3,BUSY
+2023-08-20,79444,3,BUSY
+2023-08-21,69909,2,MODERATE
+2023-08-22,72695,3,BUSY
+2023-08-23,71122,3,BUSY
+2023-08-24,67308,2,MODERATE
+2023-08-25,69529,2,MODERATE
+2023-08-26,71073,3,BUSY
+2023-08-27,71073,3,BUSY
+2023-08-28,68263,2,MODERATE
+2023-08-29,64214,2,MODERATE
+2023-08-30,71132,3,BUSY
+2023-08-31,59808,1,LIGHT
+2023-09-01,67193,2,MODERATE
+2023-09-02,81655,4,HEAVY
+2023-09-03,81459,4,HEAVY
+2023-09-04,76555,3,BUSY
+2023-09-05,71946,3,BUSY
+2023-09-06,75804,3,BUSY
+2023-09-07,58855,1,LIGHT
+2023-09-08,68201,2,MODERATE
+2023-09-09,78557,3,BUSY
+2023-09-10,84449,4,HEAVY
+2023-09-11,66199,2,MODERATE
+2023-09-12,70055,3,BUSY
+2023-09-13,75059,3,BUSY
+2023-09-14,61296,2,MODERATE
+2023-09-15,62357,2,MODERATE
+2023-09-16,66590,2,MODERATE
+2023-09-17,77441,3,BUSY
+2023-09-18,62745,2,MODERATE
+2023-09-19,67267,2,MODERATE
+2023-09-20,64277,2,MODERATE
+2023-09-21,66462,2,MODERATE
+2023-09-22,72650,3,BUSY
+2023-09-23,74884,3,BUSY
+2023-09-24,66598,2,MODERATE
+2023-09-25,72137,3,BUSY
+2023-09-26,55747,1,LIGHT
+2023-09-27,66336,2,MODERATE
+2023-09-28,54620,1,LIGHT
+2023-09-29,66233,2,MODERATE
+2023-09-30,87081,4,HEAVY
+2023-10-01,88623,4,HEAVY
+2023-10-02,80551,4,HEAVY
+2023-10-03,79365,3,BUSY
+2023-10-04,76526,3,BUSY
+2023-10-05,68558,2,MODERATE
+2023-10-06,72104,3,BUSY
+2023-10-07,72309,3,BUSY
+2023-10-08,70515,3,BUSY
+2023-10-09,68828,2,MODERATE
+2023-10-10,71361,3,BUSY
+2023-10-11,72230,3,BUSY
+2023-10-12,65937,2,MODERATE
+2023-10-13,59304,1,LIGHT
+2023-10-14,67785,2,MODERATE
+2023-10-15,60659,2,MODERATE
+2023-10-16,73859,3,BUSY
+2023-10-17,72123,3,BUSY
+2023-10-18,68763,2,MODERATE
+2023-10-19,66757,2,MODERATE
+2023-10-20,69821,2,MODERATE
+2023-10-21,65422,2,MODERATE
+2023-10-22,77187,3,BUSY
+2023-10-23,79693,3,BUSY
+2023-10-24,71037,3,BUSY
+2023-10-25,65422,2,MODERATE
+2023-10-26,62055,2,MODERATE
+2023-10-27,63404,2,MODERATE
+2023-10-28,47531,0,QUIET
+2023-10-29,85497,4,HEAVY
+2023-10-30,69654,2,MODERATE
+2023-10-31,62269,2,MODERATE
+2023-11-01,63710,2,MODERATE
+2023-11-02,59335,1,LIGHT
+2023-11-03,66048,2,MODERATE
+2023-11-04,70250,3,BUSY
+2023-11-05,78389,3,BUSY
+2023-11-06,66312,2,MODERATE
+2023-11-07,61640,2,MODERATE
+2023-11-08,58157,1,LIGHT
+2023-11-09,56723,1,LIGHT
+2023-11-10,56978,1,LIGHT
+2023-11-11,71490,3,BUSY
+2023-11-12,74807,3,BUSY
+2023-11-13,70902,3,BUSY
+2023-11-14,69041,2,MODERATE
+2023-11-15,71123,3,BUSY
+2023-11-16,62494,2,MODERATE
+2023-11-17,67140,2,MODERATE
+2023-11-18,70686,3,BUSY
+2023-11-19,79800,3,BUSY
+2023-11-20,67198,2,MODERATE
+2023-11-21,69981,2,MODERATE
+2023-11-22,65891,2,MODERATE
+2023-11-23,45503,0,QUIET
+2023-11-24,74843,3,BUSY
+2023-11-25,68179,2,MODERATE
+2023-11-26,70350,3,BUSY
+2023-11-27,58176,1,LIGHT
+2023-11-28,58874,1,LIGHT
+2023-11-29,61403,2,MODERATE
+2023-11-30,58278,1,LIGHT
+2023-12-01,56950,1,LIGHT
+2023-12-02,66162,2,MODERATE
+2023-12-03,70349,3,BUSY
+2023-12-04,55909,1,LIGHT
+2023-12-05,44547,0,QUIET
+2023-12-06,45275,0,QUIET
+2023-12-07,56344,1,LIGHT
+2023-12-08,54323,1,LIGHT
+2023-12-09,68769,2,MODERATE
+2023-12-10,73091,3,BUSY
+2023-12-11,64882,2,MODERATE
+2023-12-12,63021,2,MODERATE
+2023-12-13,60928,2,MODERATE
+2023-12-14,56049,1,LIGHT
+2023-12-15,71037,3,BUSY
+2023-12-16,59734,1,LIGHT
+2023-12-17,74845,3,BUSY
+2023-12-18,61499,2,MODERATE
+2023-12-19,64040,2,MODERATE
+2023-12-20,67043,2,MODERATE
+2023-12-21,59868,1,LIGHT
+2023-12-22,40638,0,QUIET
+2023-12-23,67906,2,MODERATE
+2023-12-24,63519,2,MODERATE
+2023-12-25,69294,2,MODERATE
+2023-12-26,71488,3,BUSY
+2023-12-27,65361,2,MODERATE
+2023-12-28,58415,1,LIGHT
+2023-12-29,56200,1,LIGHT
+2023-12-30,63728,2,MODERATE
+2023-12-31,64665,2,MODERATE
+2024-01-01,63358,2,MODERATE
+2024-01-02,73712,3,BUSY
+2024-01-03,65514,2,MODERATE
+2024-01-04,59522,1,LIGHT
+2024-01-05,57411,1,LIGHT
+2024-01-06,68793,2,MODERATE
+2024-01-07,76058,3,BUSY
+2024-01-08,61511,2,MODERATE
+2024-01-09,65901,2,MODERATE
+2024-01-10,62499,2,MODERATE
+2024-01-11,53055,1,LIGHT
+2024-01-12,56588,1,LIGHT
+2024-01-13,65962,2,MODERATE
+2024-01-14,86107,4,HEAVY
+2024-01-15,80964,4,HEAVY
+2024-01-16,73016,3,BUSY
+2024-01-17,72263,3,BUSY
+2024-01-18,62649,2,MODERATE
+2024-01-19,69874,2,MODERATE
+2024-01-20,76041,3,BUSY
+2024-01-21,77334,3,BUSY
+2024-01-22,67568,2,MODERATE
+2024-01-23,63665,2,MODERATE
+2024-01-24,65991,2,MODERATE
+2024-01-25,54105,1,LIGHT
+2024-01-26,71664,3,BUSY
+2024-01-27,76104,3,BUSY
+2024-01-28,85142,4,HEAVY
+2024-01-29,71082,3,BUSY
+2024-01-30,61135,2,MODERATE
+2024-01-31,64635,2,MODERATE
+2024-02-01,57223,1,LIGHT
+2024-02-02,58842,1,LIGHT
+2024-02-03,69232,2,MODERATE
+2024-02-04,70679,3,BUSY
+2024-02-05,64512,2,MODERATE
+2024-02-07,65683,2,MODERATE
+2024-02-08,57357,1,LIGHT
+2024-02-09,62593,2,MODERATE
+2024-02-10,70158,3,BUSY
+2024-02-11,72256,3,BUSY
+2024-02-12,69314,2,MODERATE
+2024-02-13,68363,2,MODERATE
+2024-02-14,67275,2,MODERATE
+2024-02-15,45825,0,QUIET
+2024-02-16,77483,3,BUSY
+2024-02-17,71021,3,BUSY
+2024-02-18,70338,3,BUSY
+2024-02-19,64741,2,MODERATE
+2024-02-20,62304,2,MODERATE
+2024-02-21,69191,2,MODERATE
+2024-02-22,57973,1,LIGHT
+2024-02-23,62880,2,MODERATE
+2024-02-24,72175,3,BUSY
+2024-02-25,76577,3,BUSY
+2024-02-26,70077,3,BUSY
+2024-02-27,63421,2,MODERATE
+2024-02-28,66915,2,MODERATE
+2024-02-29,57338,1,LIGHT
+2024-03-01,59646,1,LIGHT
+2024-03-02,70422,3,BUSY
+2024-03-03,76876,3,BUSY
+2024-03-04,70570,3,BUSY
+2024-03-05,64552,2,MODERATE
+2024-03-06,65887,2,MODERATE
+2024-03-07,57880,1,LIGHT
+2024-03-08,63831,2,MODERATE
+2024-03-09,68446,2,MODERATE
+2024-03-10,76213,3,BUSY
+2024-03-11,64802,2,MODERATE
+2024-03-12,60110,2,MODERATE
+2024-03-13,67832,2,MODERATE
+2024-03-14,48444,0,QUIET
+2024-03-15,66322,2,MODERATE
+2024-03-16,74351,3,BUSY
+2024-03-17,83825,4,HEAVY
+2024-03-18,65051,2,MODERATE
+2024-03-19,63251,2,MODERATE
+2024-03-20,69072,2,MODERATE
+2024-03-21,60485,2,MODERATE
+2024-03-22,59236,1,LIGHT
+2024-03-23,72986,3,BUSY
+2024-03-24,80532,4,HEAVY
+2024-03-25,78731,3,BUSY
+2024-03-26,68563,2,MODERATE
+2024-03-27,64097,2,MODERATE
+2024-03-28,65992,2,MODERATE
+2024-03-29,60958,2,MODERATE
+2024-03-30,79907,3,BUSY
+2024-03-31,81224,4,HEAVY
+2024-04-01,62439,2,MODERATE
+2024-04-02,56228,1,LIGHT
+2024-04-03,61087,2,MODERATE
+2024-04-04,62549,2,MODERATE
+2024-04-05,59621,1,LIGHT
+2024-04-06,75414,3,BUSY
+2024-04-07,73801,3,BUSY
+2024-04-08,61920,2,MODERATE
+2024-04-09,55756,1,LIGHT
+2024-04-10,65750,2,MODERATE
+2024-04-11,62366,2,MODERATE
+2024-04-12,63163,2,MODERATE
+2024-04-13,82139,4,HEAVY
+2024-04-14,81057,4,HEAVY
+2024-04-15,77511,3,BUSY
+2024-04-16,67294,2,MODERATE
+2024-04-17,58690,1,LIGHT
+2024-04-18,55537,1,LIGHT
+2024-04-19,60517,2,MODERATE
+2024-04-20,73051,3,BUSY
+2024-04-21,77366,3,BUSY
+2024-04-22,62894,2,MODERATE
+2024-04-23,60371,2,MODERATE
+2024-04-24,64080,2,MODERATE
+2024-04-25,61492,2,MODERATE
+2024-04-26,57909,1,LIGHT
+2024-04-27,81212,4,HEAVY
+2024-04-28,86241,4,HEAVY
+2024-04-29,77673,3,BUSY
+2024-04-30,72310,3,BUSY
+2024-05-01,72510,3,BUSY
+2024-05-02,65313,2,MODERATE
+2024-05-03,62624,2,MODERATE
+2024-05-04,77848,3,BUSY
+2024-05-05,81927,4,HEAVY
+2024-05-06,76748,3,BUSY
+2024-05-07,65146,2,MODERATE
+2024-05-08,64766,2,MODERATE
+2024-05-09,65508,2,MODERATE
+2024-05-10,60545,2,MODERATE
+2024-05-11,76945,3,BUSY
+2024-05-12,80001,4,HEAVY
+2024-05-13,70815,3,BUSY
+2024-05-14,75783,3,BUSY
+2024-05-15,81930,4,HEAVY
+2024-05-16,76369,3,BUSY
+2024-05-17,71510,3,BUSY
+2024-05-18,90721,5,EXTREME
+2024-05-19,86721,4,HEAVY
+2024-05-20,85825,4,HEAVY
+2024-05-21,80744,4,HEAVY
+2024-05-22,80048,4,HEAVY
+2024-05-23,65416,2,MODERATE
+2024-05-24,70668,3,BUSY
+2024-05-25,83866,4,HEAVY
+2024-05-26,89161,4,HEAVY
+2024-05-27,81831,4,HEAVY
+2024-05-28,76381,3,BUSY
+2024-05-29,73811,3,BUSY
+2024-05-30,64115,2,MODERATE
+2024-05-31,67873,2,MODERATE
+2024-06-01,78686,3,BUSY
+2024-06-02,83740,4,HEAVY
+2024-06-03,76362,3,BUSY
+2024-06-04,76291,3,BUSY
+2024-06-05,67320,2,MODERATE
+2024-06-06,62161,2,MODERATE
+2024-06-07,63830,2,MODERATE
+2024-06-08,79398,3,BUSY
+2024-06-09,81744,4,HEAVY
+2024-06-10,78064,3,BUSY
+2024-06-11,76665,3,BUSY
+2024-06-12,75068,3,BUSY
+2024-06-13,61499,2,MODERATE
+2024-06-14,66782,2,MODERATE
+2024-06-15,82886,4,HEAVY
+2024-06-16,69870,2,MODERATE
+2024-06-17,75872,3,BUSY
+2024-06-18,75125,3,BUSY
+2024-06-19,79584,3,BUSY
+2024-06-20,62756,2,MODERATE
+2024-06-21,72294,3,BUSY
+2024-06-22,74467,3,BUSY
+2024-06-23,81455,4,HEAVY
+2024-06-24,77878,3,BUSY
+2024-06-25,71824,3,BUSY
+2024-06-26,77332,3,BUSY
+2024-06-27,60782,2,MODERATE
+2024-06-28,66256,2,MODERATE
+2024-06-29,80404,4,HEAVY
+2024-06-30,81005,4,HEAVY
+2024-07-01,75449,3,BUSY
+2024-07-02,67398,2,MODERATE
+2024-07-03,69632,2,MODERATE
+2024-07-04,63826,2,MODERATE
+2024-07-05,65775,2,MODERATE
+2024-07-06,77995,3,BUSY
+2024-07-07,78912,3,BUSY
+2024-07-08,63619,2,MODERATE
+2024-07-09,67245,2,MODERATE
+2024-07-10,73353,3,BUSY
+2024-07-11,65392,2,MODERATE
+2024-07-12,63493,2,MODERATE
+2024-07-13,75916,3,BUSY
+2024-07-14,84797,4,HEAVY
+2024-07-15,75054,3,BUSY
+2024-07-16,71409,3,BUSY
+2024-07-17,69029,2,MODERATE
+2024-07-18,67223,2,MODERATE
+2024-07-19,65134,2,MODERATE
+2024-07-20,83538,4,HEAVY
+2024-07-21,75963,3,BUSY
+2024-07-22,71939,3,BUSY
+2024-07-23,73332,3,BUSY
+2024-07-24,73023,3,BUSY
+2024-07-25,61699,2,MODERATE
+2024-07-26,65980,2,MODERATE
+2024-07-27,84173,4,HEAVY
+2024-07-28,79327,3,BUSY
+2024-07-29,65874,2,MODERATE
+2024-07-30,69937,2,MODERATE
+2024-07-31,67916,2,MODERATE
+2024-08-01,61465,2,MODERATE
+2024-08-02,62540,2,MODERATE
+2024-08-03,75140,3,BUSY
+2024-08-04,75356,3,BUSY
+2024-08-05,63095,2,MODERATE
+2024-08-06,66235,2,MODERATE
+2024-08-07,75109,3,BUSY
+2024-08-08,63535,2,MODERATE
+2024-08-09,65131,2,MODERATE
+2024-08-10,73313,3,BUSY
+2024-08-11,86604,4,HEAVY
+2024-08-12,70728,3,BUSY
+2024-08-13,73246,3,BUSY
+2024-08-14,72967,3,BUSY
+2024-08-15,76695,3,BUSY
+2024-08-16,62625,2,MODERATE
+2024-08-17,77807,3,BUSY
+2024-08-18,77807,3,BUSY
+2024-08-19,71595,3,BUSY
+2024-08-20,73082,3,BUSY
+2024-08-22,63202,2,MODERATE
+2024-08-23,69098,2,MODERATE
+2024-08-24,79521,3,BUSY
+2024-08-25,84060,4,HEAVY
+2024-08-26,76910,3,BUSY
+2024-08-27,71153,3,BUSY
+2024-08-28,76772,3,BUSY
+2024-08-29,62529,2,MODERATE
+2024-08-30,65080,2,MODERATE
+2024-08-31,81207,4,HEAVY
+2024-09-01,74498,3,BUSY
+2024-09-02,63936,2,MODERATE
+2024-09-03,57817,1,LIGHT
+2024-09-04,57390,1,LIGHT
+2024-09-05,61142,2,MODERATE
+2024-09-06,58100,1,LIGHT
+2024-09-07,83960,4,HEAVY
+2024-09-08,81178,4,HEAVY
+2024-09-09,67030,2,MODERATE
+2024-09-10,62380,2,MODERATE
+2024-09-11,67668,2,MODERATE
+2024-09-12,63544,2,MODERATE
+2024-09-13,60694,2,MODERATE
+2024-09-14,80735,4,HEAVY
+2024-09-15,85626,4,HEAVY
+2024-09-16,76200,3,BUSY
+2024-09-17,72072,3,BUSY
+2024-09-18,78690,3,BUSY
+2024-09-19,68835,2,MODERATE
+2024-09-20,73104,3,BUSY
+2024-09-21,82406,4,HEAVY
+2024-09-22,82646,4,HEAVY
+2024-09-23,65604,2,MODERATE
+2024-09-24,67616,2,MODERATE
+2024-09-25,77939,3,BUSY
+2024-09-26,61328,2,MODERATE
+2024-09-27,64158,2,MODERATE
+2024-09-28,71133,3,BUSY
+2024-09-29,84066,4,HEAVY
+2024-09-30,66986,2,MODERATE
+2024-10-01,69300,2,MODERATE
+2024-10-02,80613,4,HEAVY
+2024-10-03,63376,2,MODERATE
+2024-10-04,54866,1,LIGHT
+2024-10-05,75552,3,BUSY
+2024-10-06,86859,4,HEAVY
+2024-10-07,81481,4,HEAVY
+2024-10-08,82043,4,HEAVY
+2024-10-09,79753,3,BUSY
+2024-10-10,60775,2,MODERATE
+2024-10-11,71443,3,BUSY
+2024-10-12,73684,3,BUSY
+2024-10-13,86900,4,HEAVY
+2024-10-14,75361,3,BUSY
+2024-10-15,73891,3,BUSY
+2024-10-16,75371,3,BUSY
+2024-10-17,58637,1,LIGHT
+2024-10-18,61576,2,MODERATE
+2024-10-19,80741,4,HEAVY
+2024-10-20,73926,3,BUSY
+2024-10-22,64359,2,MODERATE
+2024-10-23,64447,2,MODERATE
+2024-10-24,61004,2,MODERATE
+2024-10-25,56501,1,LIGHT
+2024-10-26,77844,3,BUSY
+2024-10-27,69333,2,MODERATE
+2024-10-28,63729,2,MODERATE
+2024-10-29,59140,1,LIGHT
+2024-10-30,59140,1,LIGHT
+2024-10-31,63987,2,MODERATE
+2024-11-01,67785,2,MODERATE
+2024-11-02,88076,4,HEAVY
+2024-11-03,84489,4,HEAVY
+2024-11-04,74651,3,BUSY
+2024-11-05,68146,2,MODERATE
+2024-11-07,52643,1,LIGHT
+2024-11-08,64983,2,MODERATE
+2024-11-09,73558,3,BUSY
+2024-11-10,82558,4,HEAVY
+2024-11-11,73917,3,BUSY
+2024-11-12,61446,2,MODERATE
+2024-11-13,66441,2,MODERATE
+2024-11-14,56711,1,LIGHT
+2024-11-15,61613,2,MODERATE
+2024-11-16,73179,3,BUSY
+2024-11-17,71441,3,BUSY
+2024-11-18,62085,2,MODERATE
+2024-11-19,62248,2,MODERATE
+2024-11-20,59231,1,LIGHT
+2024-11-21,60803,2,MODERATE
+2024-11-22,63731,2,MODERATE
+2024-11-23,75147,3,BUSY
+2024-11-24,75737,3,BUSY
+2024-11-25,63637,2,MODERATE
+2024-11-26,64525,2,MODERATE
+2024-11-27,67626,2,MODERATE
+2024-11-28,56952,1,LIGHT
+2024-11-29,62147,2,MODERATE
+2024-11-30,73169,3,BUSY
+2024-12-01,67496,2,MODERATE
+2024-12-02,58607,1,LIGHT
+2024-12-03,60301,2,MODERATE
+2024-12-04,65265,2,MODERATE
+2024-12-06,75782,3,BUSY
+2024-12-07,78569,3,BUSY
+2024-12-08,73107,3,BUSY
+2024-12-09,67124,2,MODERATE
+2024-12-10,67284,2,MODERATE
+2024-12-11,65887,2,MODERATE
+2024-12-12,61178,2,MODERATE
+2024-12-13,63722,2,MODERATE
+2024-12-14,72962,3,BUSY
+2024-12-15,66160,2,MODERATE
+2024-12-16,62112,2,MODERATE
+2024-12-17,63598,2,MODERATE
+2024-12-18,70457,3,BUSY
+2024-12-19,58165,1,LIGHT
+2024-12-20,65299,2,MODERATE
+2024-12-21,72411,3,BUSY
+2024-12-22,77260,3,BUSY
+2024-12-23,65656,2,MODERATE
+2024-12-24,67209,2,MODERATE
+2024-12-25,73301,3,BUSY
+2024-12-26,59584,1,LIGHT
+2024-12-27,66715,2,MODERATE
+2024-12-28,78414,3,BUSY
+2024-12-29,84950,4,HEAVY
+2024-12-30,68298,2,MODERATE
+2024-12-31,62495,2,MODERATE
+2025-01-01,69630,2,MODERATE
+2025-01-02,62085,2,MODERATE
+2025-01-03,56550,1,LIGHT
+2025-01-04,71990,3,BUSY
+2025-01-05,66561,2,MODERATE
+2025-01-06,54180,1,LIGHT
+2025-01-07,62566,2,MODERATE
+2025-01-08,62903,2,MODERATE
+2025-01-09,40265,0,QUIET
+2025-01-10,60094,2,MODERATE
+2025-01-11,53013,1,LIGHT
+2025-01-12,70966,3,BUSY
+2025-01-13,74800,3,BUSY
+2025-01-14,74800,3,BUSY
+2025-01-15,71417,3,BUSY
+2025-01-16,67115,2,MODERATE
+2025-01-17,61142,2,MODERATE
+2025-01-18,75931,3,BUSY
+2025-01-19,70826,3,BUSY
+2025-01-20,83806,4,HEAVY
+2025-01-21,60581,2,MODERATE
+2025-01-22,62223,2,MODERATE
+2025-01-23,56225,1,LIGHT
+2025-01-24,57655,1,LIGHT
+2025-01-25,77651,3,BUSY
+2025-01-26,74742,3,BUSY
+2025-01-27,65278,2,MODERATE
+2025-01-28,70610,3,BUSY
+2025-01-29,62710,2,MODERATE
+2025-01-30,51349,1,LIGHT
+2025-01-31,51818,1,LIGHT
+2025-02-01,80871,4,HEAVY
+2025-02-02,75706,3,BUSY
+2025-02-03,59784,1,LIGHT
+2025-02-04,73599,3,BUSY
+2025-02-05,58600,1,LIGHT
+2025-02-06,58908,1,LIGHT
+2025-02-07,62971,2,MODERATE
+2025-02-08,76598,3,BUSY
+2025-02-09,84536,4,HEAVY
+2025-02-10,70169,3,BUSY
+2025-02-11,67192,2,MODERATE
+2025-02-12,70270,3,BUSY
+2025-02-13,60203,2,MODERATE
+2025-02-14,64527,2,MODERATE
+2025-02-15,78873,3,BUSY
+2025-02-16,79705,3,BUSY
+2025-02-17,60784,2,MODERATE
+2025-02-18,68427,2,MODERATE
+2025-02-19,72745,3,BUSY
+2025-02-20,59776,1,LIGHT
+2025-02-21,65327,2,MODERATE
+2025-02-22,78110,3,BUSY
+2025-02-23,78892,3,BUSY
+2025-02-24,66764,2,MODERATE
+2025-02-25,65127,2,MODERATE
+2025-02-26,62323,2,MODERATE
+2025-02-27,58627,1,LIGHT
+2025-02-28,52731,1,LIGHT
+2025-03-01,71785,3,BUSY
+2025-03-02,69592,2,MODERATE
+2025-03-03,65683,2,MODERATE
+2025-03-04,64861,2,MODERATE
+2025-03-05,63285,2,MODERATE
+2025-03-06,58548,1,LIGHT
+2025-03-07,67127,2,MODERATE
+2025-03-08,74646,3,BUSY
+2025-03-09,79478,3,BUSY
+2025-03-10,69746,2,MODERATE
+2025-03-11,66393,2,MODERATE
+2025-03-12,68509,2,MODERATE
+2025-03-13,51148,1,LIGHT
+2025-03-14,63987,2,MODERATE
+2025-03-15,82580,4,HEAVY
+2025-03-16,82721,4,HEAVY
+2025-03-17,70824,3,BUSY
+2025-03-18,65487,2,MODERATE
+2025-03-19,72388,3,BUSY
+2025-03-20,58872,1,LIGHT
+2025-03-21,64170,2,MODERATE
+2025-03-22,75428,3,BUSY
+2025-03-23,84198,4,HEAVY
+2025-03-24,58358,1,LIGHT
+2025-03-25,64252,2,MODERATE
+2025-03-26,75354,3,BUSY
+2025-03-27,64279,2,MODERATE
+2025-03-28,65569,2,MODERATE
+2025-03-29,76005,3,BUSY
+2025-03-30,62263,2,MODERATE
+2025-03-31,62263,2,MODERATE
+2025-04-01,72981,3,BUSY
+2025-04-02,72721,3,BUSY
+2025-04-03,58864,1,LIGHT
+2025-04-04,66327,2,MODERATE
+2025-04-05,78496,3,BUSY
+2025-04-06,72960,3,BUSY
+2025-04-07,66503,2,MODERATE
+2025-04-08,65201,2,MODERATE
+2025-04-09,62076,2,MODERATE
+2025-04-10,57462,1,LIGHT
+2025-04-11,70462,3,BUSY
+2025-04-12,72923,3,BUSY
+2025-04-13,79100,3,BUSY
+2025-04-14,73078,3,BUSY
+2025-04-15,73543,3,BUSY
+2025-04-16,70372,3,BUSY
+2025-04-17,56279,1,LIGHT
+2025-04-18,58519,1,LIGHT
+2025-04-19,78821,3,BUSY
+2025-04-20,82746,4,HEAVY
+2025-04-21,72937,3,BUSY
+2025-04-22,61828,2,MODERATE
+2025-04-23,68705,2,MODERATE
+2025-04-24,58227,1,LIGHT
+2025-04-25,64536,2,MODERATE
+2025-04-26,82811,4,HEAVY
+2025-04-27,78177,3,BUSY
+2025-04-28,65904,2,MODERATE
+2025-04-29,64263,2,MODERATE
+2025-04-30,66616,2,MODERATE
+2025-05-01,57863,1,LIGHT
+2025-05-02,74344,3,BUSY
+2025-05-03,84113,4,HEAVY
+2025-05-04,83380,4,HEAVY
+2025-05-06,69214,2,MODERATE
+2025-05-07,71001,3,BUSY
+2025-05-08,64850,2,MODERATE
+2025-05-09,68213,2,MODERATE
+2025-05-10,85078,4,HEAVY
+2025-05-11,80423,4,HEAVY
+2025-05-12,68760,2,MODERATE
+2025-05-13,74477,3,BUSY
+2025-05-14,74020,3,BUSY
+2025-05-15,63208,2,MODERATE
+2025-05-16,70970,3,BUSY
+2025-05-17,87347,4,HEAVY
+2025-05-18,84571,4,HEAVY
+2025-05-19,79003,3,BUSY
+2025-05-20,76000,3,BUSY
+2025-05-21,80964,4,HEAVY
+2025-05-22,72579,3,BUSY
+2025-05-23,74374,3,BUSY
+2025-05-24,90211,5,EXTREME
+2025-05-25,91538,5,EXTREME
+2025-05-26,83542,4,HEAVY
+2025-05-27,82597,4,HEAVY
+2025-05-28,83621,4,HEAVY
+2025-05-29,69019,2,MODERATE
+2025-05-30,71721,3,BUSY
+2025-05-31,95080,5,EXTREME
+2025-06-01,78031,3,BUSY
+2025-06-02,84418,4,HEAVY
+2025-06-03,78631,3,BUSY
+2025-06-04,78288,3,BUSY
+2025-06-05,67284,2,MODERATE
+2025-06-06,67284,2,MODERATE
+2025-06-07,88257,4,HEAVY
+2025-06-08,90802,5,EXTREME
+2025-06-09,84258,4,HEAVY
+2025-06-10,80894,4,HEAVY
+2025-06-11,79296,3,BUSY
+2025-06-12,69609,2,MODERATE
+2025-06-13,75096,3,BUSY
+2025-06-14,91720,5,EXTREME
+2025-06-15,90815,5,EXTREME
+2025-06-16,84681,4,HEAVY
+2025-06-17,81037,4,HEAVY
+2025-06-18,80440,4,HEAVY
+2025-06-19,70226,3,BUSY
+2025-06-20,76181,3,BUSY
+2025-06-21,90087,5,EXTREME
+2025-06-22,87254,4,HEAVY
+2025-06-23,84179,4,HEAVY
+2025-06-24,79466,3,BUSY
+2025-06-25,75001,3,BUSY
+2025-06-26,64879,2,MODERATE
+2025-06-27,68229,2,MODERATE
+2025-06-28,90051,5,EXTREME
+2025-06-29,88497,4,HEAVY
+2025-06-30,78730,3,BUSY
+2025-07-01,76126,3,BUSY
+2025-07-02,74510,3,BUSY
+2025-07-03,64015,2,MODERATE
+2025-07-04,70011,3,BUSY
+2025-07-05,87536,4,HEAVY
+2025-07-06,88938,4,HEAVY
+2025-07-07,80081,4,HEAVY
+2025-07-08,78320,3,BUSY
+2025-07-09,76501,3,BUSY
+2025-07-10,63473,2,MODERATE
+2025-07-11,70217,3,BUSY
+2025-07-12,92221,5,EXTREME
+2025-07-13,80193,4,HEAVY
+2025-07-14,74149,3,BUSY
+2025-07-15,73020,3,BUSY
+2025-07-16,75104,3,BUSY
+2025-07-17,63897,2,MODERATE
+2025-07-18,73093,3,BUSY
+2025-07-19,90011,5,EXTREME
+2025-07-20,90011,5,EXTREME
+2025-07-21,77481,3,BUSY
+2025-07-22,79467,3,BUSY
+2025-07-23,80130,4,HEAVY
+2025-07-24,68838,2,MODERATE
+2025-07-25,73576,3,BUSY
+2025-07-26,85740,4,HEAVY
+2025-07-28,77044,3,BUSY
+2025-07-29,75183,3,BUSY
+2025-07-30,75303,3,BUSY
+2025-07-31,66149,2,MODERATE
+2025-08-01,70353,3,BUSY
+2025-08-02,82367,4,HEAVY
+2025-08-03,82628,4,HEAVY
+2025-08-04,69928,2,MODERATE
+2025-08-05,72951,3,BUSY
+2025-08-06,71144,3,BUSY
+2025-08-07,65234,2,MODERATE
+2025-08-08,70480,3,BUSY
+2025-08-09,84404,4,HEAVY
+2025-08-10,82628,4,HEAVY
+2025-08-11,75740,3,BUSY
+2025-08-12,77596,3,BUSY
+2025-08-13,75859,3,BUSY
+2025-08-14,66530,2,MODERATE
+2025-08-15,77043,3,BUSY
+2025-08-16,87759,4,HEAVY
+2025-08-17,86364,4,HEAVY
+2025-08-18,80502,4,HEAVY
+2025-08-19,76033,3,BUSY
+2025-08-20,75688,3,BUSY
+2025-08-21,65112,2,MODERATE
+2025-08-22,72067,3,BUSY
+2025-08-23,83858,4,HEAVY
+2025-08-24,72119,3,BUSY
+2025-08-25,67767,2,MODERATE
+2025-08-26,77837,3,BUSY
+2025-08-27,77185,3,BUSY
+2025-08-28,63843,2,MODERATE
+2025-08-29,65717,2,MODERATE
+2025-08-30,77295,3,BUSY
+2025-08-31,70310,3,BUSY
+2025-09-01,65384,2,MODERATE
+2025-09-02,64925,2,MODERATE
+2025-09-03,70472,3,BUSY
+2025-09-04,59834,1,LIGHT
+2025-09-05,69531,2,MODERATE
+2025-09-06,82118,4,HEAVY
+2025-09-07,69850,2,MODERATE
+2025-09-08,77117,3,BUSY
+2025-09-09,70828,3,BUSY
+2025-09-10,70086,3,BUSY
+2025-09-11,66312,2,MODERATE
+2025-09-12,69842,2,MODERATE
+2025-09-13,82149,4,HEAVY
+2025-09-14,77893,3,BUSY
+2025-09-15,65066,2,MODERATE
+2025-09-16,63607,2,MODERATE
+2025-09-17,68213,2,MODERATE
+2025-09-18,68095,2,MODERATE
+2025-09-19,71249,3,BUSY
+2025-09-20,82042,4,HEAVY
+2025-09-21,67408,2,MODERATE
+2025-09-22,60681,2,MODERATE
+2025-09-23,63837,2,MODERATE
+2025-09-24,58628,1,LIGHT
+2025-09-25,67388,2,MODERATE
+2025-09-26,75358,3,BUSY
+2025-09-27,75006,3,BUSY
+2025-09-28,79496,3,BUSY
+2025-09-29,81626,4,HEAVY
+2025-09-30,73275,3,BUSY
+2025-10-01,72247,3,BUSY
+2025-10-02,75188,3,BUSY
+2025-10-03,73581,3,BUSY
+2025-10-04,83380,4,HEAVY
+2025-10-05,83412,4,HEAVY
+2025-10-06,76773,3,BUSY
+2025-10-07,71634,3,BUSY
+2025-10-08,74861,3,BUSY
+2025-10-09,66883,2,MODERATE
+2025-10-10,74468,3,BUSY
+2025-10-11,84571,4,HEAVY
+2025-10-12,84424,4,HEAVY
+2025-10-13,78569,3,BUSY
+2025-10-14,72473,3,BUSY
+2025-10-15,75919,3,BUSY
+2025-10-16,61521,2,MODERATE
+2025-10-17,66675,2,MODERATE
+2025-10-18,82136,4,HEAVY
+2025-10-19,84017,4,HEAVY
+2025-10-20,72026,3,BUSY
+2025-10-21,76343,3,BUSY
+2025-10-22,73853,3,BUSY
+2025-10-23,60896,2,MODERATE
+2025-10-24,71110,3,BUSY
+2025-10-25,82010,4,HEAVY
+2025-10-27,70842,3,BUSY
+2025-10-28,64065,2,MODERATE
+2025-10-29,64048,2,MODERATE
+2025-10-30,56078,1,LIGHT
+2025-10-31,63539,2,MODERATE
+2025-11-01,72860,3,BUSY
+2025-11-02,84442,4,HEAVY
+2025-11-03,66322,2,MODERATE
+2025-11-04,67091,2,MODERATE
+2025-11-05,63239,2,MODERATE
+2025-11-06,61718,2,MODERATE
+2025-11-07,68075,2,MODERATE
+2025-11-08,80560,4,HEAVY
+2025-11-09,78217,3,BUSY
+2025-11-10,76096,3,BUSY
+2025-11-11,67367,2,MODERATE
+2025-11-12,72283,3,BUSY
+2025-11-13,62129,2,MODERATE
+2025-11-14,66709,2,MODERATE
+2025-11-15,73852,3,BUSY
+2025-11-16,75004,3,BUSY
+2025-11-17,71208,3,BUSY
+2025-11-18,66966,2,MODERATE
+2025-11-19,67121,2,MODERATE
+2025-11-20,66839,2,MODERATE
+2025-11-21,60098,2,MODERATE
+2025-11-22,75082,3,BUSY
+2025-11-23,78974,3,BUSY
+2025-11-24,68615,2,MODERATE
+2025-11-25,73677,3,BUSY
+2025-11-26,73670,3,BUSY
+2025-11-27,59548,1,LIGHT
+2025-11-28,70044,3,BUSY
+2025-11-29,79791,3,BUSY
+2025-11-30,68187,2,MODERATE
+2025-12-01,70345,3,BUSY
+2025-12-02,64684,2,MODERATE
+2025-12-03,63887,2,MODERATE
+2025-12-04,51082,1,LIGHT
+2025-12-06,82007,4,HEAVY
+2025-12-07,75343,3,BUSY
+2025-12-08,71142,3,BUSY
+2025-12-09,70901,3,BUSY
+2025-12-10,68165,2,MODERATE
+2025-12-11,64367,2,MODERATE
+2025-12-12,67202,2,MODERATE
+2025-12-13,80113,4,HEAVY
+2025-12-14,81348,4,HEAVY
+2025-12-15,70251,3,BUSY
+2025-12-16,63738,2,MODERATE
+2025-12-17,66389,2,MODERATE
+2025-12-18,61582,2,MODERATE
+2025-12-19,64729,2,MODERATE
+2025-12-20,78466,3,BUSY
+2025-12-21,76903,3,BUSY
+2025-12-22,60764,2,MODERATE
+2025-12-23,61583,2,MODERATE
+2025-12-24,73524,3,BUSY
+2025-12-25,72355,3,BUSY
+2025-12-26,72487,3,BUSY
+2025-12-27,91147,5,EXTREME
+2025-12-28,85823,4,HEAVY
+2025-12-29,59631,1,LIGHT
+2025-12-30,67053,2,MODERATE
+2025-12-31,70256,3,BUSY
+2026-01-01,65225,2,MODERATE
+2026-01-02,83032,4,HEAVY
+2026-01-03,88662,4,HEAVY
+2026-01-04,85179,4,HEAVY
+2026-01-05,82650,4,HEAVY
+2026-01-06,82022,4,HEAVY
+2026-01-07,85752,4,HEAVY
+2026-01-08,73580,3,BUSY
+2026-01-09,67678,2,MODERATE
+2026-01-10,76820,3,BUSY
+2026-01-11,76447,3,BUSY
+2026-01-12,68542,2,MODERATE
+2026-01-13,73014,3,BUSY
+2026-01-14,76289,3,BUSY
+2026-01-15,64064,2,MODERATE
+2026-01-16,78733,3,BUSY
+2026-01-17,83576,4,HEAVY
+2026-01-18,84058,4,HEAVY
+2026-01-19,79098,3,BUSY
+2026-01-20,73788,3,BUSY
+2026-01-21,74056,3,BUSY
+2026-01-22,64571,2,MODERATE
+2026-01-23,69726,2,MODERATE
+2026-01-24,76654,3,BUSY
+2026-01-25,84014,4,HEAVY
+2026-01-26,75791,3,BUSY
+2026-01-27,77049,3,BUSY
+2026-01-28,72637,3,BUSY
+2026-01-29,61315,2,MODERATE
+2026-01-30,69254,2,MODERATE
+2026-01-31,76935,3,BUSY
+2026-02-01,74192,3,BUSY
+2026-02-02,69262,2,MODERATE
+2026-02-03,69389,2,MODERATE
+2026-02-04,68586,2,MODERATE
+2026-02-05,61655,2,MODERATE
+2026-02-06,67085,2,MODERATE
+2026-02-07,81777,4,HEAVY
+2026-02-08,81894,4,HEAVY
+2026-02-09,74130,3,BUSY
+2026-02-11,73652,3,BUSY
+2026-02-12,61632,2,MODERATE
+2026-02-13,64222,2,MODERATE

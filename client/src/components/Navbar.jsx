@@ -15,7 +15,7 @@ export default function Navbar() {
   function closeMenu() { setMobileMenuOpen(false); }
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-inner">
         <NavLink to="/" className="nav-brand-row" onClick={closeMenu}>
           <GiTempleDoor className="temple-icon" />
@@ -41,7 +41,7 @@ export default function Navbar() {
           })}
           <div className="lang-selector">
             <MdLanguage className="lang-icon" />
-            <select value={lang} onChange={(e) => setLang(e.target.value)}>
+            <select value={lang} onChange={(e) => setLang(e.target.value)} aria-label="Select language">
               {SUPPORTED.map((l) => (
                 <option key={l} value={l}>
                   {translations[l]?.flag} {translations[l]?.lang}

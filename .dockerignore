@@ -11,5 +11,6 @@ eda_outputs/
 *.log
 app_gradio.py
 test_*.py
+evaluate_pretrained_ts.py
 *.md
 !README.md

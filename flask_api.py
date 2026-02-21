@@ -21,7 +21,6 @@ import time as _time
 import numpy as np
 import pandas as pd
 import joblib
-import shap
 from datetime import datetime, date, timedelta
 from dotenv import load_dotenv
 load_dotenv()
@@ -44,10 +43,9 @@ log = logging.getLogger(__name__)
 # ═══════════════════════════════════════════════════════════════════════════════
 ART_DIR = pathlib.Path("artefacts/advisory_v5")
 
+gb_model  = joblib.load(ART_DIR / "gb_model.pkl")
 lgb_model = joblib.load(ART_DIR / "lgb_model.pkl")
 xgb_model = joblib.load(ART_DIR / "xgb_model.pkl")
-X_bg = np.load(ART_DIR / "shap_background.npy")
-explainer = shap.TreeExplainer(lgb_model, X_bg)
 
 with open(ART_DIR / "model_meta.json") as f:
     META = json.load(f)
@@ -60,7 +58,14 @@ BAND_NAMES    = META["band_names"]
 FEATURE_LABELS = META["feature_labels"]
 N_BANDS       = META["n_bands"]
 DATA_FILE     = META["data_file"]
-BEST_ALPHA    = HYPER.get("best_alpha", 0.5)
+GB_PARAMS     = HYPER.get("gb", {})
+_ens_w = HYPER.get("ensemble_weights", {"gb": 0.10, "lgb": 0.50, "xgb": 0.40})
+W_GB, W_LGB, W_XGB = _ens_w["gb"], _ens_w["lgb"], _ens_w["xgb"]
+
+# Pre-compute feature statistics for deviation-based explanations
+_feat_means = {}
+_feat_stds  = {}
+_fi_arr     = gb_model.feature_importances_
 
 df_full = pd.read_csv(DATA_FILE, parse_dates=["date"])
 df_full = df_full[df_full.date >= META["post_covid"]].sort_values("date").reset_index(drop=True)
@@ -78,7 +83,7 @@ _pipeline_status = {
 }
 
 # Knowledge bases
-KB_PATH   = pathlib.Path("ttd_knowledge_base.json")
+KB_PATH   = pathlib.Path("data/ttd_knowledge_base.json")
 KB        = json.load(open(KB_PATH, encoding="utf-8"))   if KB_PATH.exists()   else {"categories": []}
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -103,24 +108,42 @@ def pilgrims_to_band(val):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  PREDICTION ENGINE
+#  PREDICTION ENGINE  (Gradient Boosting — feature-importance-based explanations)
 # ═══════════════════════════════════════════════════════════════════════════════
-def _extract_sv_list(shap_values, idx, n_bands):
-    if isinstance(shap_values, list):
-        return [shap_values[c][idx] for c in range(n_bands)]
-    return [shap_values[idx, :, c] for c in range(n_bands)]
+def _rebuild_feature_stats():
+    """Rebuild feature means/stds from current data for deviation-based explanations."""
+    global _feat_means, _feat_stds
+    from train_gb_model import build_features, pilgrims_to_band_vec
+    d_tmp = df_full.copy()
+    d_tmp, _ = build_features(d_tmp)
+    X_tmp = d_tmp[FEATURE_COLS].values
+    _feat_means = {f: X_tmp[:, i].mean() for i, f in enumerate(FEATURE_COLS)}
+    _feat_stds  = {f: X_tmp[:, i].std() + 1e-9 for i, f in enumerate(FEATURE_COLS)}
+
+try:
+    _rebuild_feature_stats()
+except Exception:
+    # Fallback: will use 0 means and 1 stds
+    _feat_means = {f: 0 for f in FEATURE_COLS}
+    _feat_stds  = {f: 1 for f in FEATURE_COLS}
 
 
-def shap_explain_one(sv_list, pred_band, feature_vals, feature_names, fdate=None):
-    sv = sv_list[pred_band]
-    contribs = sorted(zip(feature_names, sv, feature_vals),
-                      key=lambda x: abs(x[1]), reverse=True)
+def importance_explain(feature_vals, feature_names, fdate=None):
+    """Generate human-readable explanations using feature importance + deviation from mean."""
+    scores = []
+    for fi_idx, fname in enumerate(feature_names):
+        fval = feature_vals[fi_idx]
+        z = (fval - _feat_means.get(fname, 0)) / _feat_stds.get(fname, 1)
+        score = _fi_arr[fi_idx] * abs(z)
+        scores.append((fname, score, z, fval))
+    scores.sort(key=lambda x: x[1], reverse=True)
+
     reasons = []
-    for fname, sval, rval in contribs[:3]:
-        if abs(sval) < 0.01:
+    for fname, score, z, rval in scores[:3]:
+        if score < 0.001:
             continue
         label = FEATURE_LABELS.get(fname, fname)
-        direction = "pushes UP" if sval > 0 else "pushes DOWN"
+        direction = "pushes UP" if z > 0 else "pushes DOWN"
         if fdate and fname in ["is_festival", "fest_impact", "is_brahmotsavam",
                                 "is_sankranti"] and rval > 0:
             events = get_events_for_date(fdate.year, fdate.month, fdate.day)
@@ -147,8 +170,8 @@ def shap_explain_one(sv_list, pred_band, feature_vals, feature_names, fdate=None
     return " | ".join(reasons) if reasons else "Typical pattern"
 
 
-def build_single_features(fdate, history_vals, dow_means):
-    """Build feature vector for one date (mirrors crowd_advisory_v5)."""
+def build_single_features(fdate, history_vals, dow_means, month_dow_means=None):
+    """Build feature vector for one date (mirrors train_gb_model.build_features)."""
     row = {}
     row["dow"]        = fdate.weekday()
     row["month"]      = fdate.month
@@ -167,6 +190,13 @@ def build_single_features(fdate, history_vals, dow_means):
     row["rstd7"]  = np.std(history_vals[-7:])  if n >= 7  else 0
     row["rstd14"] = np.std(history_vals[-14:]) if n >= 14 else 0
     row["dow_expanding_mean"] = dow_means.get(fdate.weekday(), 70000)
+
+    # Month×DOW expanding mean (seasonal weekday patterns)
+    if month_dow_means is not None:
+        md_key = fdate.month * 10 + fdate.weekday()
+        row["month_dow_mean"] = month_dow_means.get(md_key, row["dow_expanding_mean"])
+    else:
+        row["month_dow_mean"] = row["dow_expanding_mean"]
 
     row["log_L1"]   = np.log1p(row["L1"])
     row["log_L7"]   = np.log1p(row["L7"])
@@ -190,6 +220,12 @@ def build_single_features(fdate, history_vals, dow_means):
     row["L365"]     = history_vals[idx365] if idx365 >= 0 else history_vals[0]
     row["log_L365"] = np.log1p(row["L365"])
 
+    # Year-over-year growth
+    row["yoy_growth"] = max(-2, min(2, (row["L1"] - row["L365"]) / (row["L365"] + 1e-9)))
+
+    # Month × weekend interaction
+    row["month_weekend"] = row["month"] * row["is_weekend"]
+
     recent = history_vals[-8:-1] if n >= 8 else history_vals[-7:]
     recent_bands = [pilgrims_to_band(v) for v in recent]
     row["heavy_extreme_count7"] = sum(1 for b in recent_bands if b >= 4)
@@ -208,24 +244,65 @@ def build_single_features(fdate, history_vals, dow_means):
     for c in keep_fest:
         row[c] = fest[c].values[0] if c in fest.columns else 0
 
+    # Lunar features (is_pournami, is_amavasya, is_ekadashi) are intentionally
+    # excluded.  hindu_calendar.py only covers 2025-2027; training data spans
+    # 2022-2026, so including these would mean 3+ years of all-zero values —
+    # zero signal, pure noise.  Re-add when the calendar is extended to 2022.
+
     return np.array([[row.get(f, 0) for f in FEATURE_COLS]])
 
 
-def predict_one(fdate, history_vals, dow_means):
-    X = build_single_features(fdate, history_vals, dow_means)
-    lgb_prob = lgb_model.predict_proba(X)
-    xgb_prob = xgb_model.predict_proba(X)
-    vote_prob = BEST_ALPHA * lgb_prob + (1 - BEST_ALPHA) * xgb_prob
-    pred_band = int(vote_prob.argmax(axis=1)[0])
-    conf = float(vote_prob[0][pred_band])
-    shap_vals = explainer.shap_values(X)
-    sv_list = _extract_sv_list(shap_vals, 0, N_BANDS)
-    reason = shap_explain_one(sv_list, pred_band, X[0], FEATURE_COLS, fdate=fdate)
+def predict_one(fdate, history_vals, dow_means, month_dow_means=None):
+    X = build_single_features(fdate, history_vals, dow_means, month_dow_means)
+    # Weighted ensemble: GB(0.10) + LGB(0.50) + XGB(0.40)
+    prob = (
+        W_GB  * gb_model.predict_proba(X) +
+        W_LGB * lgb_model.predict_proba(X) +
+        W_XGB * xgb_model.predict_proba(X)
+    )
+    pred_band = int(prob.argmax(axis=1)[0])
+    conf      = float(prob[0][pred_band])
+    reason    = importance_explain(X[0], FEATURE_COLS, fdate=fdate)
+
+    # ── Festival boost ──────────────────────────────────────────────
+    # is_brahmotsavam / is_vaikuntha_ekadashi are not in FEATURE_COLS
+    # (dropped during feature selection because training lag features
+    # already captured those peaks historically).  For FUTURE dates the
+    # lag history has no memory of upcoming festival boosts, so we
+    # apply a deterministic calendar floor here.
+    from festival_calendar import get_festival_features
+    fest = get_festival_features(fdate)
+    fest_impact    = fest.get("fest_impact", 0)
+    is_brahmo      = fest.get("is_brahmotsavam", 0)
+    is_vaikuntha   = fest.get("is_vaikuntha_ekadashi", 0)
+    is_sankranti   = fest.get("is_sankranti", 0)
+
+    # Brahmotsavams / Vaikuntha Ekadashi / Sankranti → floor at HEAVY (4)
+    if is_brahmo or is_vaikuntha or is_sankranti:
+        if pred_band < 4:          # below HEAVY
+            pred_band = 4
+            conf = max(conf, 0.78)
+            tag = ("Brahmotsavams" if is_brahmo
+                   else "Vaikuntha Ekadashi" if is_vaikuntha
+                   else "Sankranti")
+            reason = f"{tag} (festival floor) | {reason}"
+    # Any other impact=5 festival → floor at BUSY (3)
+    elif fest_impact >= 5 and pred_band < 3:
+        pred_band = 3
+        conf = max(conf, 0.72)
+        reason = f"Major festival (floor) | {reason}"
+    # Summer / Dasara / Winter school holidays → floor at BUSY (3) on weekends
+    elif fest_impact >= 4 and fdate.weekday() >= 5 and pred_band < 3:
+        pred_band = 3
+        conf = max(conf, 0.68)
+        reason = f"Holiday weekend (floor) | {reason}"
+
     return pred_band, conf, reason
 
 
 # ── prediction cache ────────────────────────────────────────────────
-_prediction_cache = {}
+_prediction_cache    = {}
+_CACHE_TTL_SECS      = 6 * 3600   # 6 hours — stale predictions are recomputed
 
 # ── Lookup index for fast actual-data retrieval ─────────────────────
 _actual_data = {}   # date-string → total_pilgrims
@@ -245,11 +322,29 @@ def predict_date_range(start_date, end_date):
     """Return predictions for a date range.
     - Past dates with actual data → use real pilgrim counts (is_actual=True)
     - Today and future dates → use ML prediction (is_actual=False)
+    - Confidence decays for dates far from the last real data point.
     """
     history = list(df_full.total_pilgrims.values)
     dow_means = df_full.groupby(df_full.date.dt.dayofweek)["total_pilgrims"].mean().to_dict()
+    # Month×DOW means for seasonal weekday patterns
+    _tmp = df_full.copy()
+    _tmp["_md_key"] = _tmp.date.dt.month * 10 + _tmp.date.dt.dayofweek
+    month_dow_means = _tmp.groupby("_md_key")["total_pilgrims"].mean().to_dict()
     last_date = df_full.date.max().to_pydatetime()
     today_str = date.today().strftime("%Y-%m-%d")
+
+    # ── Confidence decay for far-future dates ──────────────────────
+    # Autoregressive lag features degrade as we predict further out.
+    # Apply a smooth sigmoid decay: full confidence within 60 days,
+    # gradual decay starting after 60 days, floored at 0.45.
+    def _decay_confidence(raw_conf, days_ahead):
+        if days_ahead <= 60:
+            return raw_conf
+        # Sigmoid decay: halves confidence gap at ~180 days
+        import math
+        decay = 1.0 / (1.0 + math.exp((days_ahead - 180) / 60))
+        floor = 0.45
+        return max(floor, raw_conf * decay)
 
     # Fill gap between data end and start_date (if needed for lag features)
     if start_date > last_date:
@@ -259,19 +354,33 @@ def predict_date_range(start_date, end_date):
             ck = d.strftime("%Y-%m-%d")
             if ck in _actual_data:
                 history.append(_actual_data[ck])
-            elif ck in _prediction_cache:
-                history.append(_prediction_cache[ck]["mid"])
             else:
-                b, c, r = predict_one(d, history, dow_means)
-                mid = (BANDS[b]["lo"] + min(BANDS[b]["hi"], 95000)) / 2
-                _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid}
-                history.append(mid)
+                # Expire stale cache entries so far-future predictions refresh
+                if ck in _prediction_cache and _time.time() - _prediction_cache[ck].get("_ts", 0) > _CACHE_TTL_SECS:
+                    del _prediction_cache[ck]
+                if ck in _prediction_cache:
+                    history.append(_prediction_cache[ck]["mid"])
+                else:
+                    b, c, r = predict_one(d, history, dow_means, month_dow_means)
+                    # Use DOW-seasonal mean clipped to predicted band — preserves
+                    # weekly variation in the autoregressive lag chain instead of
+                    # collapsing to a constant band midpoint after many steps.
+                    band_lo  = BANDS[b]["lo"]
+                    band_hi  = min(BANDS[b]["hi"], 95000)
+                    dow_est  = dow_means.get(d.weekday(), (band_lo + band_hi) / 2)
+                    mid      = max(band_lo, min(band_hi, dow_est))
+                    _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid, "_ts": _time.time()}
+                    history.append(mid)
 
     results = []
     total_days = (end_date - start_date).days + 1
     for i in range(total_days):
         fdate = start_date + timedelta(days=i)
         ck = fdate.strftime("%Y-%m-%d")
+
+        # Expire stale cache entries so predictions refresh periodically
+        if ck in _prediction_cache and _time.time() - _prediction_cache[ck].get("_ts", 0) > _CACHE_TTL_SECS:
+            del _prediction_cache[ck]
 
         # If actual data exists for this date → use it
         if ck in _actual_data:
@@ -285,16 +394,26 @@ def predict_date_range(start_date, end_date):
             history.append(actual_val)
         elif ck in _prediction_cache:
             cached = _prediction_cache[ck]
+            days_ahead = (fdate - last_date).days
+            decayed_conf = _decay_confidence(cached["conf"], days_ahead)
             results.append({
                 "date": fdate, "band": cached["band"],
-                "conf": cached["conf"], "reason": cached["reason"],
+                "conf": decayed_conf, "reason": cached["reason"],
                 "pilgrims": cached["mid"], "is_actual": False,
             })
             history.append(cached["mid"])
         else:
-            b, c, r = predict_one(fdate, history, dow_means)
-            mid = (BANDS[b]["lo"] + min(BANDS[b]["hi"], 95000)) / 2
-            _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid}
+            b, c, r = predict_one(fdate, history, dow_means, month_dow_means)
+            days_ahead = (fdate - last_date).days
+            c = _decay_confidence(c, days_ahead)
+            # Use DOW-seasonal mean clipped to predicted band (not a constant
+            # band midpoint) so the autoregressive lag chain retains weekly
+            # variation even hundreds of steps into the future.
+            band_lo  = BANDS[b]["lo"]
+            band_hi  = min(BANDS[b]["hi"], 95000)
+            dow_est  = dow_means.get(fdate.weekday(), (band_lo + band_hi) / 2)
+            mid      = max(band_lo, min(band_hi, dow_est))
+            _prediction_cache[ck] = {"band": b, "conf": c, "reason": r, "mid": mid, "_ts": _time.time()}
             results.append({
                 "date": fdate, "band": b, "conf": c, "reason": r,
                 "pilgrims": mid, "is_actual": False,
@@ -309,7 +428,7 @@ def predict_date_range(start_date, end_date):
 def _daily_pipeline_job():
     """Scrape new data, warm-start retrain, and hot-reload models.
     Called by APScheduler daily at 6:00 AM IST (00:30 UTC)."""
-    global df_full, lgb_model, xgb_model, X_bg, explainer
+    global df_full, gb_model, lgb_model, xgb_model
     global _prediction_cache, _actual_data
 
     with _pipeline_lock:
@@ -363,112 +482,63 @@ def _daily_pipeline_job():
 
 
 def _online_retrain():
-    """Warm-start retrain LGB+XGB on updated data and hot-reload."""
-    global lgb_model, xgb_model, X_bg, explainer
+    """Warm-start retrain all 3 models on updated data and hot-reload ensemble."""
+    global gb_model, lgb_model, xgb_model, _fi_arr
 
+    from sklearn.ensemble import GradientBoostingClassifier
+    from sklearn.metrics import accuracy_score
+    from train_gb_model import build_features, pilgrims_to_band_vec
+    from collections import Counter
     import lightgbm as lgb_lib
     import xgboost as xgb_lib
-    from festival_calendar import get_festival_features_series as gffs
-    from crowd_advisory_v5 import pilgrims_to_band_vec
 
     d = df_full.copy()
-    y_col = "total_pilgrims"
-
-    # Build features (mirrors daily_pipeline.py step2)
-    d["dow"]        = d.date.dt.dayofweek
-    d["month"]      = d.date.dt.month
-    d["is_weekend"] = (d.dow >= 5).astype(int)
-    doy = d.date.dt.dayofyear
-    d["sin_doy"] = np.sin(2 * np.pi * doy / 365.25)
-    d["cos_doy"] = np.cos(2 * np.pi * doy / 365.25)
-
-    for lag in [1, 2, 7, 14, 21, 28]:
-        d[f"L{lag}"] = d[y_col].shift(lag)
-    past = d[y_col].shift(1)
-    for w in [7, 14, 30]:
-        d[f"rm{w}"] = past.rolling(w).mean()
-    d["rstd7"]  = past.rolling(7).std()
-    d["rstd14"] = past.rolling(14).std()
-    d["dow_expanding_mean"] = d.groupby("dow")[y_col].transform(
-        lambda s: s.shift(1).expanding().mean()
-    )
-    d["log_L1"]   = np.log1p(d["L1"])
-    d["log_L7"]   = np.log1p(d["L7"])
-    d["log_rm7"]  = np.log1p(d["rm7"])
-    d["log_rm30"] = np.log1p(d["rm30"])
-    d["momentum_7"] = d["L1"] - d["L7"]
-    d["dow_dev"]    = d["L1"] - d["dow_expanding_mean"]
-    d["month_dow"]    = d["month"] * 10 + d["dow"]
-    d["ewm7"]         = past.ewm(span=7).mean()
-    d["ewm14"]        = past.ewm(span=14).mean()
-    d["trend_7_14"]   = d["rm7"] - d["rm14"]
-    d["trend_7_30"]   = d["rm7"] - d["rm30"]
-    d["week_of_year"] = d.date.dt.isocalendar().week.astype(int)
-    d["L365"]         = d[y_col].shift(365)
-    d["log_L365"]     = np.log1p(d["L365"])
-
-    band_series = pilgrims_to_band_vec(d[y_col].shift(1).fillna(0).values)
-    band_s = pd.Series(band_series)
-    d["heavy_extreme_count7"] = (band_s >= 4).astype(int).rolling(7, min_periods=1).sum().values
-    d["light_quiet_count7"]   = (band_s <= 1).astype(int).rolling(7, min_periods=1).sum().values
-
-    fest = gffs(d.date)
-    keep_fest = [
-        "is_festival", "fest_impact", "is_brahmotsavam", "is_sankranti",
-        "is_summer_holiday", "is_dasara_holiday", "is_national_holiday",
-        "days_to_fest", "days_from_fest", "fest_window_7",
-        "is_vaikuntha_ekadashi", "is_dussehra_period", "is_diwali",
-        "is_navaratri", "is_janmashtami", "is_ugadi", "is_rathasapthami",
-        "is_ramanavami", "is_shivaratri", "is_winter_holiday",
-        "fest_window_3",
-    ]
-    for c in keep_fest:
-        if c in fest.columns:
-            d[c] = fest[c].values
-
-    d["band"] = np.array([pilgrims_to_band(v) for v in d[y_col].values])
-    d = d.dropna().reset_index(drop=True)
+    d, _ = build_features(d)
 
     X = d[FEATURE_COLS].values
     y = d["band"].values
 
-    # LGB warm-start
-    lgb_params = HYPER["lgb"].copy()
-    lgb_params["n_estimators"] = min(lgb_params.get("n_estimators", 200), 100)
-    new_lgb = lgb_lib.LGBMClassifier(
-        **lgb_params, objective="multiclass",
-        num_class=N_BANDS, verbosity=-1, random_state=42
-    )
+    # Class weights for balanced training
+    class_counts = Counter(y)
+    n_samples = len(y)
+    n_classes = len(class_counts)
+    cw = {c: n_samples / (n_classes * cnt) for c, cnt in class_counts.items()}
+    sw = np.array([cw[yi] for yi in y])
+
+    # ── GB: full retrain with saved hyperparams ──
+    new_gb = GradientBoostingClassifier(**GB_PARAMS.copy(), random_state=42)
+    new_gb.fit(X, y, sample_weight=sw)
+
+    # ── LGB: warm-start (init_model continues training) ──
+    lgb_params = HYPER.get("lgb", {}).copy()
+    lgb_params["n_estimators"] = min(lgb_params.get("n_estimators", 300), 100)
+    new_lgb = lgb_lib.LGBMClassifier(**lgb_params, objective="multiclass",
+                                      num_class=N_BANDS, verbosity=-1, random_state=42)
     new_lgb.fit(X, y, init_model=lgb_model)
 
-    # XGB warm-start
-    xgb_params = HYPER["xgb"].copy()
-    xgb_params["n_estimators"] = min(xgb_params.get("n_estimators", 200), 100)
-    new_xgb = xgb_lib.XGBClassifier(
-        **xgb_params, objective="multi:softprob",
-        num_class=N_BANDS, verbosity=0, random_state=42,
-        use_label_encoder=False
-    )
+    # ── XGB: warm-start (xgb_model continues training) ──
+    xgb_params = HYPER.get("xgb", {}).copy()
+    xgb_params["n_estimators"] = min(xgb_params.get("n_estimators", 300), 100)
+    new_xgb = xgb_lib.XGBClassifier(**xgb_params, objective="multi:softprob",
+                                      num_class=N_BANDS, verbosity=0, random_state=42)
     new_xgb.fit(X, y, xgb_model=xgb_model.get_booster())
 
-    # Quick validation on last 30 days
-    from sklearn.metrics import accuracy_score
+    # ── Ensemble validation on last 30 days ──
     X_val, y_val = X[-30:], y[-30:]
-    vote = (BEST_ALPHA * new_lgb.predict_proba(X_val) +
-            (1 - BEST_ALPHA) * new_xgb.predict_proba(X_val)).argmax(1)
-    exact = accuracy_score(y_val, vote)
-    adj = np.mean(np.abs(vote - y_val) <= 1)
-    log.info(f"[Pipeline]   Validation (last 30): exact={exact*100:.1f}%  adj={adj*100:.1f}%")
+    ens_prob = (
+        W_GB  * new_gb.predict_proba(X_val) +
+        W_LGB * new_lgb.predict_proba(X_val) +
+        W_XGB * new_xgb.predict_proba(X_val)
+    )
+    pred = ens_prob.argmax(axis=1)
+    exact = accuracy_score(y_val, pred)
+    adj = np.mean(np.abs(pred - y_val) <= 1)
+    log.info(f"[Pipeline]   Ensemble validation (last 30): exact={exact*100:.1f}%  adj={adj*100:.1f}%")
 
-    # Save models to disk
+    # ── Save all 3 models to disk ──
+    joblib.dump(new_gb,  ART_DIR / "gb_model.pkl")
     joblib.dump(new_lgb, ART_DIR / "lgb_model.pkl")
     joblib.dump(new_xgb, ART_DIR / "xgb_model.pkl")
-
-    # New SHAP background
-    bg_size = min(200, len(X))
-    bg_idx = np.random.choice(len(X), bg_size, replace=False)
-    new_bg = X[bg_idx]
-    np.save(ART_DIR / "shap_background.npy", new_bg)
 
     # Update meta
     with open(ART_DIR / "model_meta.json") as f:
@@ -480,11 +550,12 @@ def _online_retrain():
         json.dump(meta, f, indent=2)
 
     # Hot-reload into globals
+    gb_model  = new_gb
     lgb_model = new_lgb
     xgb_model = new_xgb
-    X_bg = new_bg
-    explainer = shap.TreeExplainer(lgb_model, X_bg)
-    log.info("[Pipeline]   Models hot-reloaded into memory")
+    _fi_arr = gb_model.feature_importances_
+    _rebuild_feature_stats()
+    log.info("[Pipeline]   GB model hot-reloaded into memory")
 
 
 def _start_scheduler():
@@ -526,13 +597,16 @@ def _start_scheduler():
 #  LLM CHATBOT (RAG with ChromaDB + HuggingFace)
 # ═══════════════════════════════════════════════════════════════════════════════
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-_KB_PATH = os.path.join(BASE_DIR, "ttd_knowledge_base.json")
+_KB_PATH = os.path.join(BASE_DIR, "data", "ttd_knowledge_base.json")
 _VECTORDB_DIR = os.path.join(BASE_DIR, "vectordb")
 _knowledge_base = None
 
-# ── LLM provider globals (HuggingFace — chatbot only) ──
-_hf_chat_client = None     # HF client for chatbot (RAG Q&A)
+# ── LLM provider globals (Groq primary, HuggingFace fallback) ──
+_groq_client = None        # Groq client (primary)
+_groq_model = None         # Groq model name
+_hf_chat_client = None     # HF client for chatbot (fallback)
 _hf_chat_model = None      # Model name for chatbot
+_llm_provider = None       # "groq" | "hf" | None
 _chat_available = False
 _chroma_collection = None
 _rag_available = False
@@ -578,17 +652,40 @@ def _init_vectordb():
 
 
 def _init_llm():
-    """Initialize HuggingFace LLM client for chatbot."""
+    """Initialize LLM client: try Groq first (fast, free), fall back to HuggingFace."""
+    global _groq_client, _groq_model
     global _hf_chat_client, _hf_chat_model
-    global _chat_available
+    global _chat_available, _llm_provider
 
+    # ── Try Groq first (recommended — fast, free, supports Llama-3.3-70B) ──
+    groq_key = os.environ.get("GROQ_API_KEY", "").strip()
+    if groq_key:
+        try:
+            from groq import Groq
+            _groq_model = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+            _groq_client = Groq(api_key=groq_key)
+            # Quick test
+            _groq_client.chat.completions.create(
+                model=_groq_model,
+                messages=[{"role": "user", "content": "hi"}],
+                max_tokens=5,
+            )
+            _chat_available = True
+            _llm_provider = "groq"
+            logging.info("Chatbot LLM ready (Groq): %s", _groq_model)
+            return
+        except ImportError:
+            logging.warning("groq package not installed — trying HuggingFace fallback")
+        except Exception as e:
+            logging.warning("Groq init failed: %s — trying HuggingFace fallback", e)
+
+    # ── Fallback: HuggingFace Inference API ──
     try:
         from huggingface_hub import InferenceClient
     except ImportError:
-        logging.error("huggingface_hub not installed")
+        logging.error("Neither groq nor huggingface_hub installed — chatbot disabled")
         return
 
-    # ── Chatbot model (knowledge Q&A -- fast, accurate) ──
     chat_token = os.environ.get("HF_TOKEN_CHAT", os.environ.get("HF_TOKEN", "")) or None
     _hf_chat_model = os.environ.get("HF_MODEL_CHAT", "meta-llama/Llama-3.3-70B-Instruct")
     try:
@@ -599,9 +696,10 @@ def _init_llm():
             max_tokens=5,
         )
         _chat_available = True
-        logging.info("Chatbot LLM ready: %s", _hf_chat_model)
+        _llm_provider = "hf"
+        logging.info("Chatbot LLM ready (HF): %s", _hf_chat_model)
     except Exception as e:
-        logging.error("Chatbot LLM init failed: %s", e)
+        logging.error("HuggingFace chatbot LLM init also failed: %s — chatbot will use keyword fallback", e)
 
 
 # Initialize on import
@@ -628,14 +726,33 @@ def _retrieve_context(query: str, n_results: int = 8) -> str:
         return ""
 
 
-def _build_rag_prompt(user_message: str) -> str:
+def _build_rag_prompt(user_message: str, lang: str = "en") -> str:
     """Build a RAG-augmented system prompt: retrieve relevant chunks then combine with instructions."""
     context = _retrieve_context(user_message)
+
+    LANG_NAMES = {
+        "te": "Telugu", "en": "English", "hi": "Hindi",
+        "ta": "Tamil", "ml": "Malayalam", "kn": "Kannada",
+    }
+    lang_name = LANG_NAMES.get(lang, "English")
+
     return textwrap.dedent(f"""\
     You are the official TTD (Tirumala Tirupati Devasthanams) AI Assistant -- "Srivari Seva Bot".
     You help devotees with accurate, detailed information about the Tirumala Venkateswara Temple,
     darshan types & tickets, sevas & costs, accommodation & hotels, travel & transport,
     festivals, temple history & legend, dress code, do's & don'ts, and trip planning.
+
+    CRITICAL LANGUAGE INSTRUCTION:
+    The user's selected language is **{lang_name}** (code: {lang}).
+    You MUST respond ENTIRELY in **{lang_name}** script and language.
+    - If {lang_name} is Telugu, write in Telugu script (తెలుగు).
+    - If {lang_name} is Tamil, write in Tamil script (தமிழ்).
+    - If {lang_name} is Malayalam, write in Malayalam script (മലയാളം).
+    - If {lang_name} is Kannada, write in Kannada script (ಕನ್ನಡ).
+    - If {lang_name} is Hindi, write in Devanagari script (हिन्दी).
+    - If {lang_name} is English, write in English.
+    Do NOT mix languages. Do NOT default to English unless the user's language is English.
+    Proper nouns like "Tirumala", "TTD", "Venkateswara" can remain in English/original form.
 
     GUIDELINES:
     - Be warm, respectful, and devotional in tone. Start with a namaskaram when appropriate.
@@ -644,7 +761,6 @@ def _build_rag_prompt(user_message: str) -> str:
     - If the context doesn't contain the answer, say so politely and suggest visiting tirumala.org.
     - Keep answers concise (2-4 paragraphs max) but rich with detail.
     - Use emojis sparingly for warmth.
-    - Answer in the same language as the user's question (Telugu, Hindi, or English).
     - Format with bullet points or numbered lists when listing multiple items.
     - NEVER make up information not present in the context.
 
@@ -661,29 +777,46 @@ _LLM_CIRCUIT_THRESHOLD = 2   # failures before tripping
 _LLM_CIRCUIT_COOLDOWN = 300  # seconds to skip after tripping (5 min)
 
 
-def _hf_call(client, model: str, system_prompt: str, user_message: str,
-             max_tokens: int = 1500, temperature: float = 0.5) -> str:
-    """HuggingFace Inference API call with circuit breaker + 2 retries."""
-    if not client:
+def _llm_call(system_prompt: str, user_message: str,
+              max_tokens: int = 1500, temperature: float = 0.5) -> str:
+    """Call the active LLM provider (Groq or HF) with circuit breaker + retries."""
+    if _llm_provider == "groq" and _groq_client:
+        model = _groq_model
+    elif _llm_provider == "hf" and _hf_chat_client:
+        model = _hf_chat_model
+    else:
         return ""
+
     # Circuit breaker: skip if recently failing
     now = _time.time()
     if model in _llm_fail_until and now < _llm_fail_until[model]:
         remaining = int(_llm_fail_until[model] - now)
         logging.info("Circuit breaker OPEN for %s — skipping LLM (retry in %ds)", model, remaining)
         return ""
+
     last_err = None
-    for attempt in range(2):  # Only 2 attempts (not 3) for faster fallback
+    for attempt in range(2):
         try:
-            resp = client.chat_completion(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_message},
-                ],
-                max_tokens=max_tokens,
-                temperature=temperature,
-            )
+            if _llm_provider == "groq":
+                resp = _groq_client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message},
+                    ],
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                )
+            else:
+                resp = _hf_chat_client.chat_completion(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message},
+                    ],
+                    max_tokens=max_tokens,
+                    temperature=temperature,
+                )
             # Success — reset circuit breaker
             _llm_fail_counts[model] = 0
             if model in _llm_fail_until:
@@ -692,25 +825,25 @@ def _hf_call(client, model: str, system_prompt: str, user_message: str,
         except Exception as e:
             last_err = e
             wait = 2 ** attempt
-            logging.warning("HF %s attempt %d failed: %s -- retry in %ds", model, attempt + 1, e, wait)
+            logging.warning("LLM %s attempt %d failed: %s -- retry in %ds", model, attempt + 1, e, wait)
             _time.sleep(wait)
+
     # All retries failed — update circuit breaker
     _llm_fail_counts[model] = _llm_fail_counts.get(model, 0) + 1
     if _llm_fail_counts[model] >= _LLM_CIRCUIT_THRESHOLD:
         _llm_fail_until[model] = now + _LLM_CIRCUIT_COOLDOWN
         logging.warning("Circuit breaker TRIPPED for %s — skipping for %ds", model, _LLM_CIRCUIT_COOLDOWN)
-    logging.error("HF %s failed after 2 retries: %s", model, last_err)
+    logging.error("LLM %s failed after 2 retries: %s", model, last_err)
     return ""
 
 
-def _chatbot_respond(user_message):
+def _chatbot_respond(user_message, lang="en"):
     """RAG-powered chatbot: vector retrieval + LLM."""
     if not _chat_available:
         return _fallback_chatbot(user_message)
     try:
-        system_prompt = _build_rag_prompt(user_message)
-        reply = _hf_call(_hf_chat_client, _hf_chat_model,
-                         system_prompt, user_message, max_tokens=1500, temperature=0.5)
+        system_prompt = _build_rag_prompt(user_message, lang=lang)
+        reply = _llm_call(system_prompt, user_message, max_tokens=1500, temperature=0.5)
         if not reply:
             return _fallback_chatbot(user_message)
         source = "rag" if _rag_available else "llm"
@@ -905,7 +1038,7 @@ def api_model_info():
         "bands": BANDS,
         "data_end": df_full.date.max().strftime("%Y-%m-%d"),
         "data_rows": len(df_full),
-        "best_alpha": BEST_ALPHA,
+        "model_type": META.get("model_type", "GradientBoosting"),
         "last_retrain": META.get("last_retrain", ""),
         "band_colors": BAND_COLORS,
         "band_bg": BAND_BG,
@@ -980,6 +1113,9 @@ def api_calendar(year, month):
 def api_chat():
     data = request.json or {}
     message = data.get("message", "").strip()
+    lang = data.get("lang", "en").strip()
+    if lang not in ("te", "en", "hi", "ta", "ml", "kn"):
+        lang = "en"
     if not message:
         return jsonify({"reply": "Please enter a question.", "source": "error"})
 
@@ -1026,7 +1162,7 @@ def api_chat():
             })
 
     # RAG + LLM chatbot
-    result = _chatbot_respond(message)
+    result = _chatbot_respond(message, lang=lang)
     if isinstance(result, tuple):
         reply, source = result
     else:
@@ -1141,7 +1277,7 @@ if __name__ == "__main__":
     print("  TIRUMALA CROWD ADVISORY - Flask API")
     print(f"  Data: {len(df_full)} days  ({df_full.date.min().date()} to {df_full.date.max().date()})")
     print(f"  Features: {len(FEATURE_COLS)}  |  Bands: {N_BANDS}")
-    print(f"  Alpha: {BEST_ALPHA}  (LGB={BEST_ALPHA:.0%}, XGB={1-BEST_ALPHA:.0%})")
+    print(f"  Model: Ensemble (GB×{W_GB:.0%} + LGB×{W_LGB:.0%} + XGB×{W_XGB:.0%})")
     print(f"  Daily automation: scrape + retrain at 12:30 PM IST")
     print("=" * 60)
     app.run(host="0.0.0.0", port=port, debug=False)

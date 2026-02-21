@@ -22,6 +22,7 @@ chromadb
 sentence-transformers
 
 # LLM
+groq
 huggingface-hub
 python-dotenv
 

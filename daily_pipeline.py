@@ -34,7 +34,7 @@ def LOG(msg): print(f"[{time.time()-T0:6.1f}s] {msg}", flush=True)
 
 # ─── Config ─────────────────────────────────────────────────────────
 ART_DIR   = pathlib.Path("artefacts/advisory_v5")
-DATA_FILE = "tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv"
+DATA_FILE = "data/tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv"
 POST_COVID = "2022-02-01"
 
 BANDS = [
@@ -124,7 +124,7 @@ def step2_build_features():
     d["log_L365"]     = np.log1p(d["L365"])
 
     # Rolling band regime counts (lagged)
-    from crowd_advisory_v5 import pilgrims_to_band_vec
+    from train_gb_model import pilgrims_to_band_vec
     band_series = pilgrims_to_band_vec(d[y_col].shift(1).fillna(0).values)
     band_s = pd.Series(band_series)
     d["heavy_extreme_count7"] = (band_s >= 4).astype(int).rolling(7, min_periods=1).sum().values
@@ -321,8 +321,8 @@ def main():
 
     # Step 3: Retrain
     if args.full_retrain:
-        LOG("Full retrain requested — running crowd_advisory_v5.py ...")
-        os.system("python crowd_advisory_v5.py")
+        LOG("Full retrain requested — running train_gb_model.py ...")
+        os.system("python train_gb_model.py --trials 80 --walkforward")
     else:
         lgb_m, xgb_m = step3_online_retrain(d, feature_cols)
 
