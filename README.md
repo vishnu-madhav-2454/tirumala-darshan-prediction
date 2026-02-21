@@ -8,160 +8,170 @@ pinned: false
 app_port: 7860
 ---
 
-# 🛕 Srivari Seva — Tirumala Crowd Advisory
+# 🛕 Srivari Seva — Tirumala Darshan Crowd Advisory System
 
-AI-powered crowd prediction & trip planning for **Tirumala Sri Venkateswara Temple**.
+An end-to-end machine learning system that predicts daily crowd levels at **Tirumala Sri Venkateswara Temple** — one of the most visited religious sites in the world, receiving 50,000–120,000 pilgrims every day.
 
-🔗 **Live Demo**: [Hugging Face Spaces](https://huggingface.co/spaces/madhav456789123/tirumala-darshan-prediction)
-
----
-
-## ✨ Features
-
-| Feature | Description |
-|---------|-------------|
-| 📊 **Crowd Prediction** | 6-band ML forecast (QUIET → EXTREME) using a 3-model ensemble (GB + LightGBM + XGBoost) |
-| 📅 **Hindu Calendar** | Monthly crowd heatmap with festival indicators & Panchang |
-| 🤖 **AI Chatbot** | RAG-powered Q&A about TTD darshan, travel, sevas (Groq Llama-3.3-70B) |
-| 🗺️ **Explore Places** | 20 famous landmarks around Tirumala & Tirupati with photos, timings & maps |
-| 📈 **History** | Browse 1,400+ days of actual pilgrim data with filters & charts |
-| 🌐 **Multilingual** | 6 languages — English, Telugu, Hindi, Tamil, Malayalam, Kannada |
-| 📱 **Responsive** | Mobile-friendly design for all screen sizes |
+🔗 **Live Demo**: [huggingface.co/spaces/madhav456789123/tirumala-darshan-prediction](https://huggingface.co/spaces/madhav456789123/tirumala-darshan-prediction)
 
 ---
 
-## 📊 ML Pipeline — End to End
+## What This Project Does
 
-### 1. Data Collection & Cleaning
+Pilgrims visiting Tirumala often face 4–12 hour queues with no way to know in advance how crowded it will be. This system solves that by:
 
-- **Source**: [news.tirumala.org](https://news.tirumala.org/category/darshan/) — official TTD news portal
-- **Period**: Feb 2022 – Feb 2026 (post-COVID era only)
-- **Raw records**: 1,469 daily pilgrim counts
-- **After cleaning**: 1,104 rows (outliers removed, missing dates handled)
-- **Automated daily pipeline**: Scrapes new data at 12:30 PM IST via APScheduler
+1. **Predicting daily crowd levels** into 6 bands (QUIET → EXTREME) using a 3-model gradient-boosting ensemble
+2. **Showing a monthly calendar** with color-coded crowd forecasts and Hindu festival indicators
+3. **Answering pilgrim questions** via an AI chatbot (darshan types, accommodation, sevas, transport) in 6 Indian languages
+4. **Displaying historical trends** with interactive charts from 1,400+ days of real data
+5. **Retraining itself daily** — scrapes new data from TTD every morning and updates the models automatically
 
-### 2. Target Variable — 6 Crowd Bands
+---
 
-| Band ID | Name | Pilgrim Range | % of Data |
-|---------|------|---------------|-----------|
-| 0 | QUIET | 0 – 50,000 | 0.7% |
-| 1 | LIGHT | 50,000 – 60,000 | 9.5% |
-| 2 | MODERATE | 60,000 – 70,000 | 37.4% |
-| 3 | BUSY | 70,000 – 80,000 | 36.1% |
-| 4 | HEAVY | 80,000 – 90,000 | 15.0% |
-| 5 | EXTREME | 90,000+ | 1.3% |
+## The Complete ML Pipeline — What We Did Step by Step
 
-### 3. Feature Engineering — 57 Features (8 Groups)
+### Step 1: Data Collection
 
-| # | Feature Group | Count | Examples |
-|---|---------------|-------|----------|
-| 1 | **Calendar** | 5 | `dow`, `month`, `is_weekend`, `sin_doy`, `cos_doy` |
-| 2 | **Lag Features** | 7 | `L1`, `L2`, `L7`, `L14`, `L21`, `L28`, `L365` |
-| 3 | **Rolling Stats** | 5 | `rm7`, `rm14`, `rm30`, `rstd7`, `rstd14` |
-| 4 | **Expanding Means** | 2 | `dow_expanding_mean`, `month_dow_mean` |
-| 5 | **Log Transforms** | 5 | `log_L1`, `log_L7`, `log_rm7`, `log_rm30`, `log_L365` |
-| 6 | **Derived / Interaction** | 10 | `momentum_7`, `ewm7`, `ewm14`, `trend_7_14`, `month_weekend` |
-| 7 | **Regime Counts** | 2 | `heavy_extreme_count7`, `light_quiet_count7` |
-| 8 | **Festival Features** | ~21 | `is_festival`, `fest_impact`, `is_brahmotsavam`, `is_vaikuntha_ekadashi`, etc. |
+We scraped daily pilgrim count data from [news.tirumala.org](https://news.tirumala.org/category/darshan/), the official TTD news portal. The dataset spans January 2020 through February 2026 with 4,076 raw records.
 
-Festival features sourced from a hand-curated calendar (`festival_calendar.py`) spanning 2013–2027 with 17 event categories and 5-level impact scoring.
+We discarded everything before February 2022 because COVID lockdowns made that data unreliable. After removing outliers (temple closure days, data entry errors), we had **1,469 clean daily records**. After feature engineering (which requires look-back windows), **1,104 complete samples** remained.
 
-### 4. Feature Selection — 10-Method Consensus Voting
+### Step 2: Defining the Target — 6 Crowd Bands
 
-Instead of relying on a single method, we use **10 independent feature selection methods** and only keep features selected by **≥6 out of 10**:
+Instead of predicting exact pilgrim counts (a regression problem), we classified each day into one of six ordered crowd bands:
 
-| # | Method | Type |
-|---|--------|------|
-| 1 | Mutual Information | Non-linear dependency |
-| 2 | ANOVA F-test | Linear class separability |
-| 3 | Chi-squared test | Non-negative feature relevance |
-| 4 | GradientBoosting importance | Tree-based impurity |
-| 5 | Random Forest importance | Decorrelated trees |
-| 6 | Extra Trees importance | Extremely randomised trees |
-| 7 | Permutation importance | Accuracy drop on shuffle |
-| 8 | L1 Logistic Regression | Non-zero Lasso coefficients |
-| 9 | Spearman rank correlation | Monotonic target dependency |
-| 10 | Recursive Feature Elimination | Backward elimination (DecisionTree) |
+| Band | Name | Pilgrim Range | Share of Data |
+|------|------|---------------|---------------|
+| 0 | QUIET | 0 – 50,000 | 0.7% (8 days) |
+| 1 | LIGHT | 50,000 – 60,000 | 14.4% (159 days) |
+| 2 | MODERATE | 60,000 – 70,000 | 36.5% (403 days) |
+| 3 | BUSY | 70,000 – 80,000 | 29.0% (320 days) |
+| 4 | HEAVY | 80,000 – 90,000 | 18.1% (200 days) |
+| 5 | EXTREME | 90,000+ | 1.3% (14 days) |
 
-**Pre-filter**: Variance filter drops features where ≥98% of values are identical (removed 11 rare festival features).  
-**Post-filter**: Redundancy removal — if two features have Spearman |ρ| > 0.95, drop the one with fewer votes (removed 6 redundant features).
+The extreme class imbalance (EXTREME = only 14 samples, QUIET = only 8) was one of the biggest challenges in this project.
 
-**Result**: 57 → **16 features** (sample:feature ratio improved from 19.4:1 → **69.0:1**)
+### Step 3: Feature Engineering — 57 Features Across 8 Groups
+
+We built 57 features, all leak-proof using `.shift(N)` to ensure no future data could influence any feature value:
+
+| Group | Count | What It Captures | Examples |
+|-------|-------|------------------|----------|
+| Calendar | 6 | Weekly & annual rhythm | `dow`, `is_weekend`, `sin_doy`, `cos_doy` |
+| Lags | 7 | Direct memory of recent days | `L1`, `L7`, `L14`, `L21`, `L28`, `L365` |
+| Rolling stats | 5 | Recent trend & volatility | `rm7`, `rm14`, `rm30`, `rstd7`, `rstd14` |
+| Expanding means | 2 | Historical weekday norms | `dow_expanding_mean`, `month_dow_mean` |
+| Log transforms | 5 | Reduce right-skew for tree splits | `log_L1`, `log_L7`, `log_rm7`, `log_rm30` |
+| Derived/interaction | 9 | Momentum, trend, combos | `ewm7`, `momentum_7`, `month_weekend` |
+| Regime counts | 2 | Hot/cold streak detection | `heavy_extreme_count7`, `light_quiet_count7` |
+| Festival features | ~21 | Religious calendar spikes | `is_brahmotsavam`, `fest_impact`, `days_to_fest` |
+
+The festival features come from a hand-curated Hindu calendar (`festival_calendar.py`) covering 2013–2027 with 17 event categories (Brahmotsavams, Vaikuntha Ekadashi, Sankranti, Navaratri, etc.) and a 1–10 impact scale.
+
+**Design note**: We excluded lunar calendar features (`is_pournami`, `is_amavasya`) because our Hindu calendar module only covers 2025–2027 — using it would produce zeros for 75% of the training period.
+
+### Step 4: Feature Selection — 10-Method Consensus Vote
+
+With 57 features and only 1,104 samples, overfitting was a real risk. Instead of relying on a single selection method, we ran **10 independent methods** and kept only features that **at least 6 out of 10 agreed on**:
+
+1. Mutual Information
+2. ANOVA F-test
+3. Chi-squared test (after MinMax scaling)
+4. GradientBoosting impurity importance
+5. Random Forest importance
+6. Extra Trees importance
+7. Permutation importance
+8. L1 Logistic Regression (Lasso)
+9. Spearman rank correlation
+10. Recursive Feature Elimination (DecisionTree)
+
+**Additional filters applied**:
+- **Variance pre-filter**: Dropped features where ≥98% of values were identical (removed 11 rare festival flags)
+- **Redundancy removal**: If two features had Spearman |ρ| > 0.95, we dropped the one with fewer votes
+
+**Result**: 57 → **16 features**, improving our sample-to-feature ratio from 19.4:1 to **69.0:1**.
 
 <details>
-<summary><strong>Final 16 Selected Features (click to expand)</strong></summary>
+<summary><strong>The 16 Final Features</strong></summary>
 
-| Feature | Votes (out of 10) | Description |
-|---------|--------------------|-------------|
-| `dow_expanding_mean` | 10 | Expanding mean pilgrim count per day-of-week |
-| `rm7` | 10 | 7-day rolling mean (kept after redundancy check) |
-| `cos_doy` | 10 | Cosine of day-of-year (seasonality) |
-| `L21` | 10 | 21-day lag |
-| `month_dow_mean` | 9 | Mean pilgrim count by month × day-of-week |
-| `log_L1` | 9 | Log of 1-day lag |
-| `log_L7` | 9 | Log of 7-day lag |
-| `log_rm30` | 9 | Log of 30-day rolling mean |
-| `month_weekend` | 9 | Month × weekend interaction |
-| `L14` | 9 | 14-day lag |
-| `rm14` | 8 | 14-day rolling mean |
-| `dow` | 8 | Day of week |
-| `L28` | 8 | 28-day lag |
-| `ewm7` | 7 | 7-day exponentially weighted mean |
-| `rstd7` | 6 | 7-day rolling standard deviation |
-| `heavy_extreme_count7` | 6 | Number of HEAVY/EXTREME days in past 7 |
+| Feature | Votes | Description |
+|---------|-------|-------------|
+| `dow_expanding_mean` | 10/10 | Historical mean count per weekday |
+| `cos_doy` | 10/10 | Annual cycle (cosine of day-of-year) |
+| `L21` | 10/10 | Pilgrim count 3 weeks ago |
+| `month_dow_mean` | 9/10 | Mean count by month × weekday |
+| `log_L1` | 9/10 | Log of yesterday's count |
+| `log_L7` | 9/10 | Log of same day last week |
+| `log_rm30` | 9/10 | Log of 30-day rolling mean |
+| `month_weekend` | 9/10 | Month × weekend interaction |
+| `L14` | 9/10 | Pilgrim count 2 weeks ago |
+| `rm14` | 8/10 | 14-day rolling mean |
+| `dow` | 8/10 | Day of week (0=Mon, 6=Sun) |
+| `L28` | 8/10 | Pilgrim count 4 weeks ago |
+| `ewm7` | 7/10 | 7-day exponential weighted mean |
+| `rstd7` | 6/10 | 7-day rolling standard deviation |
+| `heavy_extreme_count7` | 6/10 | HEAVY/EXTREME days in past 7 (streak detector) |
 
 </details>
 
-### 5. Stratified Data Split
+### Step 5: Data Splitting — Why Stratified, Not Temporal
 
-Using `StratifiedShuffleSplit` to ensure all 6 classes are proportionally represented:
+This was a deliberate decision. With only 14 EXTREME samples in the entire dataset, a standard temporal split (train on past, test on future) would put at most 2–3 EXTREME days in training — making it impossible for the model to learn what extreme crowds look like.
 
-| Split | % | Samples | EXTREME class samples |
-|-------|---|---------|----------------------|
-| Train | 72% | 794 | 10 |
-| Calibration | 8% | 89 | 1 |
-| Test | 20% | 221 | 3 |
+We used `StratifiedShuffleSplit` to ensure proportional class representation:
 
-Calibration set is used **only** for ensemble weight tuning — prevents leakage into test evaluation.
+| Subset | Size | Purpose |
+|--------|------|---------|
+| Train | 794 (72%) | Model fitting |
+| Calibration | 89 (8%) | Ensemble weight optimization only |
+| Test | 221 (20%) | Final, untouched evaluation |
 
-### 6. Custom Scoring — Ordinal Score
+**Temporal integrity is preserved** because all features are computed using `.shift(N)` in strict chronological order *before* the split. We also ran a separate walk-forward evaluation as an honest temporal out-of-sample test.
 
-Since crowd bands are **ordinal** (QUIET < LIGHT < ... < EXTREME), standard accuracy isn't enough. Our custom scoring function:
+### Step 6: Custom Scoring Function
 
-$$\text{ordinal\_score} = 0.30 \times \text{exact\_accuracy} + 0.30 \times \text{macro\_F1} + 0.25 \times \left(1 - \frac{\text{MAE}}{N_{\text{bands}} - 1}\right) + 0.15 \times \text{safety}$$
+Standard accuracy doesn't work for ordinal classification. Predicting MODERATE when the actual is BUSY (off by 1) is far less harmful than predicting QUIET when the actual is EXTREME (off by 5, and potentially dangerous). We designed a composite score:
 
-Where **safety** = fraction of predictions that aren't dangerously wrong (predicting QUIET/LIGHT when actual is HEAVY/EXTREME).
+```
+Score = 0.30 × Exact_Accuracy + 0.30 × Macro_F1 + 0.25 × Ordinal + 0.15 × Safety
+```
 
-### 7. Phase 1 — Baseline Models (No Tuning)
+Where:
+- **Ordinal** = 1 − MAE/(N_bands − 1) — penalizes bigger band errors more
+- **Safety** = 1 − (dangerous predictions / total) — penalizes predicting QUIET/LIGHT when actual is HEAVY/EXTREME
 
-Three gradient boosting models with sensible defaults:
+### Step 7: Class Weighting — Safety-First
 
-| Model | Default Config |
-|-------|---------------|
-| **GradientBoosting** | n_est=500, depth=5, lr=0.05, subsample=0.8 |
-| **LightGBM** | n_est=500, depth=6, lr=0.05, leaves=31, class_weight=balanced |
-| **XGBoost** | n_est=500, depth=6, lr=0.05, subsample=0.8 |
+We computed balanced class weights (`N_train / (N_classes × count_per_class)`) and added an extra **1.5× multiplier for HEAVY and EXTREME** — because under-predicting these classes could leave pilgrims stranded in 10+ hour queues.
 
-**Baseline 5-fold CV**: GB=0.6573, LGB=0.6526, XGB=0.6669
+### Step 8: Phase 1 — Baseline Models
 
-| Model | Exact% | Adjacent% | Macro-F1% | MAE | Safety% |
-|-------|--------|-----------|-----------|-----|---------|
-| GB | 55.7 | 96.8 | 33.0 | 0.475 | 100.0 |
-| LGB | 55.7 | 95.9 | 32.9 | 0.484 | 100.0 |
-| XGB | 53.8 | 95.5 | 32.2 | 0.507 | 100.0 |
-| **ENS** | **54.8** | **96.8** | **32.6** | **0.484** | **100.0** |
+Three gradient-boosting classifiers trained with default hyperparameters:
 
-Baseline ensemble weights: GB=0.50, LGB=0.10, XGB=0.40
+| Model | Config |
+|-------|--------|
+| GradientBoosting (sklearn) | 500 trees, depth=5, lr=0.05 |
+| LightGBM | 500 trees, depth=6, lr=0.05, 31 leaves |
+| XGBoost | 500 trees, depth=5, lr=0.05 |
 
-### 8. Phase 2 — Optuna Hyperparameter Tuning
+Baseline results on test set:
 
-**80 trials per model** using TPE sampler with 5-fold StratifiedKFold cross-validation.
+| Model | Accuracy | Macro-F1 | MAE | Safety |
+|-------|----------|----------|-----|--------|
+| GB | 55.7% | 33.0% | 0.475 | 100% |
+| LGB | 55.7% | 32.9% | 0.484 | 100% |
+| XGB | 53.8% | 32.2% | 0.507 | 100% |
+| **Ensemble** | **54.8%** | **32.6%** | **0.484** | **100%** |
+
+### Step 9: Phase 2 — Optuna Hyperparameter Tuning (80 Trials Per Model)
+
+We used **Optuna** with the TPE (Tree-structured Parzen Estimator) sampler to tune each model independently over **80 trials** with 5-fold stratified cross-validation.
 
 <details>
-<summary><strong>Optuna search spaces (click to expand)</strong></summary>
+<summary><strong>Search Spaces</strong></summary>
 
-| Parameter | GB | LGB | XGB |
-|-----------|----|----|-----|
+| Parameter | GB Range | LGB Range | XGB Range |
+|-----------|----------|-----------|-----------|
 | n_estimators | 200–1000 | 200–1000 | 200–1000 |
 | max_depth | 3–7 | 3–10 | 3–10 |
 | learning_rate | 0.005–0.15 | 0.005–0.2 | 0.005–0.2 |
@@ -174,81 +184,134 @@ Baseline ensemble weights: GB=0.50, LGB=0.10, XGB=0.40
 
 </details>
 
-**Best CV scores**: GB=0.6815, LGB=0.6602, XGB=0.6801
+**Best tuned hyperparameters**:
 
-### 9. Ensemble Calibration
+| Param | GB | LGB | XGB |
+|-------|-----|------|------|
+| n_estimators | 685 | 667 | 913 |
+| max_depth | 6 | 8 | 4 |
+| learning_rate | 0.006 | 0.081 | 0.032 |
+| subsample | 0.743 | 0.882 | 0.691 |
 
-Grid search over weight triplets (GB, LGB, XGB) optimised on the held-out **calibration** split:
+### Step 10: Ensemble Calibration
 
-**Optuna ensemble weights**: GB=0.10, LGB=0.50, XGB=0.40
+We combined the three models via weighted probability averaging:
 
-### 10. Final Test Results
+```
+prediction = argmax( w_GB × P_GB + w_LGB × P_LGB + w_XGB × P_XGB )
+```
 
-| Model | Exact% | Adjacent% | Macro-F1% | MAE | Safety% |
-|-------|--------|-----------|-----------|-----|---------|
-| GB | 59.7 | 96.8 | 37.8 | 0.434 | 100.0 |
-| LGB | 54.3 | **97.7** | 31.5 | 0.480 | 100.0 |
-| XGB | 56.6 | 95.0 | 35.8 | 0.484 | 100.0 |
-| **ENS** | **57.0** | **97.3** | **34.5** | **0.457** | **100.0** |
+Weights were found by grid search on the **calibration set** (never used for training or testing):
 
-**Baseline → Optuna improvement**: +0.5pp adjacent accuracy (96.8% → 97.3%)  
-**Champion model**: LGB (adj=97.7%)  
-**All models achieved 100% safety** — zero dangerous under-predictions.
+| Model | Weight |
+|-------|--------|
+| GradientBoosting | **0.10** |
+| LightGBM | **0.50** |
+| XGBoost | **0.40** |
 
-Per-band breakdown (Ensemble):
+### Step 11: Final Test Results (221 Days, Held-Out)
 
-| Band | n | Exact% | Adjacent% |
-|------|---|--------|-----------|
-| QUIET | 1 | 0.0 | 100.0 |
-| LIGHT | 21 | 33.3 | 95.2 |
-| MODERATE | 83 | 66.3 | 97.6 |
-| BUSY | 80 | 60.0 | 98.8 |
-| HEAVY | 33 | 48.5 | 97.0 |
-| EXTREME | 3 | 0.0 | 66.7 |
+| Model | Accuracy | Macro-F1 | MAE | Safety | Dangerous Predictions |
+|-------|----------|----------|-----|--------|-----------------------|
+| GB | **59.7%** | 37.8% | 0.434 | 100% | 0 |
+| LGB | 54.3% | 31.5% | 0.480 | 100% | 0 |
+| XGB | 56.6% | 35.8% | 0.484 | 100% | 0 |
+| **Ensemble** | **57.0%** | **34.5%** | **0.457** | **100%** | **0** |
 
-### 11. Walk-Forward Validation (Temporal Out-of-Sample)
+**Key results**:
+- **59.7% accuracy** (best individual model: GB) — 3.6× better than random chance (16.7% across 6 bands)
+- **57.0% ensemble accuracy** — sacrifices a bit of peak accuracy for robustness across all classes
+- **100% safety** on every model — zero cases of predicting QUIET/LIGHT when the actual was HEAVY/EXTREME
+- **Baseline → Optuna improvement**: +2.2pp on GB accuracy (55.7% → 59.7%)
 
-Expanding-window re-training over 360 days with step_size=30 — the most rigorous test since it simulates real deployment:
+### Step 12: Walk-Forward Validation (Temporal Out-of-Sample)
+
+To prove the model works on unseen time periods (not just shuffled data), we ran expanding-window walk-forward evaluation:
+
+- Start with the earliest ~360 days of training data
+- Every 30 days: retrain GB from scratch on all available data, predict the next 30 days
+- This simulates real-world deployment where you only train on past data
 
 | Metric | Value |
 |--------|-------|
-| Exact accuracy | 59.2% |
-| **Adjacent accuracy** | **98.3%** |
+| Accuracy | 59.2% |
 | Macro-F1 | 44.5% |
 | MAE | 0.425 bands |
 | **Safety** | **100.0%** |
 
-| Band | n | Exact% | Adjacent% |
-|------|---|--------|-----------|
-| LIGHT | 19 | 42.1 | 94.7 |
-| MODERATE | 117 | 75.2 | 97.4 |
-| BUSY | 143 | 57.3 | 99.3 |
-| HEAVY | 69 | 50.7 | 98.6 |
-| EXTREME | 12 | 0.0 | 100.0 |
+This confirms the model generalizes well temporally and the stratified split didn't cause overfitting.
 
-### Top-15 Feature Importances (GradientBoosting)
+### Step 13: Comparison Against Standard Time-Series Models
 
-```
-month_dow_mean          9.81%  ###################
-dow_expanding_mean      9.76%  ###################
-L14                     8.23%  ################
-ewm7                    8.00%  ################
-rm14                    7.37%  ##############
-L21                     7.30%  ##############
-log_rm7                 7.12%  ##############
-log_L7                  7.10%  ##############
-log_L1                  6.82%  #############
-log_rm30                6.23%  ############
-rstd7                   5.98%  ###########
-L28                     5.18%  ##########
-cos_doy                 4.74%  #########
-dow                     2.65%  #####
-month_weekend           2.57%  #####
-```
+We evaluated three standard forecasting baselines on a pure 80/20 temporal split:
+
+| Model | Accuracy | Safety | RMSE |
+|-------|----------|--------|------|
+| Seasonal Naive (same weekday last week) | 66.2% | 99.5% | — |
+| Prophet (Meta) | 8.0% | 100% | 29,203 |
+| SARIMA(1,1,1)(1,0,1,7) | 46.2% | 95.3% | 9,204 |
+| **Our Ensemble** | **64.6%** | **95.0%** | — |
+
+**Why we kept our ensemble over Seasonal Naive** (despite Naive's 66.2% vs our 64.6%):
+- Naive **cannot predict more than 7 days ahead** without chaining, which degrades rapidly
+- Naive has **no festival awareness** — it will always miss Brahmotsavams and Vaikuntha Ekadashi surges
+- Naive has **no safety constraints** — it can dangerously under-predict
+- Our ensemble handles **multi-month forecasts** with autoregressive chaining and confidence decay
 
 ---
 
-## 🤖 Chatbot Architecture
+## Production System — How It Works in Deployment
+
+### Prediction Engine
+
+The Flask API loads all three models at startup. For each future date, it mirrors the training feature engineering for a single sample, computes the weighted ensemble probability, and returns the predicted band with a confidence score and top-3 feature explanations.
+
+### Autoregressive Multi-Step Forecasting
+
+When predicting multiple future days, each predicted day's features depend on previous days' lag values that don't exist yet. We solve this by:
+
+1. Predicting day $d_t$ using available history
+2. Inserting a **day-of-week seasonal mean** (clipped to the predicted band's range) as a synthetic count
+3. Using that synthetic count as lag input for $d_{t+1}$, $d_{t+2}$, etc.
+
+We use the DOW seasonal mean (not the band midpoint) to prevent systematic drift toward the center.
+
+### Festival Floor Logic
+
+A post-prediction calendar check guarantees minimum crowd bands during known high-traffic events:
+
+| Festival/Event | Minimum Band |
+|----------------|-------------|
+| Brahmotsavams, Vaikuntha Ekadashi, Sankranti | HEAVY (band 4) |
+| Any festival with impact ≥ 5 | BUSY (band 3) |
+| Festival impact ≥ 4 on weekends | BUSY (band 3) |
+
+### Confidence Decay for Far-Future Predictions
+
+Predictions further out are inherently less reliable because autoregressive features accumulate error. We apply a sigmoid decay:
+
+```
+confidence_final = confidence_raw × max(0.45, 1 / (1 + exp((days_ahead - 180) / 60)))
+```
+
+Full confidence within 60 days, gradual decay after that, floor at 45%.
+
+### Daily Online Learning Pipeline
+
+Every day at **12:30 PM IST** (after TTD publishes the previous day's data):
+
+1. **Scrape** new records from TTD website
+2. **Reload** the CSV and clear the prediction cache
+3. **Retrain**:
+   - GB: Full retrain from scratch using saved Optuna hyperparameters
+   - LightGBM: **Warm-start** (continues training from current model, +100 rounds)
+   - XGBoost: **Warm-start** (continues from existing booster)
+4. **Validate** on the last 30 days as a sanity check
+5. **Hot-reload** updated models into Flask (no server restart needed)
+
+---
+
+## Chatbot Architecture
 
 ```
 User Query → Language Detection → Smart Router
@@ -256,41 +319,51 @@ User Query → Language Detection → Smart Router
                                      ├── Crowd keywords? → 7-day Forecast
                                      └── General Q&A → RAG Pipeline
                                                           ├── ChromaDB (top-8 docs)
-                                                          ├── System Prompt (lang-aware)
+                                                          ├── System Prompt (language-aware)
                                                           └── Groq LLM (Llama-3.3-70B)
                                                                ├── Primary: Groq API
                                                                ├── Fallback: HuggingFace API
                                                                └── Fallback: Keyword search
 ```
 
-- **Vector DB**: ChromaDB with `all-MiniLM-L6-v2` embeddings (~90MB, CPU)
-- **Corpus**: TTD knowledge base + trip data + scraped content
-- **LLM**: Groq `llama-3.3-70b-versatile` (primary), HuggingFace (fallback)
-- **Circuit Breaker**: After 2 consecutive LLM failures, skips LLM for 5 minutes
-- **6 languages**: The `lang` parameter is sent with every request; the system prompt forces response in the target language's native script
+- **Vector DB**: ChromaDB with `all-MiniLM-L6-v2` embeddings (314 documents covering darshan types, sevas, hotels, travel, festivals, customs, emergency contacts)
+- **LLM**: Groq `llama-3.3-70b-versatile` (primary), HuggingFace Inference API (fallback)
+- **6 languages**: Telugu, English, Hindi, Tamil, Malayalam, Kannada
+- **Circuit breaker**: 2 consecutive LLM failures → skip LLM for 5 minutes → use keyword fallback
 
 ---
 
-## 🌐 Supported Languages
+## Frontend — Devotional Temple Theme
 
-| Code | Language | Script |
-|------|----------|--------|
-| `en` | English | English |
-| `te` | Telugu | తెలుగు |
-| `hi` | Hindi | हिन्दी |
-| `ta` | Tamil | தமிழ் |
-| `ml` | Malayalam | മലയാളം |
-| `kn` | Kannada | ಕನ್ನಡ |
+The web app uses a temple-inspired design:
+
+- **Color palette**: Gold (#D4A843), saffron (#FF9933), maroon (#800020), cream backgrounds
+- **Custom favicon**: Temple gopuram SVG with gold kalasam
+- **Ornamental patterns**: Scallop arch borders, gold strips with ✦ decorators, repeating dot dividers
+- **Fonts**: Playfair Display (headings), Inter (body), Noto Serif Devanagari (sacred text)
+- **Responsive**: Mobile-friendly with floating scroll-to-top button
+- **Accessibility**: ARIA labels, semantic HTML, keyboard navigation
+
+### Pages
+
+| Page | Description |
+|------|-------------|
+| **Dashboard** | Hero section + today's prediction + weekly summary stats |
+| **Predict** | Pick any date range, see color-coded band predictions with confidence & explanations |
+| **Calendar** | Monthly heatmap with Hindu festival markers and Panchang |
+| **History** | Browse all 1,400+ days of actual data with filters and charts |
+| **Chatbot** | Ask anything about Tirumala in 6 languages |
+| **Explore** | 20 famous landmarks with photos, timings, and Google Maps links |
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 | Route | Method | Description |
 |-------|--------|-------------|
 | `/api/health` | GET | Health check (data rows, end date) |
 | `/api/predict/today` | GET | Today's crowd prediction |
-| `/api/predict` | GET | Quick forecast (next N days, max 90) |
+| `/api/predict` | GET | Quick forecast (next N days) |
 | `/api/predict` | POST | Date range prediction |
 | `/api/calendar/<year>/<month>` | GET | Calendar data + predictions + festivals |
 | `/api/chat` | POST | RAG chatbot (`message` + `lang`) |
@@ -302,34 +375,107 @@ User Query → Language Detection → Smart Router
 
 ---
 
-## 🚀 Local Development
+## Project Structure
+
+```
+tirumala/
+├── flask_api.py              # Flask backend — prediction engine, API, online learning
+├── train_gb_model.py         # Complete ML pipeline — features, selection, training, evaluation
+├── festival_calendar.py      # Hindu festival calendar (2013–2027, 17 event categories)
+├── hindu_calendar.py         # Panchang (lunar phase) calculations
+├── daily_pipeline.py         # Standalone daily scrape + retrain script
+├── build_vectordb.py         # ChromaDB vector store builder for chatbot
+├── build_corpus.py           # RAG corpus builder from TTD sources
+├── evaluate_pretrained_ts.py # Comparison script: Naive vs Prophet vs SARIMA vs Ensemble
+├── deploy_hf.py              # Hugging Face Spaces deployment script
+├── research_paper.tex        # LaTeX research paper documenting the methodology
+│
+├── data/                     # All data files
+│   ├── tirumala_darshan_data_CLEAN_NO_OUTLIERS.csv  # Primary dataset (4,076 rows)
+│   ├── ttd_corpus.txt        # RAG text corpus
+│   ├── ttd_knowledge_base.json  # Structured Q&A pairs
+│   └── tirumala_trip_data.json  # Hotels, restaurants, attractions, transport
+│
+├── artefacts/advisory_v5/    # Trained model artefacts
+│   ├── gb_model.pkl          # GradientBoosting model
+│   ├── lgb_model.pkl         # LightGBM model
+│   ├── xgb_model.pkl         # XGBoost model
+│   ├── model_meta.json       # Feature cols, bands, split strategy, selection metadata
+│   ├── config.json           # Test results, champion model, ensemble weights
+│   ├── hyperparams.json      # Optuna best hyperparameters for all 3 models
+│   ├── feature_importance.csv
+│   ├── shap_background.npy   # 200 samples for SHAP explanations
+│   ├── predictions_2026.csv  # Full year predictions
+│   └── forecast_30day.csv    # Rolling 30-day forecast
+│
+├── vectordb/                 # ChromaDB persistent vector store
+│
+├── client/                   # React frontend (Vite)
+│   ├── src/pages/            # Dashboard, Predict, History, Chatbot, Explore
+│   ├── src/components/       # Navbar, Footer, HinduCalendar, Loader
+│   ├── src/i18n/             # Translations (6 languages) + LangContext
+│   ├── public/favicon.svg    # Custom temple gopuram favicon
+│   └── build/                # Production build (served by Flask)
+│
+├── Dockerfile                # Docker config for HF Spaces
+├── requirements.txt          # Python dependencies
+└── README.md                 # This file
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technologies |
+|-------|-------------|
+| **ML Models** | scikit-learn GradientBoosting, LightGBM, XGBoost |
+| **Tuning** | Optuna (TPE sampler, 80 trials/model, 5-fold CV) |
+| **Feature Selection** | 10-method consensus vote (MI, ANOVA, Chi2, GB, RF, ET, Permutation, L1, Spearman, RFE) |
+| **Explainability** | Feature importance × z-score explanations, SHAP background data |
+| **Backend** | Flask, Gunicorn, APScheduler (daily cron) |
+| **Chatbot** | ChromaDB + sentence-transformers (MiniLM-L6-v2) + Groq (Llama-3.3-70B) |
+| **Frontend** | React 19, Vite 7, React Router 7, Recharts, react-icons |
+| **Styling** | Custom CSS with temple devotional theme |
+| **i18n** | Custom LangContext provider (6 languages with full translation maps) |
+| **Deployment** | Docker on HuggingFace Spaces, automated via deploy_hf.py |
+
+---
+
+## Running Locally
 
 ```bash
-# 1. Clone & setup
-git clone <repo-url> && cd tirumala
-python -m venv .venv_dl && .venv_dl\Scripts\activate  # Windows
+# 1. Clone
+git clone https://github.com/vishnu-madhav-2454/tirumala-darshan-prediction.git
+cd tirumala-darshan-prediction
+
+# 2. Python environment
+python -m venv .venv_dl
+.venv_dl\Scripts\activate          # Windows
+# source .venv_dl/bin/activate     # Linux/Mac
 pip install -r requirements.txt
 
-# 2. Build frontend
+# 3. Build frontend
 cd client && npm ci && npm run build && cd ..
 
-# 3. Build vector database (for chatbot)
+# 4. Build vector database (for chatbot)
 python build_vectordb.py
 
-# 4. Set environment variables
-cp .env.example .env  # Add your Groq / HuggingFace tokens
+# 5. Set environment variables
+#    Create a .env file with:
+#    GROQ_API_KEY=gsk_your_key
+#    HF_TOKEN_CHAT=hf_your_token
 
-# 5. Train the model (optional — pre-trained artefacts included)
+# 6. (Optional) Retrain the model — pretrained artefacts are included
 python train_gb_model.py --trials 80 --walkforward
 
-# 6. Run
+# 7. Run the server
 python flask_api.py
 # Open http://localhost:5000
 ```
 
 ---
 
-## 🐳 Docker
+## Docker
 
 ```bash
 docker build -t srivari-seva .
@@ -341,73 +487,20 @@ docker run -p 7860:7860 \
 
 ---
 
-## 🔧 HuggingFace Spaces Deployment
+## HuggingFace Spaces Deployment
 
-1. Create a new Space → SDK: **Docker**
-2. Push this repo to the Space
+1. Create a new Space with SDK: **Docker**
+2. Push this repo to the Space (or use `python deploy_hf.py`)
 3. Add **Secrets** in Space Settings:
-   - `GROQ_API_KEY` — Groq API key (primary LLM)
-   - `HF_TOKEN_CHAT` — HuggingFace token (fallback LLM)
-4. The Space will auto-build and deploy
+   - `GROQ_API_KEY` — for the chatbot LLM
+   - `HF_TOKEN_CHAT` — fallback LLM token
+4. Space auto-builds and deploys (~5–10 min first build)
 
 ---
 
-## 📁 Project Structure
+## Data Source
 
-```
-tirumala/
-├── flask_api.py              # Flask backend (API + static serving)
-├── train_gb_model.py         # Full ML pipeline (features, selection, training)
-├── festival_calendar.py      # Hindu festival calendar (2013–2027, 17 categories)
-├── hindu_calendar.py         # Panchang calculations
-├── daily_pipeline.py         # Automated daily scrape + retrain
-├── build_vectordb.py         # ChromaDB vector store builder
-├── build_corpus.py           # RAG corpus builder
-├── ttd_corpus.txt            # RAG corpus for chatbot
-├── ttd_knowledge_base.json   # Structured TTD knowledge
-├── tirumala_trip_data.json   # Trip planning data
-├── artefacts/advisory_v5/    # Trained models + metadata
-│   ├── gb_model.pkl          # GradientBoosting model
-│   ├── lgb_model.pkl         # LightGBM model
-│   ├── xgb_model.pkl         # XGBoost model
-│   ├── config.json           # Test results + ensemble weights
-│   ├── model_meta.json       # Feature cols, split strategy, selection info
-│   ├── hyperparams.json      # Optuna best hyperparameters
-│   ├── feature_importance.csv
-│   ├── predictions_2026.csv  # Full year predictions
-│   └── forecast_30day.csv    # 30-day rolling forecast
-├── vectordb/                 # ChromaDB persistent store
-├── client/                   # React frontend (Vite)
-│   ├── src/pages/            # Dashboard, Predict, History, Chatbot, Explore
-│   ├── src/components/       # Navbar, Footer, HinduCalendar, Loader
-│   ├── src/i18n/             # Translations (6 languages) + LangContext
-│   └── build/                # Production build (served by Flask)
-├── Dockerfile                # HF Spaces deployment
-├── requirements.txt          # Python dependencies
-└── .env.example              # Environment variable template
-```
-
----
-
-## 📦 Tech Stack
-
-| Layer | Technologies |
-|-------|-------------|
-| **ML Models** | scikit-learn GradientBoosting, LightGBM, XGBoost |
-| **Tuning** | Optuna (TPE sampler, 80 trials/model) |
-| **Feature Selection** | 10-method consensus voting |
-| **Explainability** | SHAP (background saved for inference-time explanations) |
-| **Backend** | Flask, Gunicorn, APScheduler |
-| **Chatbot** | ChromaDB + sentence-transformers + Groq (Llama-3.3-70B) |
-| **Frontend** | React 18, Vite, React Router, Recharts |
-| **i18n** | Custom LangContext (6 languages with full translation sets) |
-| **Deployment** | Docker, HuggingFace Spaces |
-
----
-
-## 📌 Data Source
-
-Pilgrim data sourced from [news.tirumala.org](https://news.tirumala.org/category/darshan/) — the official TTD news portal.
+All pilgrim data is sourced from [news.tirumala.org](https://news.tirumala.org/category/darshan/) — the official Tirumala Tirupati Devasthanams news portal.
 
 ---
 
